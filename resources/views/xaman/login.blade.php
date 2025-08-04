@@ -28,21 +28,28 @@
                         const data = await res.json();
 
                         if (data.success) {
-                            // Finalize login on server so Laravel sets session cookie
-                            fetch('/xaman/login-finalize', { method: 'POST', headers: { 'X-CSRF-TOKEN': csrfToken } })
-                                .then(res => res.json())
-                                .then(final => {
-                                    if (final.success) {
-                                        window.location.href = '/'; // Redirect after successful login/session set
-                                    }
-                                });
+                            // Finalize login by sending wallet explicitly
+                            const finalizeRes = await fetch('/xaman/login-finalize', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                                },
+                                body: JSON.stringify({ wallet: data.wallet }),
+                            });
+                            const finalizeData = await finalizeRes.json();
+
+                            if (finalizeData.success) {
+                                window.location.href = '/'; // Redirect after login
+                            } else {
+                                console.error('Login finalize failed');
+                            }
                         } else {
-                            // Not logged in yet, try again in 2 seconds
                             setTimeout(pollLoginStatus, 2000);
                         }
                     } catch (err) {
                         console.error('Error checking login status:', err);
-                        setTimeout(pollLoginStatus, 5000); // Retry later on error
+                        setTimeout(pollLoginStatus, 5000);
                     }
                 }
 

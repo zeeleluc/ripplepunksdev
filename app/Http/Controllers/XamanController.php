@@ -119,7 +119,7 @@ class XamanController extends Controller
 
     public function loginFinalize(Request $request)
     {
-        $wallet = Session::get('wallet');
+        $wallet = $request->input('wallet');
         if (!$wallet) {
             return response()->json(['success' => false]);
         }
@@ -130,9 +130,10 @@ class XamanController extends Controller
         }
 
         Auth::login($user);
+        Session::put('wallet', $wallet);
+
         return response()->json(['success' => true]);
     }
-
 
     public function handleCallback(Request $request)
     {
