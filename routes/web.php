@@ -1,42 +1,50 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\GiveawayController;
-use App\Http\Controllers\AboutController;
+use Illuminate\Support\Facades\Session;
+use App\Http\Controllers\{GiveawayController, AboutController, XamanController};
 
-use App\Http\Controllers\XamanController;
+Route::group(['middleware' => 'web'], function () {
+    // Sessie routes
+    Route::get('/set', function () {
+        Session::put('foo', 'bar');
+        return 'Set';
+    });
 
-Route::get('/login', [XamanController::class, 'showLoginQr'])->name('xaman.login');
-Route::get('/xaman/login-check', [XamanController::class, 'loginCheck']);
-Route::get('/xaman/callback', [XamanController::class, 'handleCallback'])->name('xaman.callback');
-Route::post('/xaman/webhook', [XamanController::class, 'handleWebhook'])->name('xaman.webhook');
-Route::post('/xaman/login-finalize', [XamanController::class, 'loginFinalize'])->name('xaman.loginFinalize');
-Route::post('/logout', [XamanController::class, 'logout'])
-    ->middleware(['web', 'auth'])
-    ->name('xaman.logout');
+    Route::get('/get', fn() => 'Get: ' . Session::get('foo', 'not found'));
+    // Welcome pagina
+    Route::get('/', fn() => view('welcome', [
+        'totalItems' => 10000,
+        'bar1Count' => 10000,
+        'bar2Count' => 100,
+        'colors' => [
+            'bar1' => ['#006EFF', '#006EFF'],
+            'bar2' => ['#006EFF', '#006EFF'],
+        ]
+    ]))->name('welcome');
 
-Route::get('/', function () {
+    // About pagina
+    Route::get('/about-cto', [AboutController::class, 'showCtoPage'])->name('about.cto');
 
-//    \Illuminate\Support\Facades\Auth::login(\App\Models\User::where('wallet', 'r3SvAe5197xnXvPHKnyptu3EjX5BG8f2mS')->first());
+    // Giveaway routes
+    Route::prefix('giveaway')->group(function () {
+        Route::get('/{type}', [GiveawayController::class, 'index'])->name('giveaway.index');
+        Route::post('/{type}', [GiveawayController::class, 'store'])->name('giveaway.store');
+        Route::post('/{id}/decline', [GiveawayController::class, 'decline'])->name('giveaway.decline');
+        Route::post('/{id}/approve', [GiveawayController::class, 'approve'])->name('giveaway.approve');
+    });
 
-    $totalItems = 10000;
+    // Xaman authenticatie routes
+    Route::get('/login', [XamanController::class, 'showLoginQr'])->name('xaman.login');
+    Route::prefix('xaman')->group(function () {
+        Route::get('/login-check', [XamanController::class, 'loginCheck'])->name('xaman.loginCheck');
+        Route::get('/callback', [XamanController::class, 'handleCallback'])->name('xaman.callback');
+        Route::post('/webhook', [XamanController::class, 'handleWebhook'])->name('xaman.webhook');
+        Route::post('/login-finalize', [XamanController::class, 'loginFinalize'])->name('xaman.loginFinalize');
+    });
 
-    // Example progress counts for each bar
-    $bar1Count = 10000;
-    $bar2Count = 100;
-
-    // Colors for bars: 2 colors per bar (gradient)
-    $colors = [
-        'bar1' => ['#006EFF', '#006EFF'],
-        'bar2' => ['#006EFF', '#006EFF'],
-    ];
-
-    return view('welcome', compact('totalItems', 'bar1Count', 'bar2Count', 'colors'));
-})->name('welcome');
-
-Route::get('/about-cto', [AboutController::class, 'showCtoPage']);
-
-Route::get('/giveaway/{type}', [GiveawayController::class, 'index']);
-Route::post('/giveaway/{type}', [GiveawayController::class, 'store']);
-Route::post('/giveaway/{id}/decline', [GiveawayController::class, 'decline']);
-Route::post('/giveaway/{id}/approve', [GiveawayController::class, 'approve']);
+    // Logout route (met auth middleware)
+    Route::post('/logout', [XamanController::class, 'logout'])
+        ->middleware('auth')
+        ->name('xaman.logout');
+});

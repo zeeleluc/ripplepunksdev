@@ -21,9 +21,35 @@ class XamanController extends Controller
 
     public function showLoginQr()
     {
+        // Check of we al een geldige UUID in de sessie hebben
+        $uuid = Session::get('xumm_login_uuid');
+
+        if ($uuid) {
+            try {
+                $payload = $this->xaman->getPayload($uuid);
+
+                // Check of er nog geen login is (anders forceer een nieuwe login)
+                if (empty($payload->response->account)) {
+                    return view('xaman.login', [
+                        'qr' => $payload->refs->qrPng,
+                        'url' => $payload->next->always,
+                    ]);
+                }
+
+                // Als al ingelogd, redirect of toon andere melding
+                return redirect('/')->with('message', 'Already logged in or payload used.');
+
+            } catch (\Throwable $e) {
+                // UUID bestaat niet (meer) of fout bij ophalen, dus opnieuw proberen
+                Log::warning('Old UUID invalid, generating new one: ' . $e->getMessage());
+                Session::forget('xumm_login_uuid');
+            }
+        }
+
+        // Geen geldige UUID -> nieuwe payload maken
         $payload = $this->xaman->createLoginPayload();
 
-        // Store UUID in session or DB to verify login later
+        // Store UUID in session
         Session::put('xumm_login_uuid', $payload->uuid);
 
         return view('xaman.login', [
