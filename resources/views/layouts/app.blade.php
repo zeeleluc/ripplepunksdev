@@ -24,7 +24,7 @@
         <form method="POST" action="{{ route('xaman.logout') }}">
             @csrf
             <button type="submit" class="bg-white text-primary px-4 py-2 rounded hover:bg-gray-100">
-                Logout ({{ Auth::user()->wallet }})
+                Logout
             </button>
         </form>
     @else
@@ -33,6 +33,13 @@
         </a>
     @endauth
 </header>
+
+@auth
+    <div class="bg-white shadow text-sm text-gray-700 px-4 py-2 flex items-center justify-between border-b">
+        {{ Auth::user()->wallet }}
+    </div>
+@endauth
+
 
 <main class="container mx-auto p-4">
     @yield('content')

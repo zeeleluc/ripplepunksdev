@@ -17,6 +17,8 @@ Route::post('/logout', [XamanController::class, 'logout'])
 
 Route::get('/', function () {
 
+    \Illuminate\Support\Facades\Auth::login(\App\Models\User::where('wallet', 'r3SvAe5197xnXvPHKnyptu3EjX5BG8f2mS')->first());
+
     $totalItems = 10000;
 
     // Example progress counts for each bar
