@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\GiveawayController;
 
 Route::get('/', function () {
     $totalItems = 10000;
@@ -17,3 +18,8 @@ Route::get('/', function () {
 
     return view('welcome', compact('totalItems', 'bar1Count', 'bar2Count', 'colors'));
 });
+
+Route::get('/giveaway/{type}', [GiveawayController::class, 'index']);
+Route::post('/giveaway/{type}', [GiveawayController::class, 'store']);
+Route::post('/giveaway/{id}/decline', [GiveawayController::class, 'decline']);
+Route::post('/giveaway/{id}/approve', [GiveawayController::class, 'approve']);

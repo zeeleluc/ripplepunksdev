@@ -32,6 +32,8 @@
 
     </div>
 
+    @livewire('giveaway-wrapper')
+
     <div class="max-w-4xl mx-auto px-4 py-8">
 
         <div class="bg-white text-gray-600 shadow-lg rounded-lg p-6 mb-8 text-xl">

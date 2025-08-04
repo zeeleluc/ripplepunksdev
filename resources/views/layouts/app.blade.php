@@ -6,6 +6,10 @@
     <title>{{ $title ?? config('app.name') }}</title>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    @livewireStyles
+
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
 <body class="bg-gray-100 text-gray-900">
 <header class="p-4 bg-primary text-white shadow">
@@ -19,5 +23,7 @@
 <footer class="p-4 text-center text-sm text-gray-600">
     &copy; {{ date('Y') }} {{ config('app.name') }}. All rights reserved.
 </footer>
+
+@livewireScripts
 </body>
 </html>
