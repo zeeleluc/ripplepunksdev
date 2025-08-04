@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\GiveawayController;
+use App\Http\Controllers\AboutController;
 
 Route::get('/', function () {
     $totalItems = 10000;
@@ -18,6 +19,8 @@ Route::get('/', function () {
 
     return view('welcome', compact('totalItems', 'bar1Count', 'bar2Count', 'colors'));
 });
+
+Route::get('/about-cto', [AboutController::class, 'showCtoPage']);
 
 Route::get('/giveaway/{type}', [GiveawayController::class, 'index']);
 Route::post('/giveaway/{type}', [GiveawayController::class, 'store']);
