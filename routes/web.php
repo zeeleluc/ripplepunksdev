@@ -7,7 +7,7 @@ Route::get('/', function () {
 
     // Example progress counts for each bar
     $bar1Count = 10000;
-    $bar2Count = 90;
+    $bar2Count = 100;
 
     // Colors for bars: 2 colors per bar (gradient)
     $colors = [
