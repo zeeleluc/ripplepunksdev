@@ -6,7 +6,7 @@
         $bar2Percent = ($bar2Count / $totalItems) * 100;
     @endphp
 
-    <div class="max-w-4xl mx-auto space-y-8 p-6 mb-8">
+    <div class="max-w-4xl mx-auto space-y-8 p-6 mb-4">
 
         {{-- Bar 1 --}}
         <div>
