@@ -13,12 +13,25 @@
 </head>
 <body class="bg-gray-100 text-gray-900">
 
-<header class="p-4 bg-primary text-white shadow">
+<header class="p-4 bg-primary text-white shadow flex justify-between items-center">
     <h1 class="text-xl font-bold">
         <a href="{{ url('/') }}" class="hover:underline">
             {{ config('app.name') }}
         </a>
     </h1>
+
+    @auth
+        <form method="POST" action="{{ route('xaman.logout') }}">
+            @csrf
+            <button type="submit" class="bg-white text-primary px-4 py-2 rounded hover:bg-gray-100">
+                Logout ({{ Auth::user()->wallet }})
+            </button>
+        </form>
+    @else
+        <a href="{{ route('xaman.login') }}" class="bg-white text-primary px-4 py-2 rounded hover:bg-gray-100">
+            Login
+        </a>
+    @endauth
 </header>
 
 <main class="container mx-auto p-4">

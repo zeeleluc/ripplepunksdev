@@ -6,13 +6,17 @@ use App\Http\Controllers\AboutController;
 
 use App\Http\Controllers\XamanController;
 
-Route::get('/login', [XamanController::class, 'showLoginQr']);
+Route::get('/login', [XamanController::class, 'showLoginQr'])->name('xaman.login');
 Route::get('/xaman/login-check', [XamanController::class, 'loginCheck']);
 Route::get('/xaman/callback', [XamanController::class, 'handleCallback'])->name('xaman.callback');
 Route::post('/xaman/webhook', [XamanController::class, 'handleWebhook'])->name('xaman.webhook');
 Route::post('/xaman/login-finalize', [XamanController::class, 'loginFinalize'])->name('xaman.loginFinalize');
+Route::post('/logout', [XamanController::class, 'logout'])
+    ->middleware(['web', 'auth'])
+    ->name('xaman.logout');
 
 Route::get('/', function () {
+
     $totalItems = 10000;
 
     // Example progress counts for each bar

@@ -68,9 +68,12 @@ class XamanController extends Controller
         return response()->json(['success' => true]);
     }
 
-    public function logout()
+    public function logout(Request $request)
     {
-        Session::forget(['wallet', 'xumm_token', 'xumm_login_uuid']);
+        \Log::info('User logging out: ' . auth()->id());
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
         return redirect('/');
     }
 
