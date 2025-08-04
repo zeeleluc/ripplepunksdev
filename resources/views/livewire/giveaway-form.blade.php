@@ -8,7 +8,7 @@
 
         @if ($type === 'Celebrate New Punks')
             <p>
-                We're celebrating the launch of <strong>The Other Punks</strong> — the next 10x evolution of the Punks legacy — with a giveaway: if you hold at least <strong>1 OG Punk (#0–#9999)</strong> and <strong>10 of The Other Punks (#10000–#19999)</strong>, you're eligible to receive <strong>2 brand new Punks for free</strong> as a reward for supporting the movement early.
+                We're celebrating the launch of <strong>The Other Punks</strong> — the next 10k evolution of the Punks legacy — with a giveaway: if you hold at least <strong>1 OG Punk (#0–#9999)</strong> and <strong>10 of The Other Punks (#10000–#19999)</strong>, you're eligible to receive <strong>2 brand-new Punks for free</strong> as a reward for supporting the movement early.
             </p>
         @endif
 
