@@ -35,4 +35,8 @@ return [
         ],
     ],
 
+    'xaman' => [
+        'api_key'    => env('XAMAN_API_KEY'),
+        'api_secret' => env('XAMAN_API_SECRET'),
+    ],
 ];

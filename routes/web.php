@@ -4,6 +4,14 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\GiveawayController;
 use App\Http\Controllers\AboutController;
 
+use App\Http\Controllers\XamanController;
+
+Route::get('/login', [XamanController::class, 'showLoginQr']);
+Route::get('/xaman/login-check', [XamanController::class, 'loginCheck']);
+Route::get('/xaman/callback', [XamanController::class, 'handleCallback'])->name('xaman.callback');
+Route::post('/xaman/webhook', [XamanController::class, 'handleWebhook'])->name('xaman.webhook');
+Route::post('/xaman/login-finalize', [XamanController::class, 'loginFinalize'])->name('xaman.loginFinalize');
+
 Route::get('/', function () {
     $totalItems = 10000;
 
@@ -18,7 +26,7 @@ Route::get('/', function () {
     ];
 
     return view('welcome', compact('totalItems', 'bar1Count', 'bar2Count', 'colors'));
-});
+})->name('welcome');
 
 Route::get('/about-cto', [AboutController::class, 'showCtoPage']);
 
