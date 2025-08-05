@@ -1,7 +1,5 @@
 <?php
 
-// app/Console/Commands/SyncNfts.php
-
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
@@ -29,12 +27,12 @@ class SyncNfts extends Command
         do {
             $this->info($issuer);
             $this->info($taxon);
+
             $response = Http::withHeaders([
                 'x-bithomp-token' => env('BITHOMP_API_KEY'),
             ])->get('https://bithomp.com/api/v2/nfts', [
                 'issuer' => $issuer,
                 'taxon' => $taxon,
-//                'assets' => true,
                 'limit' => 100,
                 'marker' => $marker,
             ]);
@@ -52,6 +50,14 @@ class SyncNfts extends Command
                 $nftokenId = $nft['nftokenID'];
                 $seenIds[] = $nftokenId;
 
+                $name = $nft['metadata']['name'] ?? null;
+
+                // 🧠 Extract the number after "#" using regex
+                $nftId = null;
+                if ($name && preg_match('/#(\d+)/', $name, $matches)) {
+                    $nftId = (int) $matches[1];
+                }
+
                 Nft::updateOrCreate(
                     ['nftoken_id' => $nftokenId],
                     [
@@ -65,6 +71,8 @@ class SyncNfts extends Command
                         'assets' => $nft['assets'] ?? [],
                         'metadata' => $nft['metadata'] ?? [],
                         'sequence' => $nft['sequence'] ?? null,
+                        'name' => $name,
+                        'nft_id' => $nftId, // ✅ Store extracted number
                     ]
                 );
             }

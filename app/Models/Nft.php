@@ -18,7 +18,8 @@ class Nft extends Model
         'assets',
         'metadata',
         'sequence',
-        'burned_at',
+        'name',
+        'nft_id',
     ];
 
     protected $casts = [

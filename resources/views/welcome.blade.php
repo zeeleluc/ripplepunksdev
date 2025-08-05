@@ -39,7 +39,9 @@
             </div>
         </div>
 
-        <div class="flex flex-col md:flex-row md:justify-between md:gap-6">
+        @livewire('nft-grid')
+
+        <div class="flex flex-col md:flex-row md:justify-between md:gap-6 mt-10">
             <!-- Image Card -->
             <div class="w-full md:w-[30%] text-center border bg-white p-4 sm:p-6 mb-6 md:mb-0">
                 <img
