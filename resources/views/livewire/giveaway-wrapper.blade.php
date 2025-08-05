@@ -1,5 +1,5 @@
-<div class="max-w-6xl mx-auto px-4 py-6">
-    <h1 class="text-2xl font-bold mb-6">Giveaways</h1>
+<div class="max-w-6xl mx-auto px-0 py-6">
+    <h1 class="text-2xl font-bold mb-6 text-center">Giveaways</h1>
 
     <div class="flex flex-wrap gap-6">
         <!-- Livewire Form Card -->

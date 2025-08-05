@@ -49,12 +49,12 @@
         @auth
             <form method="POST" action="{{ route('xaman.logout') }}">
                 @csrf
-                <button type="submit" class="bg-white text-primary-700 text-sm px-3 py-1.5 sm:px-4 sm:py-2 rounded hover:bg-gray-100">
+                <button type="submit" class="bg-white text-primary-700 text-sm px-3 py-1 sm:px-4 sm:py-2 rounded hover:bg-gray-100">
                     Logout
                 </button>
             </form>
         @else
-            <a href="{{ route('xaman.login') }}" class="bg-white text-primary-700 text-sm px-3 py-1.5 sm:px-4 sm:py-2 rounded hover:bg-gray-100">
+            <a href="{{ route('xaman.login') }}" class="bg-white text-primary-700 text-sm px-3 py-1 sm:px-4 sm:py-2 rounded hover:bg-gray-100">
                 Login
             </a>
         @endauth
@@ -64,9 +64,12 @@
 
 @auth
     <div class="bg-white shadow text-sm text-gray-700 px-6 py-2 flex items-center justify-between border-b">
+    <span class="truncate max-w-[60%] overflow-hidden whitespace-nowrap">
         {{ Auth::user()->wallet }}
+    </span>
+
         @if (Auth::user()->isAdmin())
-            <a href="{{ route('admin.supply') }}">
+            <a href="{{ route('admin.supply') }}" class="ml-4 flex-shrink-0">
                 Manage Supply
             </a>
         @endif

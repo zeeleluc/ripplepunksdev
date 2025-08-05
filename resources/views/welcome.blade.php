@@ -15,17 +15,29 @@
     @endphp
     <div class="container mx-auto px-0 sm:px-6 py-6">
 
-        <div class="container mx-auto px-4 sm:px-6 py-3">
-            <div class="flex flex-col sm:flex-row justify-center items-center gap-4 mb-8">
-                <a target="_blank" href="https://xrp.cafe/usercollection/r3SvAe5197xnXvPHKnyptu3EjX5BG8f2mS/r3SvAe5197xnXvPHKnyptu3EjX5BG8f2mS/604" class="bg-primary-500 hover:bg-primary-600 text-white text-lg font-semibold py-4 px-8 rounded-lg shadow">
-                    Buy The Other Punks for 2 XRP
+        <div class="px-0 sm:px-6 py-3">
+            <div class="flex flex-col sm:flex-row sm:justify-center sm:items-center gap-3 sm:gap-4 mb-8">
+                <a
+                    target="_blank"
+                    href="https://xrp.cafe/usercollection/r3SvAe5197xnXvPHKnyptu3EjX5BG8f2mS/r3SvAe5197xnXvPHKnyptu3EjX5BG8f2mS/604"
+                    class="w-full sm:w-auto bg-primary-500 hover:bg-primary-600 text-white text-base font-semibold py-3 px-6 rounded-lg shadow text-center"
+                >
+                    The Other Punks: 2 XRP
                 </a>
-                <a href="/giveaway" class="bg-gray-800 hover:bg-gray-900 text-white text-lg font-semibold py-4 px-8 rounded-lg shadow">
-                    There is always a Giveaway running
+                <a
+                    href="/giveaway"
+                    class="w-full sm:w-auto bg-gray-800 hover:bg-gray-900 text-white text-base font-semibold py-3 px-6 rounded-lg shadow text-center"
+                >
+                    Giveaways
+                </a>
+                <a
+                    href="/about-cto"
+                    class="w-full sm:w-auto bg-gray-300 hover:bg-gray-300 text-gray-800 text-base font-semibold py-3 px-6 rounded-lg shadow text-center"
+                >
+                    About the CTO
                 </a>
             </div>
         </div>
-
 
         <div class="flex flex-col md:flex-row md:justify-between md:gap-6">
             <!-- Image Card -->
