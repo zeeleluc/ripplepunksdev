@@ -15,7 +15,7 @@
     @endphp
     <div class="container mx-auto px-0 sm:px-6 py-6">
 
-        <div class="px-0 sm:px-6 py-3">
+        <div class="px-0 sm:px-6 pb-3 pt-0">
             <div class="flex flex-col sm:flex-row sm:justify-center sm:items-center gap-3 sm:gap-4 mb-8">
                 <a
                     target="_blank"

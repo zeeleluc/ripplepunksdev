@@ -16,7 +16,7 @@
                 <strong class="text-primary">The Dev</strong> genuinely wishes the CTO team all the best with their forked version of RipplePunks. May their journey be smooth and their project find its audience.
             </p>
             <p class="leading-relaxed">
-                As for this version of RipplePunks — the focus remains on building, preserving, and evolving the legacy in a way that stays true to its roots.
+                As for this version of RipplePunks — the real version — the focus remains on building, preserving, and evolving the legacy in a way that stays true to its roots.
             </p>
         </div>
 
