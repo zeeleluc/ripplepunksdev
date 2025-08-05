@@ -7,8 +7,8 @@
 
         $initialSupply = 10000;
         $eventualTotal = 20000;
-        $outOfCirculation = 1375;
-        $newBatchMinted = 210;
+        $outOfCirculation = \App\Models\SupplyRecord::latestRecord()->out_of_circulation;
+        $newBatchMinted = \App\Models\SupplyRecord::latestRecord()->new_mints;
 
         $totalSupply = $initialSupply + $newBatchMinted;
         $actualCirculating = $totalSupply - $outOfCirculation;
@@ -83,7 +83,7 @@
                     </table>
                 </div>
                 <div class="text-right mt-5 text-sm text-gray-400">
-                    Updated 2025-08-05
+                    Updated {{ \App\Models\SupplyRecord::latestRecord()->created_at->format('Y-m-d') }}
                 </div>
             </div>
         </div>

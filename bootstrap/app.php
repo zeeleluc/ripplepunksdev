@@ -29,6 +29,11 @@ return Application::configure(basePath: dirname(__DIR__))
             VerifyCsrfToken::class,
             SubstituteBindings::class,
         ]);
+
+        // Explicitly register the alias (optional, for clarity)
+        $middleware->alias([
+            'isAdmin' => \App\Http\Middleware\IsAdmin::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

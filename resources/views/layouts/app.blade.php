@@ -37,6 +37,11 @@
 @auth
     <div class="bg-white shadow text-sm text-gray-700 px-4 py-2 flex items-center justify-between border-b">
         {{ Auth::user()->wallet }}
+        @if (Auth::user()->isAdmin())
+            <a href="{{ route('admin.supply') }}">
+                Manage Supply
+            </a>
+        @endif
     </div>
 @endauth
 

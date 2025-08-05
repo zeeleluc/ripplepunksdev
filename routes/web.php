@@ -1,25 +1,18 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Session;
-use App\Http\Controllers\{GiveawayController, AboutController, XamanController};
+use App\Http\Controllers\{
+    WelcomeController,
+    GiveawayController,
+    AboutController,
+    XamanController
+};
+use App\Http\Controllers\Admin\SupplyController;
 
 Route::group(['middleware' => 'web'], function () {
-    // Sessie routes
-    Route::get('/set', function () {
-        Session::put('foo', 'bar');
-        return 'Set';
-    });
 
-    Route::get('/get', fn() => 'Get: ' . Session::get('foo', 'not found'));
-    // Welcome pagina
-    Route::get('/', fn() => view('welcome', [
-        'totalItems' => 10000,
-        'bar1Count' => 10000,
-        'bar2Count' => 110,
-    ]))->name('welcome');
-
-    // About pagina
+    Route::get('/', [WelcomeController::class, 'index'])->name('welcome');
+    Route::get('/welcome', [WelcomeController::class, 'index'])->name('login');
     Route::get('/about-cto', [AboutController::class, 'showCtoPage'])->name('about.cto');
 
     // Giveaway routes
@@ -43,4 +36,8 @@ Route::group(['middleware' => 'web'], function () {
     Route::post('/logout', [XamanController::class, 'logout'])
         ->middleware('auth')
         ->name('xaman.logout');
+
+    Route::middleware(['auth', 'isAdmin'])->group(function () {
+        Route::get('/admin/supply', [SupplyController::class, 'index'])->name('admin.supply');
+    });
 });

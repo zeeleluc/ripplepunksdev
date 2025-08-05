@@ -19,6 +19,10 @@ class User extends Authenticatable
         'remember_token',
     ];
 
+    protected $casts = [
+        'is_admin' => 'bool',
+    ];
+
     /**
      * Get the attributes that should be cast.
      *
@@ -30,5 +34,10 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->is_admin;
     }
 }
