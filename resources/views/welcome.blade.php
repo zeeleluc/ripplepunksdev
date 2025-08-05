@@ -144,7 +144,7 @@
     </div>
 
 
-    <div class="max-w-5xl mx-auto bg-white border rounded shadow p-8 mb-8 mt-2">
+    <div class="max-w-5xl mx-auto bg-white border rounded shadow p-8 mb-8 mt-6">
 
         <h2 class="text-xl font-bold mb-4">The Dev 🤘🏼</h2>
 
