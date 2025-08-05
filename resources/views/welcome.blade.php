@@ -2,9 +2,6 @@
 
 @section('content')
     @php
-        $bar1Percent = ($bar1Count / $totalItems) * 100;
-        $bar2Percent = ($bar2Count / $totalItems) * 100;
-
         $initialSupply = 10000;
         $eventualTotal = 20000;
         $outOfCirculation = \App\Models\Nft::ctoWalletCount();
@@ -43,7 +40,7 @@
 
         <div class="flex flex-col md:flex-row md:justify-between md:gap-6 mt-10">
             <!-- Image Card -->
-            <div class="w-full md:w-[30%] text-center border bg-white p-4 sm:p-6 mb-6 md:mb-0">
+            <div class="w-full md:w-[30%] text-center border bg-white p-4 sm:p-6 mb-6 md:mb-0 shadow">
                 <img
                     src="{{ asset('images/project-nft.png') }}"
                     class="mx-auto w-full"
@@ -52,7 +49,7 @@
             </div>
 
             <!-- Table Card -->
-            <div class="w-full md:w-[70%] text-center border bg-white p-4 sm:p-6">
+            <div class="w-full md:w-[70%] text-center border bg-white p-4 sm:p-6 shadow">
                 <div class="overflow-x-auto">
                     <table class="min-w-full table-auto text-left border">
                         <thead>
@@ -113,58 +110,60 @@
         </div>
     </div>
 
-    <div class="max-w-6xl mx-auto flex flex-col md:flex-row gap-6 p-0 mt-4 mb-8">
+    <div class="max-w-9xl mx-auto bg-white border border-gray-300 rounded shadow p-8 mb-8 mt-2">
 
-        {{-- Left Card --}}
-        <div
-            class="bg-white border rounded-lg p-6 shadow w-full md:w-[35%] min-w-[250px]"
-        >
-            <h2 class="text-xl font-bold mb-4">The Dev Logs</h2>
-            <p>
-                Soon.
-            </p>
+        <div class="mb-0 font-semibold text-lg">Punks Collection Progress</div>
+        <p class="mb-2">
+            Combined progress of the original and the new Punks collections.
+        </p>
+
+        <div class="w-full bg-gray-300 rounded h-6 overflow-hidden flex">
+            {{-- Bar 1 (left) --}}
+            <div
+                class="h-full bg-primary-300"
+                style="width: {{ $bar1Percent }}%;"
+            ></div>
+
+            {{-- Bar 2 (right) --}}
+            <div
+                class="h-full bg-primary-500"
+                style="width: {{ $bar2Percent }}%;"
+            ></div>
+
+            {{-- Bar 3 (right) --}}
+            <div
+                class="h-full bg-gray-100"
+                style="width: {{ $bar3Percent }}%;"
+            ></div>
         </div>
 
-        {{-- Right Card --}}
-        <div
-            class="bg-white border rounded-lg p-6 shadow space-y-8 w-full md:w-[65%]"
-        >
-
-            {{-- Bar 1 --}}
-            <div>
-                <div class="mb-0 font-semibold text-lg">The Original Punks (#0 - #9999)</div>
-                <p class="mb-2">
-                    These are the original 1/1 Punks, perfectly matching the iconic Ethereum Punks collection.
-                </p>
-                <div class="w-full bg-gray-300 rounded h-6 overflow-hidden">
-                    <div
-                        class="h-full bg-primary-300"
-                        style="width: {{ $bar1Percent }}%;"
-                    ></div>
-                </div>
-            </div>
-
-            {{-- Bar 2 --}}
-            <div>
-                <div class="mb-0 font-semibold text-lg">The Other Punks (#10000 - #19999)</div>
-                <p class="mb-2">
-                    Since the CTO plans to stall their original 10k OG Punks, we’re keeping the collection alive by minting 10k brand-new Punks.
-                    Each of these features unique trait combinations.
-                </p>
-                <div class="w-full bg-gray-200 rounded h-6 overflow-hidden">
-                    <div
-                        class="h-full bg-primary-500"
-                        style="width: {{ $bar2Percent }}%;"
-                    ></div>
-                </div>
-            </div>
-
+        <div class="flex justify-between mt-2 text-sm font-semibold">
+            <span>The Original Punks (#0 - #9999)</span>
+            <span>The Other Punks (#10000 - #19999)</span>
         </div>
 
     </div>
 
+    <div class="max-w-5xl mx-auto bg-white border rounded shadow p-8 mb-8 mt-2">
 
-    <div class="max-w-3xl mx-auto bg-white border border-gray-300 rounded-xl shadow-lg p-8 my-8">
+        <h2 class="text-xl font-bold mb-4">The Dev 🤘🏼</h2>
+
+        @foreach ($logEntries as $logEntry)
+            <div class="my-0 pt-2 pb-4 border-t">
+                <p class="p-0 m-0">
+                    {{ $logEntry->text }}
+                </p>
+                <small class="text-xs">
+                    {{ $logEntry->created_at->format('Y-m-d H:i') }} <sup>UTC</sup>
+                </small>
+            </div>
+        @endforeach
+
+    </div>
+
+
+
+    <div class="max-w-3xl mx-auto bg-white border rounded shadow p-8 my-8">
         <h2 class="text-3xl font-extrabold text-primary mb-6 text-center">RipplePunks: The Ultimate XRPL NFT Revolution</h2>
         <p class="text-gray-700 text-lg mb-4 leading-relaxed">
             Welcome to <strong>RipplePunks</strong> — a groundbreaking collection of <strong>20,000 unique 1/1 Punks</strong> living on the XRP Ledger (XRPL), blending iconic Ethereum punk vibes with next-gen blockchain innovation. Starting with an exclusive original batch of <strong>10,000 legendary OG Punks</strong>, RipplePunks are redefining scarcity, community, and digital ownership in the crypto art space.

@@ -8,7 +8,7 @@ use App\Http\Controllers\{
     XamanController,
     HolderController
 };
-use App\Http\Controllers\Admin\SupplyController;
+use App\Http\Controllers\Admin\LogEntryController;
 
 Route::group(['middleware' => 'web'], function () {
 
@@ -40,6 +40,6 @@ Route::group(['middleware' => 'web'], function () {
         ->name('xaman.logout');
 
     Route::middleware(['auth', 'isAdmin'])->group(function () {
-        Route::get('/admin/supply', [SupplyController::class, 'index'])->name('admin.supply');
+        Route::get('/admin/log-entry', [LogEntryController::class, 'index'])->name('admin.log-entry');
     });
 });

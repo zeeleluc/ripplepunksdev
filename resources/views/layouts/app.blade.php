@@ -69,8 +69,8 @@
     </span>
 
         @if (Auth::user()->isAdmin())
-            <a href="{{ route('admin.supply') }}" class="ml-4 flex-shrink-0">
-                Manage Supply
+            <a href="{{ route('admin.log-entry') }}" class="ml-4 flex-shrink-0">
+                Logs
             </a>
         @endif
     </div>
