@@ -28,4 +28,9 @@ class Nft extends Model
         'metadata' => 'array',
         'burned_at' => 'datetime',
     ];
+
+    public static function ctoWalletCount(): int
+    {
+        return static::where('owner', env('CTO_WALLET'))->count();
+    }
 }

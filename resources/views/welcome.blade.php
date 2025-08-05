@@ -7,8 +7,8 @@
 
         $initialSupply = 10000;
         $eventualTotal = 20000;
-        $outOfCirculation = \App\Models\SupplyRecord::latestRecord()->out_of_circulation;
-        $newBatchMinted = \App\Models\SupplyRecord::latestRecord()->new_mints;
+        $outOfCirculation = \App\Models\Nft::ctoWalletCount();
+        $newBatchMinted = \App\Models\Nft::count() - 10000;
 
         $totalSupply = $initialSupply + $newBatchMinted;
         $actualCirculating = $totalSupply - $outOfCirculation;

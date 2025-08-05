@@ -10,10 +10,14 @@
             </thead>
             <tbody>
             @foreach ($holders as $holder)
-                <tr>
-                    <td class="border px-4 py-2">{{ $holder->owner }}</td>
-                    <td class="border px-4 py-2">{{ $holder->nft_count }}</td>
-                </tr>
+                @if (env('CTO_WALLET') === $holder->owner)
+
+                @else
+                    <tr>
+                        <td class="border px-4 py-2">{{ $holder->owner }}</td>
+                        <td class="border px-4 py-2 min-w-[75px]">{{ $holder->nft_count }}</td>
+                    </tr>
+                @endif
             @endforeach
             </tbody>
         </table>
@@ -65,5 +69,9 @@
         @endforeach
 
     </div>
+
+    <p class="m-4 italic text-sm">
+        Please note that {{ \App\Models\Nft::ctoWalletCount() }} RipplePunks held by the CTO wallet have been excluded from this list.
+    </p>
 
 </div>

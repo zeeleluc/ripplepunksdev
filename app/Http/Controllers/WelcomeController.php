@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\SupplyRecord;
+use App\Models\Nft;
 
 class WelcomeController extends Controller
 {
@@ -13,7 +13,7 @@ class WelcomeController extends Controller
         return view('welcome', [
             'totalItems' => 10000,
             'bar1Count' => 10000,
-            'bar2Count' => SupplyRecord::latestRecord()->new_mints,
+            'bar2Count' => Nft::count() - 10000,
         ]);
     }
 }
