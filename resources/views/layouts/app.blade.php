@@ -18,47 +18,49 @@
 </head>
 <body class="bg-gray-100 text-gray-900">
 
-<header class="p-6 bg-primary-600 text-white shadow flex justify-between items-center">
+<header class="p-4 sm:p-6 bg-primary-600 text-white shadow flex flex-wrap justify-between items-center">
     <!-- Left: Logo and Links -->
-    <div class="flex items-center gap-6">
-        <h1 class="text-xl font-bold">
+    <div class="flex flex-wrap items-center gap-3 sm:gap-6">
+        <h1 class="text-base sm:text-xl font-bold">
             <a href="{{ url('/') }}" class="hover:underline">
                 {{ config('app.name') }}
             </a>
         </h1>
 
         <!-- Outgoing Links -->
-        <nav class="flex items-center gap-4 text-sm font-medium">
-            <a href="https://xrp.cafe/collection/ripplepunks" target="_blank" class="hover:underline flex items-center gap-1">
+        <nav class="flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm font-medium">
+            <a href="https://xrp.cafe/collection/ripplepunks" target="_blank" class="hover:underline flex items-center gap-0.5 sm:gap-1">
                 xrp.cafe
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 inline-block ml-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 sm:w-4 sm:h-4 inline-block ml-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 3h7m0 0v7m0-7L10 14M5 5v14h14v-5" />
                 </svg>
             </a>
-            <a href="https://bidds.com/collection/ripplepunks/" target="_blank" class="hover:underline flex items-center gap-1">
+            <a href="https://bidds.com/collection/ripplepunks/" target="_blank" class="hover:underline flex items-center gap-0.5 sm:gap-1">
                 bidds
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 inline-block ml-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 sm:w-4 sm:h-4 inline-block ml-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 3h7m0 0v7m0-7L10 14M5 5v14h14v-5" />
                 </svg>
             </a>
         </nav>
-
     </div>
 
     <!-- Right: Auth Button -->
-    @auth
-        <form method="POST" action="{{ route('xaman.logout') }}">
-            @csrf
-            <button type="submit" class="bg-white text-primary-700 px-4 py-2 rounded hover:bg-gray-100">
-                Logout
-            </button>
-        </form>
-    @else
-        <a href="{{ route('xaman.login') }}" class="bg-white text-primary-700 px-4 py-2 rounded hover:bg-gray-100">
-            Login
-        </a>
-    @endauth
+    <div class="mt-2 sm:mt-0">
+        @auth
+            <form method="POST" action="{{ route('xaman.logout') }}">
+                @csrf
+                <button type="submit" class="bg-white text-primary-700 text-sm px-3 py-1.5 sm:px-4 sm:py-2 rounded hover:bg-gray-100">
+                    Logout
+                </button>
+            </form>
+        @else
+            <a href="{{ route('xaman.login') }}" class="bg-white text-primary-700 text-sm px-3 py-1.5 sm:px-4 sm:py-2 rounded hover:bg-gray-100">
+                Login
+            </a>
+        @endauth
+    </div>
 </header>
+
 
 @auth
     <div class="bg-white shadow text-sm text-gray-700 px-6 py-2 flex items-center justify-between border-b">

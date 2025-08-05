@@ -13,7 +13,7 @@
         $totalSupply = $initialSupply + $newBatchMinted;
         $actualCirculating = $totalSupply - $outOfCirculation;
     @endphp
-    <div class="container mx-auto px-4 sm:px-6 py-6">
+    <div class="container mx-auto px-0 sm:px-6 py-6">
 
         <div class="container mx-auto px-4 sm:px-6 py-3">
             <div class="flex flex-col sm:flex-row justify-center items-center gap-4 mb-8">
@@ -43,9 +43,9 @@
                     <table class="min-w-full table-auto text-left border">
                         <thead>
                         <tr class="bg-gray-200">
-                            <th class="px-4 py-2">Metric</th>
-                            <th class="px-4 py-2">Value</th>
-                            <th class="px-4 py-2">Description</th>
+                            <th class="px-4 py-2 min-w-[200px]">Metric</th>
+                            <th class="px-4 py-2 min-w-[150px]">Value</th>
+                            <th class="px-4 py-2 min-w-[300px]">Description</th>
                         </tr>
                         </thead>
                         <tbody class="divide-y">
@@ -102,7 +102,7 @@
         </div>
     </div>
 
-    <div class="max-w-6xl mx-auto flex flex-col md:flex-row gap-6 p-6 mt-4 mb-8">
+    <div class="max-w-6xl mx-auto flex flex-col md:flex-row gap-6 p-0 mt-4 mb-8">
 
         {{-- Left Card --}}
         <div
