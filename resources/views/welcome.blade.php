@@ -14,6 +14,19 @@
         $actualCirculating = $totalSupply - $outOfCirculation;
     @endphp
     <div class="container mx-auto px-4 sm:px-6 py-6">
+
+        <div class="container mx-auto px-4 sm:px-6 py-3">
+            <div class="flex flex-col sm:flex-row justify-center items-center gap-4 mb-8">
+                <a target="_blank" href="https://xrp.cafe/usercollection/r3SvAe5197xnXvPHKnyptu3EjX5BG8f2mS/r3SvAe5197xnXvPHKnyptu3EjX5BG8f2mS/604" class="bg-primary-500 hover:bg-primary-600 text-white text-lg font-semibold py-4 px-8 rounded-lg shadow">
+                    Buy The Other Punks for 2 XRP
+                </a>
+                <a href="/giveaway" class="bg-gray-800 hover:bg-gray-900 text-white text-lg font-semibold py-4 px-8 rounded-lg shadow">
+                    There is always a Giveaway running
+                </a>
+            </div>
+        </div>
+
+
         <div class="flex flex-col md:flex-row md:justify-between md:gap-6">
             <!-- Image Card -->
             <div class="w-full md:w-[30%] text-center border bg-white p-4 sm:p-6 mb-6 md:mb-0">
