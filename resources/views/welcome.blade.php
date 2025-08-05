@@ -10,10 +10,11 @@
         $totalSupply = $initialSupply + $newBatchMinted;
         $actualCirculating = $totalSupply - $outOfCirculation;
     @endphp
-    <div class="container mx-auto px-0 sm:px-6 py-6">
+    <div class="container mx-auto px-0 sm:px-6 py-2">
+
 
         <div class="px-0 sm:px-6 pb-3 pt-0">
-            <div class="flex flex-col sm:flex-row sm:justify-center sm:items-center gap-3 sm:gap-4 mb-8">
+            <div class="flex flex-col sm:flex-row sm:justify-center sm:items-center gap-3 sm:gap-4 mb-3">
                 <a
                     target="_blank"
                     href="https://xrp.cafe/usercollection/r3SvAe5197xnXvPHKnyptu3EjX5BG8f2mS/r3SvAe5197xnXvPHKnyptu3EjX5BG8f2mS/604"
@@ -34,6 +35,38 @@
                     About the CTO
                 </a>
             </div>
+        </div>
+
+
+        <div class="max-w-9xl mx-auto bg-white border border-gray-300 rounded shadow p-4 mb-8 mt-0">
+
+            <div class="mb-0 font-semibold text-lg pb-2">Punks Minting Progress</div>
+
+            <div class="w-full bg-gray-300 rounded h-6 overflow-hidden flex">
+                {{-- Bar 1 (left) --}}
+                <div
+                    class="h-full bg-primary-300"
+                    style="width: {{ $bar1Percent }}%;"
+                ></div>
+
+                {{-- Bar 2 (right) --}}
+                <div
+                    class="h-full bg-primary-500"
+                    style="width: {{ $bar2Percent }}%;"
+                ></div>
+
+                {{-- Bar 3 (right) --}}
+                <div
+                    class="h-full bg-gray-100"
+                    style="width: {{ $bar3Percent }}%;"
+                ></div>
+            </div>
+
+            <div class="flex justify-between mt-2 text-sm font-semibold">
+                <span>The Original Punks (#0 - #9999)</span>
+                <span>The Other Punks (#10000 - #19999)</span>
+            </div>
+
         </div>
 
         @livewire('nft-grid')
@@ -110,36 +143,6 @@
         </div>
     </div>
 
-    <div class="max-w-9xl mx-auto bg-white border border-gray-300 rounded shadow p-8 mb-8 mt-2">
-
-        <div class="mb-0 font-semibold text-lg pb-2">Punks Minting Progress</div>
-
-        <div class="w-full bg-gray-300 rounded h-6 overflow-hidden flex">
-            {{-- Bar 1 (left) --}}
-            <div
-                class="h-full bg-primary-300"
-                style="width: {{ $bar1Percent }}%;"
-            ></div>
-
-            {{-- Bar 2 (right) --}}
-            <div
-                class="h-full bg-primary-500"
-                style="width: {{ $bar2Percent }}%;"
-            ></div>
-
-            {{-- Bar 3 (right) --}}
-            <div
-                class="h-full bg-gray-100"
-                style="width: {{ $bar3Percent }}%;"
-            ></div>
-        </div>
-
-        <div class="flex justify-between mt-2 text-sm font-semibold">
-            <span>The Original Punks (#0 - #9999)</span>
-            <span>The Other Punks (#10000 - #19999)</span>
-        </div>
-
-    </div>
 
     <div class="max-w-5xl mx-auto bg-white border rounded shadow p-8 mb-8 mt-2">
 
