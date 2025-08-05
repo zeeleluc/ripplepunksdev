@@ -16,7 +16,7 @@
             <div>
                 <h1 class="text-2xl font-bold mb-2">Login with Xaman</h1>
                 <img src="{{ $qr }}" class="w-full" alt="xaman Login QR Code">
-                <a href="xumm://xumm.app/detect" class="mt-4 inline-block px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 sm:hidden">
+                <a href="{{ $url }}" class="mt-4 inline-block px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 sm:hidden">
                     Open Xaman
                 </a>
             </div>
