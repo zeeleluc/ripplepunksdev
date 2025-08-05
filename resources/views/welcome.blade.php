@@ -112,10 +112,7 @@
 
     <div class="max-w-9xl mx-auto bg-white border border-gray-300 rounded shadow p-8 mb-8 mt-2">
 
-        <div class="mb-0 font-semibold text-lg">Punks Collection Progress</div>
-        <p class="mb-2">
-            Combined progress of the original and the new Punks collections.
-        </p>
+        <div class="mb-0 font-semibold text-lg pb-2">Punks Minting Progress</div>
 
         <div class="w-full bg-gray-300 rounded h-6 overflow-hidden flex">
             {{-- Bar 1 (left) --}}
