@@ -5,7 +5,8 @@ use App\Http\Controllers\{
     WelcomeController,
     GiveawayController,
     AboutController,
-    XamanController
+    XamanController,
+    HolderController
 };
 use App\Http\Controllers\Admin\SupplyController;
 
@@ -14,6 +15,7 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('/', [WelcomeController::class, 'index'])->name('welcome');
     Route::get('/welcome', [WelcomeController::class, 'index'])->name('login');
     Route::get('/about-cto', [AboutController::class, 'showCtoPage'])->name('about.cto');
+    Route::get('/holders', [HolderController::class, 'index'])->name('holders.index');
 
     // Giveaway routes
     Route::prefix('giveaway')->group(function () {
