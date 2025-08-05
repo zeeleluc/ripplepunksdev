@@ -16,7 +16,7 @@ class LogEntryManager extends Component
     public $confirmingDeletionId = null;
 
     protected $rules = [
-        'text' => 'required|string|max:255',
+        'text' => 'required|string',
         'link' => 'nullable|url',
         'is_published' => 'boolean',
     ];
