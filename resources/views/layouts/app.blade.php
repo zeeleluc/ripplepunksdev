@@ -40,7 +40,6 @@
     </div>
 @endauth
 
-
 <main class="container mx-auto p-4">
     @yield('content')
 </main>
