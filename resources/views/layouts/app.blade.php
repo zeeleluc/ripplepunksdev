@@ -49,9 +49,7 @@
     @yield('content')
 </main>
 
-<footer class="p-4 text-center text-sm text-gray-600">
-    &copy; {{ date('Y') }} {{ config('app.name') }}. All rights reserved.
-</footer>
+@livewire('footer')
 
 @livewireScripts
 </body>

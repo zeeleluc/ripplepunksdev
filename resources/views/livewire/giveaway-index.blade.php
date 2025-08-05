@@ -14,7 +14,7 @@
                 <tbody>
                 @foreach ($giveaways as $g)
                     <tr>
-                        <td class="text-center">
+                        <td class="text-center py-1">
                             @if (!$g->received_giveaway_at && !$g->declined_at)
                                 <span class="animate-pulse text-yellow-500">⏳</span>
                             @elseif ($g->declined_at)

@@ -8,11 +8,10 @@ use Carbon\Carbon;
 
 class GiveawayController extends Controller
 {
-    // GET /giveaway/{type}
-    public function index($type)
+
+    public function index()
     {
-        $giveaways = Giveaway::where('type', $type)->get();
-        return response()->json($giveaways);
+        return view('giveaway');
     }
 
     // POST /giveaway/{type}

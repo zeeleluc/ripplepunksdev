@@ -89,46 +89,71 @@
         </div>
     </div>
 
-    <div class="max-w-6xl mx-auto space-y-8 p-6 border bg-white mt-4 mb-8">
+    <div class="max-w-6xl mx-auto flex flex-col md:flex-row gap-6 p-6 mt-4 mb-8">
 
-        {{-- Bar 1 --}}
-        <div>
-            <div class="mb-0 font-semibold text-lg">The Original Punks (#0 - #9999)</div>
-            <p class="mb-2">
-                These are the original 1/1 Punks, perfectly matching the iconic Ethereum Punks collection.
+        {{-- Left Card --}}
+        <div
+            class="bg-white border rounded-lg p-6 shadow w-full md:w-[35%] min-w-[250px]"
+        >
+            <h2 class="text-xl font-bold mb-4">The Dev Logs</h2>
+            <p>
+                Soon.
             </p>
-            <div class="w-full bg-gray-300 rounded h-6 overflow-hidden">
-                <div
-                    class="h-full bg-primary-300"
-                    style="width: {{ $bar1Percent }}%;"
-                ></div>
-            </div>
         </div>
 
-        {{-- Bar 2 --}}
-        <div>
-            <div class="mb-0 font-semibold text-lg">The Other Punks (#10000 - #19999)</div>
-            <p class="mb-2">
-                Since the CTO plans to stall their original 10k OG Punks, we’re keeping the collection alive by minting 10k brand-new Punks.
-                Each of these features unique trait combinations.
-            </p>
-            <div class="w-full bg-gray-200 rounded h-6 overflow-hidden">
-                <div
-                    class="h-full bg-primary-500"
-                    style="width: {{ $bar2Percent }}%;"
-                ></div>
+        {{-- Right Card --}}
+        <div
+            class="bg-white border rounded-lg p-6 shadow space-y-8 w-full md:w-[65%]"
+        >
+
+            {{-- Bar 1 --}}
+            <div>
+                <div class="mb-0 font-semibold text-lg">The Original Punks (#0 - #9999)</div>
+                <p class="mb-2">
+                    These are the original 1/1 Punks, perfectly matching the iconic Ethereum Punks collection.
+                </p>
+                <div class="w-full bg-gray-300 rounded h-6 overflow-hidden">
+                    <div
+                        class="h-full bg-primary-300"
+                        style="width: {{ $bar1Percent }}%;"
+                    ></div>
+                </div>
             </div>
+
+            {{-- Bar 2 --}}
+            <div>
+                <div class="mb-0 font-semibold text-lg">The Other Punks (#10000 - #19999)</div>
+                <p class="mb-2">
+                    Since the CTO plans to stall their original 10k OG Punks, we’re keeping the collection alive by minting 10k brand-new Punks.
+                    Each of these features unique trait combinations.
+                </p>
+                <div class="w-full bg-gray-200 rounded h-6 overflow-hidden">
+                    <div
+                        class="h-full bg-primary-500"
+                        style="width: {{ $bar2Percent }}%;"
+                    ></div>
+                </div>
+            </div>
+
         </div>
 
     </div>
 
-    @livewire('giveaway-wrapper')
 
-    <div class="flex justify-center mt-8">
-        <a href="{{ url('/about-cto') }}"
-           class="inline-block bg-primary-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-lg shadow">
-            About the CTO
-        </a>
+    <div class="max-w-3xl mx-auto bg-white border border-gray-300 rounded-xl shadow-lg p-8 my-8">
+        <h2 class="text-3xl font-extrabold text-primary mb-6 text-center">RipplePunks: The Ultimate XRPL NFT Revolution</h2>
+        <p class="text-gray-700 text-lg mb-4 leading-relaxed">
+            Welcome to <strong>RipplePunks</strong> — a groundbreaking collection of <strong>20,000 unique 1/1 Punks</strong> living on the XRP Ledger (XRPL), blending iconic Ethereum punk vibes with next-gen blockchain innovation. Starting with an exclusive original batch of <strong>10,000 legendary OG Punks</strong>, RipplePunks are redefining scarcity, community, and digital ownership in the crypto art space.
+        </p>
+        <p class="text-gray-700 text-lg mb-4 leading-relaxed">
+            But the journey doesn’t stop there. We’re minting an additional <strong>10,000 brand-new Punks</strong> — each boasting fresh, unique traits — extending the legacy while preserving the original spirit. Watch as the collection evolves dynamically, with a portion of the initial supply locked away and a new batch minting steadily, reflecting the pulse of this vibrant ecosystem.
+        </p>
+        <p class="text-gray-700 text-lg mb-6 leading-relaxed">
+            Whether you’re a seasoned collector or a newcomer, RipplePunks offers a chance to own a piece of this thrilling narrative. With transparent supply tracking, exclusive holders’ benefits, and a rapidly growing community, now’s the time to jump in.
+        </p>
+        <p class="text-center text-xl font-bold text-primary">
+            Join the revolution. Own your punk. Shape the future on XRPL.
+        </p>
     </div>
 
 @endsection

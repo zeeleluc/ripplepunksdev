@@ -1,11 +1,7 @@
-<div class="my-3 border rounded py-2 px-3">
+<div class="my-3 border rounded pt-2 pb-1 px-3 bg-gray-100">
     @if ($submitted || session('giveaway_submitted_' . $type))
 
     @else
-        <h2 class="text-base font-bold my-2">
-            {{ $type }}
-        </h2>
-
         @if (session()->has('message'))
             <div class="text-green-600 mb-2">{{ session('message') }}</div>
         @endif

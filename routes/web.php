@@ -17,7 +17,7 @@ Route::group(['middleware' => 'web'], function () {
 
     // Giveaway routes
     Route::prefix('giveaway')->group(function () {
-        Route::get('/{type}', [GiveawayController::class, 'index'])->name('giveaway.index');
+        Route::get('/', [GiveawayController::class, 'index'])->name('giveaway.index');
         Route::post('/{type}', [GiveawayController::class, 'store'])->name('giveaway.store');
         Route::post('/{id}/decline', [GiveawayController::class, 'decline'])->name('giveaway.decline');
         Route::post('/{id}/approve', [GiveawayController::class, 'approve'])->name('giveaway.approve');
