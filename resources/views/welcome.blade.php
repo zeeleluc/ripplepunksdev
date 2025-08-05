@@ -63,8 +63,8 @@
             </div>
 
             <div class="flex justify-between mt-2 text-sm font-semibold">
-                <span>The Original Punks (#0 - #9999)</span>
-                <span>The Other Punks (#10000 - #19999)</span>
+                <span>The Original Punks</span>
+                <span>The Other Punks</span>
             </div>
 
         </div>
@@ -143,11 +143,8 @@
         </div>
     </div>
 
-
     <div class="max-w-5xl mx-auto bg-white border rounded shadow p-8 mb-8 mt-6">
-
         <h2 class="text-xl font-bold mb-4">The Dev 🤘🏼</h2>
-
         @foreach ($logEntries as $logEntry)
             <div class="my-0 pt-2 pb-4 border-t">
                 <p class="p-0 m-0">
@@ -163,10 +160,7 @@
                 </small>
             </div>
         @endforeach
-
     </div>
-
-
 
     <div class="max-w-3xl mx-auto bg-white border rounded shadow p-8 my-8">
         <h2 class="text-3xl font-extrabold text-primary mb-6 text-center">RipplePunks: The Ultimate XRPL NFT Revolution</h2>
