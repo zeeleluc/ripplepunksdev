@@ -83,7 +83,7 @@
                     </table>
                 </div>
                 <div class="text-right mt-5 text-sm text-gray-400">
-                    Updated {{ \App\Models\SupplyRecord::latestRecord()->created_at->format('Y-m-d') }}
+                    Updated {{ \App\Models\SupplyRecord::latestRecord()->created_at->format('Y-m-d H:i') }} <sup>UTC</sup>
                 </div>
             </div>
         </div>
