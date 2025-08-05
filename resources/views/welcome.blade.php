@@ -97,8 +97,8 @@
             </p>
             <div class="w-full bg-gray-300 rounded h-6 overflow-hidden">
                 <div
-                    class="h-full"
-                    style="width: {{ $bar1Percent }}%; background: linear-gradient(90deg, {{ $colors['bar1'][0] }}, {{ $colors['bar1'][1] }});"
+                    class="h-full bg-primary-300"
+                    style="width: {{ $bar1Percent }}%;"
                 ></div>
             </div>
         </div>
@@ -110,10 +110,10 @@
                 Since the CTO plans to stall their original 10k OG Punks, we’re keeping the collection alive by minting 10k brand-new Punks.
                 Each of these features unique trait combinations.
             </p>
-            <div class="w-full bg-gray-300 rounded h-6 overflow-hidden">
+            <div class="w-full bg-gray-200 rounded h-6 overflow-hidden">
                 <div
-                    class="h-full"
-                    style="width: {{ $bar2Percent }}%; background: linear-gradient(90deg, {{ $colors['bar2'][0] }}, {{ $colors['bar2'][1] }});"
+                    class="h-full bg-primary-500"
+                    style="width: {{ $bar2Percent }}%;"
                 ></div>
             </div>
         </div>
@@ -124,7 +124,7 @@
 
     <div class="flex justify-center mt-8">
         <a href="{{ url('/about-cto') }}"
-           class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-lg shadow">
+           class="inline-block bg-primary-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-lg shadow">
             About the CTO
         </a>
     </div>

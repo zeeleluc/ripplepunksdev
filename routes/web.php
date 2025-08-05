@@ -17,10 +17,6 @@ Route::group(['middleware' => 'web'], function () {
         'totalItems' => 10000,
         'bar1Count' => 10000,
         'bar2Count' => 110,
-        'colors' => [
-            'bar1' => ['#006EFF', '#006EFF'],
-            'bar2' => ['#006EFF', '#006EFF'],
-        ]
     ]))->name('welcome');
 
     // About pagina
