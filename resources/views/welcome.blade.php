@@ -148,6 +148,11 @@
         @foreach ($logEntries as $logEntry)
             <div class="my-0 pt-2 pb-4 border-t">
                 <p class="p-0 m-0">
+                    @if ($logEntry->link)
+                        <a target="_blank" href="{{ $logEntry->link }}">
+                            🔗
+                        </a>
+                    @endif
                     {{ $logEntry->text }}
                 </p>
                 <small class="text-xs">
