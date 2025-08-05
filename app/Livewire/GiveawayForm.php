@@ -34,6 +34,16 @@ class GiveawayForm extends Component
         // Check if this wallet already submitted for this type
         $alreadyExists = Giveaway::where('type', $this->type)
             ->where('wallet', $this->wallet)
+            ->where(function ($query) {
+                $query->where(function ($q) {
+                    $q->whereNotNull('claimed_at')
+                        ->whereNull('received_giveaway_at')
+                        ->whereNull('declined_at');
+                })->orWhere(function ($q) {
+                    $q->whereNotNull('claimed_at')
+                        ->whereNotNull('received_giveaway_at');
+                });
+            })
             ->exists();
 
         if ($alreadyExists) {
