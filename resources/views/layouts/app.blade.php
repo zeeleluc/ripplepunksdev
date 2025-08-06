@@ -64,15 +64,30 @@
 
 @auth
     <div class="bg-white shadow text-sm text-gray-700 px-6 py-2 flex items-center justify-between border-b">
-    <span class="truncate max-w-[60%] overflow-hidden whitespace-nowrap">
-        {{ Auth::user()->wallet }}
-    </span>
+        <span class="truncate max-w-[60%] overflow-hidden whitespace-nowrap">
+            {{ Auth::user()->wallet }}
+        </span>
 
         @if (Auth::user()->isAdmin())
             <a href="{{ route('admin.log-entry') }}" class="ml-4 flex-shrink-0">
                 Logs
             </a>
         @endif
+    </div>
+
+    <div class="bg-white shadow text-sm text-gray-700 px-6 py-2 flex items-center border-b">
+        <span class="truncate max-w-[60%] overflow-hidden whitespace-nowrap mr-4">
+            {{ Auth::user()->totalNFTs() }} RipplePunks
+        </span>
+
+        {{-- Display Stickers as Badges --}}
+        <div class="flex gap-2 items-center">
+            @foreach(Auth::user()->getStickers() as $sticker)
+                <span class="bg-primary-600 text-white text-xs font-medium mr-1 px-2 py-1 rounded-lg">
+                    {{ $sticker }}
+                </span>
+            @endforeach
+        </div>
     </div>
 @endauth
 

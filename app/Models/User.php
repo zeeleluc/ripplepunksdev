@@ -40,4 +40,35 @@ class User extends Authenticatable
     {
         return $this->is_admin;
     }
+
+    public function totalNFTs(): int
+    {
+        return Nft::where('owner', $this->wallet)->count();
+    }
+
+    public function getStickers(): array
+    {
+        $stickers = [];
+
+        $nfts = Nft::where('owner', $this->wallet)->get();
+
+        $total = $nfts->count();
+        $previousMint = $nfts->whereBetween('nft_id', [0, 9999])->count();
+        $currentMint = $nfts->whereBetween('nft_id', [10000, 19999])->count();
+
+        if ($total >= 1) {
+            $stickers[] = 'OG Punker';
+        }
+
+        if ($currentMint >= 1) {
+            $stickers[] = 'Other Punker';
+        }
+
+        return $stickers;
+    }
+
+    public function hasSticker(string $sticker): bool
+    {
+        return in_array($sticker, $this->getStickers(), true);
+    }
 }
