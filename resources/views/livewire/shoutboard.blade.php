@@ -62,7 +62,7 @@
             @endforeach
         </ul>
 
-        @if (\Illuminate\Support\Facades\Auth::check() && $shout->wallet === Auth::user()->wallet)
+        @if (\Illuminate\Support\Facades\Auth::check() && $shout && $shout->wallet === Auth::user()->wallet)
             @if (Auth::user()->hasSticker('Colony Climber') && Auth::user()->hasSticker('OG Initiate'))
                 <!-- Confirmation Modal -->
                 @if ($confirmingDeletionId)
