@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Models\User;
 use Livewire\Component;
 use App\Models\Shout;
 use Illuminate\Support\Facades\Auth;
@@ -24,7 +25,7 @@ class Shoutboard extends Component
             abort(403);
         }
 
-        if (!Auth::user()->hasSticker('Colony Climber') || !Auth::user()->hasSticker('OG Initiate')) {
+        if (!User::walletHasSticker(Auth::user()->wallet, 'Colony Climber') || !User::walletHasSticker(Auth::user()->wallet, 'OG Initiate')) {
             abort(403);
         }
 
@@ -46,7 +47,7 @@ class Shoutboard extends Component
             abort(403);
         }
 
-        if (!Auth::user()->hasSticker('Colony Climber') || !Auth::user()->hasSticker('OG Initiate')) {
+        if (!User::walletHasSticker(Auth::user()->wallet, 'Colony Climber') || !User::walletHasSticker(Auth::user()->wallet, 'OG Initiate')) {
             abort(403);
         }
 
@@ -64,7 +65,7 @@ class Shoutboard extends Component
             abort(403);
         }
 
-        if (!Auth::user()->hasSticker('Colony Climber') || !Auth::user()->hasSticker('OG Initiate')) {
+        if (!User::walletHasSticker(Auth::user()->wallet, 'Colony Climber') || !User::walletHasSticker(Auth::user()->wallet, 'OG Initiate')) {
             abort(403);
         }
 

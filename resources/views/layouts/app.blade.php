@@ -80,7 +80,7 @@
         </span>
 
             @php
-                $stickers = Auth::user()->getStickers();
+                $stickers = \App\Models\User::getStickersForWallet(Auth::user()->wallet);
                 $first = $stickers[0] ?? null;
                 $extra = count($stickers) - 1;
             @endphp

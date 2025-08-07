@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Models\Nft;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Illuminate\Support\Facades\DB;
@@ -14,14 +15,16 @@ class HoldersTable extends Component
 
     public function render()
     {
-        $holders = DB::table('nfts')
+        $holders = Nft::query()
             ->select('owner', DB::raw('COUNT(*) as nft_count'))
+            ->with('user')
             ->groupBy('owner')
             ->orderByDesc('nft_count')
             ->paginate(20);
 
         return view('livewire.holders-table', [
             'holders' => $holders,
+            'tiers' => config('badges.tiers'),
         ]);
     }
 

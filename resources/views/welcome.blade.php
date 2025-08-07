@@ -18,7 +18,7 @@
                 <a
                     target="_blank"
                     href="https://xrp.cafe/usercollection/r3SvAe5197xnXvPHKnyptu3EjX5BG8f2mS/r3SvAe5197xnXvPHKnyptu3EjX5BG8f2mS/604"
-                    class="w-full sm:w-auto bg-primary-500 hover:bg-primary-600 text-white text-base font-semibold py-3 px-6 rounded-lg shadow text-center"
+                    class="w-full sm:w-auto bg-yellow-500 hover:bg-yellow-600 text-white text-base font-semibold py-3 px-6 rounded-lg shadow text-center"
                 >
                     The Other Punks: 2 XRP
                 </a>
@@ -30,25 +30,24 @@
                 </a>
                 <a
                     href="/badges"
-                    class="w-full sm:w-auto bg-primary-800 hover:bg-primary-900 text-white text-base font-semibold py-3 px-6 rounded-lg shadow text-center"
+                    class="w-full sm:w-auto bg-primary-800 hover:bg-primary-700 text-white text-base font-semibold py-3 px-6 rounded-lg shadow text-center"
                 >
                     Badges
                 </a>
                 <a
                     href="/giveaway"
-                    class="w-full sm:w-auto bg-gray-800 hover:bg-gray-900 text-white text-base font-semibold py-3 px-6 rounded-lg shadow text-center"
+                    class="w-full sm:w-auto bg-primary-700 hover:bg-primary-600 text-white text-base font-semibold py-3 px-6 rounded-lg shadow text-center"
                 >
                     Giveaways
                 </a>
                 <a
-                    href="/about-cto"
-                    class="w-full sm:w-auto bg-gray-300 hover:bg-gray-300 text-gray-800 text-base font-semibold py-3 px-6 rounded-lg shadow text-center"
+                    href="/holders"
+                    class="w-full sm:w-auto bg-primary-600 hover:bg-primary-500 text-white text-base font-semibold py-3 px-6 rounded-lg shadow text-center"
                 >
-                    About the CTO
+                    Holders
                 </a>
             </div>
         </div>
-
 
         <div class="max-w-9xl mx-auto bg-white border border-gray-300 rounded shadow p-4 mb-8 mt-0">
 

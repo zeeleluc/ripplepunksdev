@@ -1,21 +1,40 @@
-<div class="max-w-4xl mx-auto bg-white border rounded">
+<div class="max-w-6xl mx-auto bg-white border rounded">
 
     <div class="overflow-x-auto">
         <table class="w-full table-auto border border-gray-300">
-            <thead class="bg-gray-50">
-            <tr>
-                <th class="text-left px-4 py-2 border">Owner</th>
-                <th class="text-left px-4 py-2 border">RipplePunks</th>
-            </tr>
-            </thead>
             <tbody>
-            @foreach ($holders as $holder)
-                @if (env('CTO_WALLET') === $holder->owner)
-
-                @else
+            @foreach ($holders as $index => $holder)
+                @if (env('CTO_WALLET') !== $holder->owner)
                     <tr>
-                        <td class="border px-4 py-2">{{ $holder->owner }}</td>
-                        <td class="border px-4 py-2 min-w-[75px]">{{ $holder->nft_count }}</td>
+                        <td class="border px-4 py-2 align-middle text-xl text-center">
+                            {{ ($holders->firstItem() ?? 0) + $index - 1 }}
+                        </td>
+                        <td class="border px-4 py-6 align-top text-center">
+                            <strong>{{ $holder->owner }}</strong>
+
+                            <!-- Mini badge table -->
+                            @php
+                                $userBadges = \App\Models\User::getStickersForWallet($holder->owner);
+                            @endphp
+
+                            <table class="w-full px-0 mt-3 text-xs text-center">
+                                <tbody>
+                                @foreach ($tiers as $count => $badges)
+                                    <tr>
+                                        @foreach ($badges as $badge)
+                                            <td class="py-1">
+                                                <span class="@if(in_array($badge, $userBadges)) bg-primary-200 text-primary-900 @else bg-gray-100 text-gray-300 @endif font-medium px-2.5 py-0.5 rounded-full">
+                                                    {{ $badge }}
+                                                </span>
+                                            </td>
+                                        @endforeach
+                                    </tr>
+                                @endforeach
+                                </tbody>
+                            </table>
+                        </td>
+
+                        <td class="border px-4 py-2 align-middle text-xl text-center">{{ $holder->nft_count }}</td>
                     </tr>
                 @endif
             @endforeach
