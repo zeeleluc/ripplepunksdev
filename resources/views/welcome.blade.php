@@ -23,6 +23,12 @@
                     The Other Punks: 2 XRP
                 </a>
                 <a
+                    href="/shoutboard"
+                    class="w-full sm:w-auto bg-primary-900 hover:bg-primary-800 text-white text-base font-semibold py-3 px-6 rounded-lg shadow text-center"
+                >
+                    Shoutboard
+                </a>
+                <a
                     href="/badges"
                     class="w-full sm:w-auto bg-primary-800 hover:bg-primary-900 text-white text-base font-semibold py-3 px-6 rounded-lg shadow text-center"
                 >
