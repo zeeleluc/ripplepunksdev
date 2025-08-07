@@ -8,6 +8,6 @@ $schedule = app(Schedule::class);
 if (app()->environment('prod')) {
     $schedule->command('nfts:sync', [
         '--issuer' => 'r3SvAe5197xnXvPHKnyptu3EjX5BG8f2mS',
-        '--taxon' => '604',
-    ])->everyTwentyMinutes();
+        '--taxon'  => '604',
+    ])->cron('*/20 * * * *'); // runs every 20 minutes
 }
