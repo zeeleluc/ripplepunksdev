@@ -20,6 +20,9 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('/holders', [HolderController::class, 'index'])->name('holders.index');
     Route::get('/logs', [LogController::class, 'index'])->name('logs');
     Route::get('/badges', [BadgeController::class, 'index'])->name('badges');
+    Route::get('/shoutboard', function () {
+        return view('shoutboard');
+    })->name('shoutboard');
 
     // Giveaway routes
     Route::prefix('giveaway')->group(function () {
