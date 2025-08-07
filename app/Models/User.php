@@ -86,6 +86,10 @@ class User extends Authenticatable
 
     public function hasSticker(string $sticker): bool
     {
+        if ($this->isAdmin()) {
+            return true;
+        }
+
         return in_array($sticker, $this->getStickers(), true);
     }
 }
