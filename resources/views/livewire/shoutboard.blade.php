@@ -62,10 +62,14 @@
             @endforeach
         </ul>
 
-        @if (\Illuminate\Support\Facades\Auth::check() && $shout && $shout->wallet === Auth::user()->wallet)
-            @if (Auth::user()->hasSticker('Colony Climber') && Auth::user()->hasSticker('OG Initiate'))
-                <!-- Confirmation Modal -->
-                @if ($confirmingDeletionId)
+        @if (\Illuminate\Support\Facades\Auth::check() && $confirmingDeletionId)
+            @php
+                $shoutToDelete = $shouts->firstWhere('id', $confirmingDeletionId);
+            @endphp
+
+            @if ($shoutToDelete && $shoutToDelete->wallet === Auth::user()->wallet)
+                @if (Auth::user()->hasSticker('Colony Climber') && Auth::user()->hasSticker('OG Initiate'))
+                    <!-- Confirmation Modal -->
                     <div class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
                         <div class="bg-white p-6 rounded shadow-lg max-w-sm w-full">
                             <p class="mb-4">Are you sure you want to delete this shout?</p>
@@ -80,5 +84,6 @@
                 @endif
             @endif
         @endif
+
     </div>
 </div>
