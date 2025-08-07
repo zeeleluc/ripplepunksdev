@@ -6,7 +6,8 @@ use App\Http\Controllers\{
     GiveawayController,
     AboutController,
     XamanController,
-    HolderController
+    HolderController,
+    LogController
 };
 use App\Http\Controllers\Admin\LogEntryController;
 
@@ -16,6 +17,7 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('/welcome', [WelcomeController::class, 'index'])->name('login');
     Route::get('/about-cto', [AboutController::class, 'showCtoPage'])->name('about.cto');
     Route::get('/holders', [HolderController::class, 'index'])->name('holders.index');
+    Route::get('/logs', [LogController::class, 'index'])->name('logs');
 
     // Giveaway routes
     Route::prefix('giveaway')->group(function () {

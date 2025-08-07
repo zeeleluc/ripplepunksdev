@@ -160,6 +160,9 @@
                 </small>
             </div>
         @endforeach
+        <a class=" sm:w-auto bg-primary-500 hover:bg-primary-600 text-white text-base font-semibold mt-4 py-2 px-4 rounded-md shadow text-center" href="{{ route('logs') }}">
+            Read More
+        </a>
     </div>
 
     <div class="max-w-3xl mx-auto bg-white border rounded shadow p-8 my-8">
