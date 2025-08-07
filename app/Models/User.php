@@ -50,18 +50,35 @@ class User extends Authenticatable
     {
         $stickers = [];
 
+        // Fetch all NFTs owned by the user
         $nfts = Nft::where('owner', $this->wallet)->get();
 
         $total = $nfts->count();
-        $previousMint = $nfts->whereBetween('nft_id', [0, 9999])->count();
-        $currentMint = $nfts->whereBetween('nft_id', [10000, 19999])->count();
+        $ogCount = $nfts->whereBetween('nft_id', [0, 9999])->count();
+        $otherCount = $nfts->whereBetween('nft_id', [10000, 19999])->count();
 
-        if ($total >= 1) {
-            $stickers[] = 'OG Punker';
-        }
+        // Badge tiers (shared thresholds)
+        $tiers = [
+            1000 => ['Ledger Legend', 'Chain Immortal', 'Cyber Monarch'],
+            500  => ['Meta Mogul', 'OG Tycoon', 'Neo-Punk Magnate'],
+            225  => ['Digital Don', 'Original Boss', 'Uprising Leader'],
+            150  => ['Ripple Overlord', 'Ledger Lord', 'Punk Syndicate'],
+            100  => ['Punk King', 'Ripple Monarch', 'Chain King'],
+            25   => ['Vault Dweller', 'Time-Locked', 'Deep Vault'],
+            10   => ['Street Raider', 'Genesis Raider', 'Colony Climber'],
+            1    => ['Punk', 'OG Initiate', 'Other Punk'],
+        ];
 
-        if ($currentMint >= 1) {
-            $stickers[] = 'Other Punker';
+        foreach ($tiers as $threshold => [$anyBadge, $ogBadge, $otherBadge]) {
+            if ($total >= $threshold && !in_array($anyBadge, $stickers)) {
+                $stickers[] = $anyBadge;
+            }
+            if ($ogCount >= $threshold && !in_array($ogBadge, $stickers)) {
+                $stickers[] = $ogBadge;
+            }
+            if ($otherCount >= $threshold && !in_array($otherBadge, $stickers)) {
+                $stickers[] = $otherBadge;
+            }
         }
 
         return $stickers;

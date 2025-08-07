@@ -23,6 +23,12 @@
                     The Other Punks: 2 XRP
                 </a>
                 <a
+                    href="/badges"
+                    class="w-full sm:w-auto bg-primary-800 hover:bg-primary-900 text-white text-base font-semibold py-3 px-6 rounded-lg shadow text-center"
+                >
+                    Badges
+                </a>
+                <a
                     href="/giveaway"
                     class="w-full sm:w-auto bg-gray-800 hover:bg-gray-900 text-white text-base font-semibold py-3 px-6 rounded-lg shadow text-center"
                 >

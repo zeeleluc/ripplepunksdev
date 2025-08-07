@@ -61,35 +61,56 @@
     </div>
 </header>
 
+    @auth
+        <div class="bg-white shadow text-sm text-gray-700 px-6 py-2 flex items-center justify-between border-b">
+            <span class="truncate max-w-[60%] overflow-hidden whitespace-nowrap">
+                {{ Auth::user()->wallet }}
+            </span>
 
-@auth
-    <div class="bg-white shadow text-sm text-gray-700 px-6 py-2 flex items-center justify-between border-b">
-        <span class="truncate max-w-[60%] overflow-hidden whitespace-nowrap">
-            {{ Auth::user()->wallet }}
-        </span>
+            @if (Auth::user()->isAdmin())
+                <a href="{{ route('admin.log-entry') }}" class="ml-4 flex-shrink-0">
+                    Logs
+                </a>
+            @endif
+        </div>
 
-        @if (Auth::user()->isAdmin())
-            <a href="{{ route('admin.log-entry') }}" class="ml-4 flex-shrink-0">
-                Logs
-            </a>
-        @endif
-    </div>
-
-    <div class="bg-white shadow text-sm text-gray-700 px-6 py-2 flex items-center border-b">
+        <div class="bg-white shadow text-sm text-gray-700 px-6 py-2 flex items-center border-b">
         <span class="truncate max-w-[60%] overflow-hidden whitespace-nowrap mr-4">
             {{ Auth::user()->totalNFTs() }} RipplePunks
         </span>
 
-        {{-- Display Stickers as Badges --}}
-        <div class="flex gap-2 items-center">
-            @foreach(Auth::user()->getStickers() as $sticker)
-                <span class="bg-primary-600 text-white text-xs font-medium mr-1 px-2 py-1 rounded-lg">
-                    {{ $sticker }}
-                </span>
-            @endforeach
+            @php
+                $stickers = Auth::user()->getStickers();
+                $first = $stickers[0] ?? null;
+                $extra = count($stickers) - 1;
+            @endphp
+
+            <div class="flex gap-2 items-center">
+                @if ($first)
+                    <a href="{{ route('badges') }}">
+                    <span class="bg-primary-600 text-white text-xs font-medium px-2 py-1 rounded-lg">
+                        {{ $first }}
+                    </span>
+                    </a>
+
+                    @if ($extra > 0)
+                        <a href="{{ route('badges') }}">
+                        <span class="bg-gray-200 text-gray-700 text-xs font-medium px-2 py-1 rounded-lg">
+                            +{{ $extra }}
+                        </span>
+                        </a>
+                    @endif
+                @else
+                    <a href="{{ route('badges') }}">
+                    <span class="bg-gray-100 text-gray-500 text-xs font-medium px-2 py-1 rounded-lg">
+                        Available Badges
+                    </span>
+                    </a>
+                @endif
+            </div>
         </div>
-    </div>
-@endauth
+
+    @endauth
 
 <main class="container mx-auto p-4">
     @yield('content')
