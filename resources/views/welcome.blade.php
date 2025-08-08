@@ -35,10 +35,10 @@
                     Badges
                 </a>
                 <a
-                    href="/giveaway"
+                    href="/claim"
                     class="w-full sm:w-auto bg-primary-700 hover:bg-primary-600 text-white text-base font-semibold py-3 px-6 rounded-lg shadow text-center"
                 >
-                    Giveaways
+                    Claim Rewards
                 </a>
                 <a
                     href="/holders"

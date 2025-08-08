@@ -8,9 +8,11 @@ use App\Http\Controllers\{
     XamanController,
     HolderController,
     LogController,
-    BadgeController
+    BadgeController,
+    ClaimController
 };
 use App\Http\Controllers\Admin\LogEntryController;
+use App\Http\Controllers\Admin\ClaimController as AdminClaimController;
 
 Route::group(['middleware' => 'web'], function () {
 
@@ -23,6 +25,7 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('/shoutboard', function () {
         return view('shoutboard');
     })->name('shoutboard');
+    Route::get('/claim', [ClaimController::class, 'index'])->name('claim');
 
     // Giveaway routes
     Route::prefix('giveaway')->group(function () {
@@ -48,5 +51,6 @@ Route::group(['middleware' => 'web'], function () {
 
     Route::middleware(['auth', 'isAdmin'])->group(function () {
         Route::get('/admin/log-entry', [LogEntryController::class, 'index'])->name('admin.log-entry');
+        Route::get('/admin/claims', [AdminClaimController::class, 'index'])->name('admin.claims');
     });
 });
