@@ -25,7 +25,7 @@ class Shoutboard extends Component
             abort(403);
         }
 
-        if (!User::walletHasSticker(Auth::user()->wallet, 'Colony Climber')) {
+        if (!User::walletHasSticker(Auth::user()->wallet, 'Other Punk')) {
             abort(403);
         }
 
@@ -47,7 +47,7 @@ class Shoutboard extends Component
             abort(403);
         }
 
-        if (!User::walletHasSticker(Auth::user()->wallet, 'Colony Climber')) {
+        if (!User::walletHasSticker(Auth::user()->wallet, 'Other Punk')) {
             abort(403);
         }
 
@@ -65,7 +65,7 @@ class Shoutboard extends Component
             abort(403);
         }
 
-        if (!User::walletHasSticker(Auth::user()->wallet, 'Colony Climber')) {
+        if (!User::walletHasSticker(Auth::user()->wallet, 'Other Punk')) {
             abort(403);
         }
 
