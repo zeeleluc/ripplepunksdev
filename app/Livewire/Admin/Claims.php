@@ -56,11 +56,6 @@ class Claims extends Component
     {
         $claim = Claim::findOrFail($id);
 
-        if (!$claim->is_open) {
-            session()->flash('error', 'Only open claims can be edited.');
-            return;
-        }
-
         $this->claimId = $claim->id;
         $this->title = $claim->title;
         $this->description = $claim->description;

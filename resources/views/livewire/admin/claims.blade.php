@@ -90,14 +90,12 @@
                             {{ $claim->is_open ? 'Close' : 'Open' }}
                         </button>
 
-                        @if($claim->is_open)
-                            <button
-                                wire:click="editClaim({{ $claim->id }})"
-                                class="px-3 py-1 rounded bg-blue-600 hover:bg-blue-700 text-white transition"
-                                title="Edit Claim">
-                                Edit
-                            </button>
-                        @endif
+                        <button
+                            wire:click="editClaim({{ $claim->id }})"
+                            class="px-3 py-1 rounded bg-blue-600 hover:bg-blue-700 text-white transition"
+                            title="Edit Claim">
+                            Edit
+                        </button>
                     </div>
 
                     <h2 class="font-semibold text-lg ml-3 flex-1">{{ $claim->title }}</h2>
