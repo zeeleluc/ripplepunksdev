@@ -44,7 +44,39 @@
         <ul>
             @foreach ($shouts as $shout)
                 <li class="mb-4 border-b pb-2">
-                    <p class="text-xs text-gray-600">{{ $shout->user->name }}</p>
+                    <p class="text-xs text-gray-600 pb-1">{{ $shout->user->name }}</p>
+
+                    @if ($shout->user->isAdmin())
+                        <a href="{{ route('badges') }}">
+                            <span class="bg-yellow-400 text-yellow-800 text-xs font-medium px-2 py-1 rounded-lg">
+                                The Dev
+                            </span>
+                        </a>
+                    @else
+
+                        @php
+                            $stickers = \App\Models\User::getStickersForWallet($shout->wallet);
+                            $first = $stickers[0] ?? null;
+                            $extra = count($stickers) - 1;
+                        @endphp
+
+                        <div class="flex gap-2 items-center">
+                            @if ($first)
+                                <a href="{{ route('badges') }}">
+                                    <span class="bg-primary-600 text-white text-xs font-medium px-2 py-1 rounded-lg">
+                                        {{ $first }}
+                                    </span>
+                                </a>
+                                @if ($extra > 0)
+                                    <a href="{{ route('badges') }}">
+                                        <span class="bg-gray-200 text-gray-700 text-xs font-medium px-2 py-1 rounded-lg">
+                                            +{{ $extra }}
+                                        </span>
+                                    </a>
+                                @endif
+                            @endif
+                        </div>
+                    @endif
                     <p class="text-lg mt-2">{{ $shout->message }}</p>
                     <p class="text-xs text-gray-500">{{ $shout->created_at->diffForHumans() }}</p>
 
