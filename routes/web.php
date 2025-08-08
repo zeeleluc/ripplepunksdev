@@ -25,7 +25,7 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('/shoutboard', function () {
         return view('shoutboard');
     })->name('shoutboard');
-    Route::get('/claim', [ClaimController::class, 'index'])->name('claim');
+    Route::get('/rewards', [ClaimController::class, 'index'])->name('claim');
 
     // Giveaway routes
     Route::prefix('giveaway')->group(function () {

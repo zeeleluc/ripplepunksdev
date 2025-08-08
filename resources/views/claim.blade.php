@@ -1,5 +1,5 @@
 @extends('layouts.app')
 
 @section('content')
-    @livewire('public-claim')
+    @livewire('public-claims')
 @endsection

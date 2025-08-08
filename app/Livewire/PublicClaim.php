@@ -9,53 +9,52 @@ use Livewire\Component;
 
 class PublicClaim extends Component
 {
-    public $claim;
+    public Claim $claim;
     public $hasClaimed = false;
     public $submissions = [];
     public $confirmingMissingBadges = false;
     public $missingBadgesList = [];
-    public $userSubmissionDistributed = false;
     public $isFull = false;
+    public $userSubmissionDistributed = false;
+    public $message;
+    public $error;
 
-    public function mount()
+    public function mount(Claim $claim)
     {
-        $this->claim = Claim::where('is_open', true)->latest()->first();
+        $this->claim = $claim;
+        $this->loadSubmissions();
+    }
 
-        if ($this->claim) {
-            $this->submissions = ClaimSubmission::where('claim_id', $this->claim->id)
-                ->with('user')
-                ->get();
+    public function loadSubmissions()
+    {
+        $this->submissions = ClaimSubmission::where('claim_id', $this->claim->id)
+            ->with('user')
+            ->get();
 
-            $this->isFull = $this->submissions->count() >= $this->claim->total;
+        $this->isFull = $this->submissions->count() >= $this->claim->total;
 
-            if (Auth::check()) {
-                $this->hasClaimed = ClaimSubmission::where('claim_id', $this->claim->id)
-                    ->where('user_id', Auth::id())
-                    ->exists();
+        if (Auth::check()) {
+            $this->hasClaimed = ClaimSubmission::where('claim_id', $this->claim->id)
+                ->where('user_id', Auth::id())
+                ->exists();
 
-                $submission = ClaimSubmission::where('claim_id', $this->claim->id)
-                    ->where('user_id', Auth::id())
-                    ->first();
+            $submission = ClaimSubmission::where('claim_id', $this->claim->id)
+                ->where('user_id', Auth::id())
+                ->first();
 
-                $this->userSubmissionDistributed = $submission && $submission->received_at !== null;
-            }
+            $this->userSubmissionDistributed = $submission && $submission->received_at !== null;
         }
     }
 
     public function claimNow()
     {
         if (!Auth::check()) {
-            session()->flash('error', 'You are not logged in.');
-            return;
-        }
-
-        if (!$this->claim) {
-            session()->flash('error', 'No open claim available.');
+            $this->error = 'You are not logged in.';
             return;
         }
 
         if ($this->hasClaimed) {
-            session()->flash('error', 'You have already claimed this prize.');
+            $this->error = 'You have already claimed this prize.';
             return;
         }
 
@@ -75,11 +74,6 @@ class PublicClaim extends Component
             return;
         }
 
-        $this->processClaim();
-    }
-
-    public function processClaim()
-    {
         ClaimSubmission::create([
             'claim_id' => $this->claim->id,
             'user_id' => Auth::id(),
@@ -87,12 +81,8 @@ class PublicClaim extends Component
         ]);
 
         $this->hasClaimed = true;
-
-        $this->submissions = ClaimSubmission::where('claim_id', $this->claim->id)
-            ->with('user')
-            ->get();
-
-        session()->flash('message', 'You claimed successfully!');
+        $this->message = 'You claimed successfully!';
+        $this->loadSubmissions();
     }
 
     public function render()
