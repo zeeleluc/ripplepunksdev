@@ -7,6 +7,7 @@
 {{--            <a href="/about-cto" class="hover:text-white transition">About the CTO</a>--}}
             <a href="/claim" class="hover:text-white transition">Claim Rewards</a>
             <a href="/holders" class="hover:text-white transition">Holders</a>
+            <a target="_blank" href="https://xrp.cafe/user/rpLqwPLX9ZHhQvismadgHmWFfK2nWxxGTx">Rewards Wallet</a>
         </nav>
     </div>
 </footer>
