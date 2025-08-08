@@ -51,6 +51,11 @@ class Shoutboard extends Component
             abort(403);
         }
 
+        // ✅ Check if older than 1 hour
+        if ($shout->created_at->lt(now()->subHour())) {
+            abort(403, 'You can only edit a shout within 1 hour of posting.');
+        }
+
         $this->editingId = $shout->id;
         $this->editingMessage = $shout->message;
     }
@@ -69,6 +74,11 @@ class Shoutboard extends Component
             abort(403);
         }
 
+        // ✅ Check if older than 1 hour
+        if ($shout->created_at->lt(now()->subHour())) {
+            abort(403, 'You can only edit a shout within 1 hour of posting.');
+        }
+
         $shout->update([
             'message' => $this->editingMessage,
         ]);
@@ -82,6 +92,11 @@ class Shoutboard extends Component
 
         if (!Auth::check() || $shout->wallet !== Auth::user()->wallet) {
             abort(403);
+        }
+
+        // ✅ Check if older than 1 hour
+        if ($shout->created_at->lt(now()->subHour())) {
+            abort(403, 'You can only delete a shout within 1 hour of posting.');
         }
 
         $shout->delete();
