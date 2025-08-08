@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="max-w-6xl mx-auto px-0 py-6">
-        <h1 class="text-2xl font-bold text-center">RipplePunk Badges</h1>
+        <h1 class="text-2xl font-bold text-center">Your RipplePunk Badges</h1>
         @if (!\Illuminate\Support\Facades\Auth::check())
             <h2 class="text-1xl mb-3 text-center">Login with your Xaman wallet to see your badges</h2>
         @endif
