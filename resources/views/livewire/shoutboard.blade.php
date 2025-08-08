@@ -21,7 +21,7 @@
 
         <!-- Create or Edit Form -->
         @if (\Illuminate\Support\Facades\Auth::check())
-            @if (\App\Models\User::walletHasSticker(Auth::user()->wallet, 'Colony Climber') && \App\Models\User::walletHasSticker(Auth::user()->wallet, 'OG Initiate'))
+            @if (\App\Models\User::walletHasSticker(Auth::user()->wallet, 'Colony Climber'))
                 <form wire:submit.prevent="{{ $editingId ? 'updateShout' : 'postShout' }}">
                     <textarea wire:model.defer="{{ $editingId ? 'editingMessage' : 'message' }}" placeholder="Say something..." class="w-full p-2 border rounded" rows="2"></textarea>
                     @error($editingId ? 'editingMessage' : 'message') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
@@ -51,7 +51,7 @@
                     <p class="text-xs text-gray-500">{{ $shout->created_at->diffForHumans() }}</p>
 
                     @if (\Illuminate\Support\Facades\Auth::check() && $shout->wallet === Auth::user()->wallet)
-                        @if (\App\Models\User::walletHasSticker(Auth::user()->wallet, 'Colony Climber') && \App\Models\User::walletHasSticker(Auth::user()->wallet, 'OG Initiate'))
+                        @if (\App\Models\User::walletHasSticker(Auth::user()->wallet, 'Colony Climber'))
                             <div class="mt-2">
                                 <button wire:click="editShout({{ $shout->id }})" class="mr-2 px-3 py-1 bg-yellow-400 rounded hover:bg-yellow-500">Edit</button>
                                 <button wire:click="confirmDelete({{ $shout->id }})" class="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600">Delete</button>
@@ -68,7 +68,7 @@
             @endphp
 
             @if ($shoutToDelete && $shoutToDelete->wallet === Auth::user()->wallet)
-                    @if (\App\Models\User::walletHasSticker(Auth::user()->wallet, 'Colony Climber') && \App\Models\User::walletHasSticker(Auth::user()->wallet, 'OG Initiate'))
+                    @if (\App\Models\User::walletHasSticker(Auth::user()->wallet, 'Colony Climber'))
                     <!-- Confirmation Modal -->
                     <div class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
                         <div class="bg-white p-6 rounded shadow-lg max-w-sm w-full">
