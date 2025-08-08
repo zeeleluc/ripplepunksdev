@@ -29,13 +29,15 @@
     @endif
 
     {{-- Claim button (only when there are open spots) --}}
-    @if (!($claim->isFull ?? false))
+    @if (!($claim->isFull ?? false) && !$hasClaimed)
         <button
             wire:click="claimNow"
             class="mt-6 mb-4 bg-gray-600 text-white px-6 py-3 rounded hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed text-lg"
             {{ ($hasClaimed ?? false) ? 'disabled' : '' }}>
             {{ ($hasClaimed ?? false) ? 'Already Claimed' : 'Claim Now' }}
         </button>
+    @elseif ($hasClaimed)
+        <p class="mt-6 text-gray-600 font-semibold">You have already claimed a spot.</p>
     @else
         <p class="mt-6 text-red-600 font-semibold">All claim spots have been filled.</p>
     @endif
