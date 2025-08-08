@@ -2,14 +2,11 @@
     <h1 class="text-2xl font-bold mb-6 text-center">Shoutboard</h1>
 
     <p class="text-center my-3 text-lg">
-        You need to hold badges
+        You need to hold the
         <a href="{{ route('badges') }}">
             <span class="bg-primary-600 text-white text-lg font-medium px-2 py-1 rounded-lg">Colony Climber</span>
         </a>
-        and
-        <a href="{{ route('badges') }}">
-            <span class="bg-primary-600 text-white text-lg font-medium px-2 py-1 rounded-lg">OG Initiate</span> to shout.
-        </a>
+        badge to shout.
     </p>
 
     <div class="bg-white border rounded p-5 mt-6">
