@@ -1,9 +1,6 @@
 <div class="bg-white border rounded p-5 text-center">
     {{ $user->wallet }}
     <br />
-    <strong>
-        {{ $user->totalNFTs() }} RipplePunks
-    </strong>
 
     @php
         $stickers = \App\Models\User::getStickersForWallet($user->wallet);
@@ -34,4 +31,11 @@
             </a>
         @endif
     </div>
+
+    <div class="my-3 text-lg">
+        {{ $user->totalNFTs() }} RipplePunks
+    </div>
+
+    @livewire('nft-grid', ['owner' => $user->wallet])
+
 </div>

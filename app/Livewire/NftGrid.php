@@ -10,9 +10,22 @@ class NftGrid extends Component
 {
     use WithPagination;
 
+    public ?string $owner = null; // optional parameter
+
+    public function mount($owner = null)
+    {
+        $this->owner = $owner;
+    }
+
     public function render()
     {
-        $nfts = Nft::orderBy('nft_id', 'desc')->paginate(4);
+        $query = Nft::query()->orderBy('nft_id', 'desc');
+
+        if ($this->owner) {
+            $query->where('owner', $this->owner);
+        }
+
+        $nfts = $query->paginate(4);
 
         return view('livewire.nft-grid', [
             'nfts' => $nfts,
