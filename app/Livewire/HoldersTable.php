@@ -31,6 +31,6 @@ class HoldersTable extends Component
             }, 'nft_counts')
             ->leftJoin('users', 'users.wallet', '=', 'nft_counts.owner')
             ->orderByDesc('nft_counts.nft_count')
-            ->paginate(5);
+            ->paginate(25);
     }
 }

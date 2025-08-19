@@ -18,12 +18,20 @@
                                 <strong>{{ $holder->owner }}</strong>
                                 @if (env('PROJECT_WALLET') === $holder->owner)
                                     <div>
-                                        <p>
+                                        <p class="mb-5">
                                             This holding is from the <strong>project's wallet</strong>.<br>
                                             Fresh mints from <em>The Other Punks</em> are listed at <strong>2 XRP</strong>.<br>
                                             If you see any listed higher, they were bought back from <em>paper hands</em>
                                             who sold below 2 XRP, then relisted with <strong>+2 XRP</strong> added.
                                         </p>
+
+                                        <a
+                                            target="_blank"
+                                            href="https://xrp.cafe/usercollection/r3SvAe5197xnXvPHKnyptu3EjX5BG8f2mS/r3SvAe5197xnXvPHKnyptu3EjX5BG8f2mS/604"
+                                            class="w-full sm:w-auto bg-primary-500 hover:bg-primary-600 text-white text-base font-semibold py-3 px-6 mb-3 rounded-lg shadow text-center"
+                                        >
+                                            Buy The Other Punks
+                                        </a>
                                     </div>
                                 @else
                                     @php
