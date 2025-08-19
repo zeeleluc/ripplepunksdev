@@ -118,4 +118,7 @@
         @endif
 
     </div>
+
+    @include('components.custom-pagination', ['paginator' => $shouts])
+
 </div>

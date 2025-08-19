@@ -6,9 +6,12 @@ use App\Models\User;
 use Livewire\Component;
 use App\Models\Shout;
 use Illuminate\Support\Facades\Auth;
+use Livewire\WithPagination;
 
 class Shoutboard extends Component
 {
+    use WithPagination;
+
     public $message = '';
     public $editingId = null;
     public $editingMessage = '';
@@ -124,7 +127,7 @@ class Shoutboard extends Component
     public function render()
     {
         return view('livewire.shoutboard', [
-            'shouts' => Shout::latest()->get(),
+            'shouts' => Shout::latest()->paginate(10),
         ]);
     }
 }

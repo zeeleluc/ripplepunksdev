@@ -167,7 +167,7 @@
                     {{ $logEntry->text }}
                 </p>
                 <small class="text-xs">
-                    {{ $logEntry->created_at->format('Y-m-d H:i') }} <sup>UTC</sup>
+                    {{ $logEntry->created_at->diffForHumans() }}
                 </small>
             </div>
         @endforeach

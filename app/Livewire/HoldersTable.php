@@ -11,36 +11,26 @@ class HoldersTable extends Component
 {
     use WithPagination;
 
-    protected $paginationTheme = 'tailwind'; // or 'bootstrap'
-
     public function render()
     {
-        $holders = Nft::query()
-            ->select('owner', DB::raw('COUNT(*) as nft_count'))
-            ->with('user')
-            ->groupBy('owner')
-            ->orderByDesc('nft_count')
-            ->paginate(20);
-
         return view('livewire.holders-table', [
-            'holders' => $holders,
+            'holders' => $this->holders,
             'tiers' => config('badges.tiers'),
         ]);
     }
 
-    public function goToPage($page)
+    public function getHoldersProperty()
     {
-        $this->setPage($page);
+        return Nft::query()
+            ->select('nft_counts.owner', 'users.name', 'nft_counts.nft_count')
+            ->fromSub(function ($query) {
+                $query->select('owner', DB::raw('COUNT(*) as nft_count'))
+                    ->from('nfts')
+                    ->where('owner', '!=', env('CTO_WALLET'))
+                    ->groupBy('owner');
+            }, 'nft_counts')
+            ->leftJoin('users', 'users.wallet', '=', 'nft_counts.owner')
+            ->orderByDesc('nft_counts.nft_count')
+            ->paginate(5);
     }
-
-    public function previousPage()
-    {
-        $this->previousPage();
-    }
-
-    public function nextPage()
-    {
-        $this->nextPage();
-    }
-
 }
