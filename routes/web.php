@@ -20,12 +20,11 @@ Route::group(['middleware' => 'web'], function () {
 
     Route::get('/', [WelcomeController::class, 'index'])->name('welcome');
     Route::get('/welcome', [WelcomeController::class, 'index'])->name('login');
-    Route::get('/profile/{wallet?}', [ProfileController::class, 'index'])
-        ->name('profile');
+    Route::get('/holder/{wallet}', [HolderController::class, 'show'])->name('holder');
     Route::get('/about-cto', [AboutController::class, 'showCtoPage'])->name('about.cto');
     Route::get('/holders', [HolderController::class, 'index'])->name('holders.index');
     Route::get('/logs', [LogController::class, 'index'])->name('logs');
-    Route::get('/badges', [BadgeController::class, 'index'])->name('badges');
+    Route::get('/badges/{wallet?}', [BadgeController::class, 'index'])->name('badges');
     Route::get('/shoutboard', function () {
         return view('shoutboard');
     })->name('shoutboard');

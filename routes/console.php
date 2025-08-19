@@ -10,4 +10,6 @@ if (app()->environment('prod')) {
         '--issuer' => 'r3SvAe5197xnXvPHKnyptu3EjX5BG8f2mS',
         '--taxon'  => '604',
     ])->cron('*/20 * * * *'); // runs every 20 minutes
+
+    $schedule->command('holders:sync')->everyMinute();
 }

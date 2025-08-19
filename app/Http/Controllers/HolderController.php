@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Holder;
 use Illuminate\Support\Facades\DB;
 
 class HolderController extends Controller
@@ -15,5 +16,12 @@ class HolderController extends Controller
             ->paginate(20);
 
         return view('holders.index', compact('holders'));
+    }
+
+    public function show(string $wallet)
+    {
+        $holder = Holder::where('wallet', $wallet)->first();
+
+        return view('holders.show', compact('holder'));
     }
 }

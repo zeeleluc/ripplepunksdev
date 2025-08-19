@@ -90,40 +90,42 @@
         </div>
 
         <div class="bg-white shadow text-sm text-gray-700 px-6 py-2 flex items-center border-b">
-        <span class="truncate max-w-[60%] overflow-hidden whitespace-nowrap mr-4">
-            {{ Auth::user()->totalNFTs() }} RipplePunks
-        </span>
+    <span class="truncate max-w-[60%] overflow-hidden whitespace-nowrap mr-4">
+        {{ Auth::user()->totalNFTs() }} RipplePunks
+    </span>
 
             @php
-                $stickers = \App\Models\User::getStickersForWallet(Auth::user()->wallet);
-                $first = $stickers[0] ?? null;
-                $extra = count($stickers) - 1;
+                $holder = \App\Models\Holder::where('wallet', Auth::user()->wallet)->first();
+                $badges = $holder?->badges ?? [];
+                $first = $badges[0] ?? null;
+                $extra = max(count($badges) - 1, 0);
             @endphp
 
             <div class="flex gap-2 items-center">
                 @if ($first)
                     <a href="{{ route('badges') }}">
-                    <span class="bg-primary-600 text-white text-xs font-medium px-2 py-1 rounded-lg">
-                        {{ $first }}
-                    </span>
+                <span class="bg-primary-600 text-white text-xs font-medium px-2 py-1 rounded-lg">
+                    {{ $first }}
+                </span>
                     </a>
 
                     @if ($extra > 0)
                         <a href="{{ route('badges') }}">
-                        <span class="bg-gray-200 text-gray-700 text-xs font-medium px-2 py-1 rounded-lg">
-                            +{{ $extra }}
-                        </span>
+                    <span class="bg-gray-200 text-gray-700 text-xs font-medium px-2 py-1 rounded-lg">
+                        +{{ $extra }}
+                    </span>
                         </a>
                     @endif
                 @else
                     <a href="{{ route('badges') }}">
-                    <span class="bg-gray-100 text-gray-500 text-xs font-medium px-2 py-1 rounded-lg">
-                        Available Badges
-                    </span>
+                <span class="bg-gray-100 text-gray-500 text-xs font-medium px-2 py-1 rounded-lg">
+                    Available Badges
+                </span>
                     </a>
                 @endif
             </div>
         </div>
+
 
     @endauth
 

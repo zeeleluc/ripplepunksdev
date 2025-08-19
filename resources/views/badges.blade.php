@@ -2,10 +2,12 @@
 
 @section('content')
     <div class="max-w-6xl mx-auto px-0 py-6">
-        <h1 class="text-2xl font-bold text-center">Your RipplePunk Badges</h1>
-        @if (!\Illuminate\Support\Facades\Auth::check())
-            <h2 class="text-1xl mb-3 text-center">Login with your Xaman wallet to see your badges</h2>
-        @endif
+        <h1 class="text-2xl font-bold text-center">RipplePunk Badges</h1>
+        <h2 class="text-1xl font-bold text-center">
+            <a class="text-primary-600 hover:text-primary-800" href="{{ route('holder', ['wallet' => $holder->wallet]) }}">
+                {{ $holder->wallet }}
+            </a>
+        </h2>
 
         <p class="text-center my-3">
             Badges unlock access to special claims such as fixed royalty shares in XRP, RipplePunk NFTs, and other exclusive digital rewards. The higher your badge level, the better the prizes you can claim — with top-tier badges unlocking the most valuable and rare items. In addition, badges grant access to more features on the website, including the ability to reply, comment, like, share, and more.

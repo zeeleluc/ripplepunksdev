@@ -2,10 +2,9 @@
 
 namespace App\Livewire;
 
-use App\Models\Nft;
+use App\Models\Holder;
 use Livewire\Component;
 use Livewire\WithPagination;
-use Illuminate\Support\Facades\DB;
 
 class HoldersTable extends Component
 {
@@ -21,16 +20,9 @@ class HoldersTable extends Component
 
     public function getHoldersProperty()
     {
-        return Nft::query()
-            ->select('nft_counts.owner', 'users.name', 'nft_counts.nft_count')
-            ->fromSub(function ($query) {
-                $query->select('owner', DB::raw('COUNT(*) as nft_count'))
-                    ->from('nfts')
-                    ->where('owner', '!=', env('CTO_WALLET'))
-                    ->groupBy('owner');
-            }, 'nft_counts')
-            ->leftJoin('users', 'users.wallet', '=', 'nft_counts.owner')
-            ->orderByDesc('nft_counts.nft_count')
+        return Holder::query()
+            ->where('wallet', '!=', env('CTO_WALLET'))
+            ->orderByDesc('holdings')
             ->paginate(25);
     }
 }

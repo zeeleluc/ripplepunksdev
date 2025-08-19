@@ -16,28 +16,33 @@
             </div>
         @endif
 
-        <!-- Create or Edit Form -->
-        @if (\Illuminate\Support\Facades\Auth::check())
-            @if (\App\Models\User::walletHasSticker(Auth::user()->wallet, 'Other Punk'))
-                <form wire:submit.prevent="{{ $editingId ? 'updateShout' : 'postShout' }}">
-                    <textarea wire:model.defer="{{ $editingId ? 'editingMessage' : 'message' }}" placeholder="Say something..." class="w-full p-2 border rounded" rows="2"></textarea>
-                    @error($editingId ? 'editingMessage' : 'message') <span class="text-red-600 text-sm">{{ $message }}</span> @enderror
+        <!-- Create / Edit Form -->
+        @if (Auth::check() && Auth::user()->holder?->walletHasSticker(Auth::user()->wallet, 'Other Punk'))
+            <form wire:submit.prevent="{{ $editingId ? 'updateShout' : 'postShout' }}">
+                <textarea wire:model.defer="{{ $editingId ? 'editingMessage' : 'message' }}"
+                          placeholder="Say something..."
+                          class="w-full p-2 border rounded"
+                          rows="2"></textarea>
+                @error($editingId ? 'editingMessage' : 'message')
+                <span class="text-red-600 text-sm">{{ $message }}</span>
+                @enderror
 
-                    <div class="mt-1">
-                        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
-                            {{ $editingId ? 'Update Shout' : 'Shout!' }}
+                <div class="mt-1">
+                    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                        {{ $editingId ? 'Update Shout' : 'Shout!' }}
+                    </button>
+
+                    @if ($editingId)
+                        <button type="button"
+                                wire:click="cancelEdit"
+                                class="ml-2 px-4 py-2 rounded border border-gray-300 hover:bg-gray-100">
+                            Cancel
                         </button>
+                    @endif
+                </div>
+            </form>
 
-                        @if ($editingId)
-                            <button type="button" wire:click="cancelEdit" class="ml-2 px-4 py-2 rounded border border-gray-300 hover:bg-gray-100">
-                                Cancel
-                            </button>
-                        @endif
-                    </div>
-                </form>
-
-                <hr class="my-6">
-            @endif
+            <hr class="my-6">
         @endif
 
         <!-- Shout List -->
@@ -53,15 +58,14 @@
                             </span>
                         </a>
                     @else
-
                         @php
-                            $stickers = \App\Models\User::getStickersForWallet($shout->wallet);
-                            $first = $stickers[0] ?? null;
-                            $extra = count($stickers) - 1;
+                            $badges = $shout->holder?->badges ?? [];
+                            $first = $badges[0] ?? null;
+                            $extra = max(count($badges) - 1, 0);
                         @endphp
 
-                        <div class="flex gap-2 items-center">
-                            @if ($first)
+                        @if ($first)
+                            <div class="flex gap-2 items-center">
                                 <a href="{{ route('badges') }}">
                                     <span class="bg-primary-600 text-white text-xs font-medium px-2 py-1 rounded-lg">
                                         {{ $first }}
@@ -74,51 +78,54 @@
                                         </span>
                                     </a>
                                 @endif
-                            @endif
-                        </div>
+                            </div>
+                        @endif
                     @endif
+
                     <p class="text-lg mt-2">{{ $shout->message }}</p>
                     <p class="text-xs text-gray-500">{{ $shout->created_at->diffForHumans() }}</p>
 
-                    @if (\Illuminate\Support\Facades\Auth::check() && $shout->wallet === Auth::user()->wallet)
-                        @if (\App\Models\User::walletHasSticker(Auth::user()->wallet, 'Other Punk'))
-                            @if ($shout->created_at->gt(now()->subHour()))
-                                <div class="mt-2">
-                                    <button wire:click="editShout({{ $shout->id }})" class="mr-2 px-3 py-1 bg-yellow-400 rounded hover:bg-yellow-500">Edit</button>
-                                    <button wire:click="confirmDelete({{ $shout->id }})" class="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600">Delete</button>
-                                </div>
-                            @endif
+                    @if (Auth::check() && $shout->wallet === Auth::user()->wallet && Auth::user()->holder?->walletHasSticker(Auth::user()->wallet, 'Other Punk'))
+                        @if ($shout->created_at->gt(now()->subHour()))
+                            <div class="mt-2">
+                                <button wire:click="editShout({{ $shout->id }})"
+                                        class="mr-2 px-3 py-1 bg-yellow-400 rounded hover:bg-yellow-500">
+                                    Edit
+                                </button>
+                                <button wire:click="confirmDelete({{ $shout->id }})"
+                                        class="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600">
+                                    Delete
+                                </button>
+                            </div>
                         @endif
                     @endif
                 </li>
             @endforeach
         </ul>
 
-        @if (\Illuminate\Support\Facades\Auth::check() && $confirmingDeletionId)
+        <!-- Delete Confirmation -->
+        @if (Auth::check() && $confirmingDeletionId)
             @php
                 $shoutToDelete = $shouts->firstWhere('id', $confirmingDeletionId);
             @endphp
 
-            @if ($shoutToDelete && $shoutToDelete->wallet === Auth::user()->wallet)
-                    @if (\App\Models\User::walletHasSticker(Auth::user()->wallet, 'Other Punk'))
-                    <!-- Confirmation Modal -->
-                    <div class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-                        <div class="bg-white p-6 rounded shadow-lg max-w-sm w-full">
-                            <p class="mb-4">Are you sure you want to delete this shout?</p>
-                            <button wire:click="deleteShout({{ $confirmingDeletionId }})" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 mr-2">
-                                Yes, Delete
-                            </button>
-                            <button wire:click="cancel" class="px-4 py-2 rounded border border-gray-300 hover:bg-gray-100">
-                                Cancel
-                            </button>
-                        </div>
+            @if ($shoutToDelete && $shoutToDelete->wallet === Auth::user()->wallet && Auth::user()->holder?->walletHasSticker(Auth::user()->wallet, 'Other Punk'))
+                <div class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+                    <div class="bg-white p-6 rounded shadow-lg max-w-sm w-full">
+                        <p class="mb-4">Are you sure you want to delete this shout?</p>
+                        <button wire:click="deleteShout({{ $confirmingDeletionId }})"
+                                class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 mr-2">
+                            Yes, Delete
+                        </button>
+                        <button wire:click="cancel"
+                                class="px-4 py-2 rounded border border-gray-300 hover:bg-gray-100">
+                            Cancel
+                        </button>
                     </div>
-                @endif
+                </div>
             @endif
         @endif
-
     </div>
 
     @include('components.custom-pagination', ['paginator' => $shouts])
-
 </div>
