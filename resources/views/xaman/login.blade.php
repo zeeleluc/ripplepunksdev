@@ -42,8 +42,7 @@
                             const finalizeData = await finalizeRes.json();
 
                             if (finalizeData.success) {
-                                // Redirect to /profile/{wallet} after login
-                                window.location.href = `/profile/${data.wallet}`;
+                                window.location.href = `/holder/${data.wallet}`;
                             } else {
                                 console.error('Login finalize failed');
                             }
