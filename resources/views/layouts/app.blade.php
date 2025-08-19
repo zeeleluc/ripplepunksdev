@@ -76,6 +76,9 @@
 
             @if (Auth::user()->isAdmin())
                 <div>
+                    <a href="{{ route('admin.users') }}" class="ml-4 flex-shrink-0">
+                        Users
+                    </a>
                     <a href="{{ route('admin.claims') }}" class="ml-4 flex-shrink-0">
                         Claims
                     </a>

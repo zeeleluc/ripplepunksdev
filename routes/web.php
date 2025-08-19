@@ -13,6 +13,7 @@ use App\Http\Controllers\{
 };
 use App\Http\Controllers\Admin\LogEntryController;
 use App\Http\Controllers\Admin\ClaimController as AdminClaimController;
+use App\Http\Controllers\Admin\UserController;
 
 Route::group(['middleware' => 'web'], function () {
 
@@ -52,5 +53,6 @@ Route::group(['middleware' => 'web'], function () {
     Route::middleware(['auth', 'isAdmin'])->group(function () {
         Route::get('/admin/log-entry', [LogEntryController::class, 'index'])->name('admin.log-entry');
         Route::get('/admin/claims', [AdminClaimController::class, 'index'])->name('admin.claims');
+        Route::get('/admin/users', [UserController::class, 'index'])->name('admin.users');
     });
 });
