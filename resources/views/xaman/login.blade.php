@@ -42,7 +42,7 @@
                             const finalizeData = await finalizeRes.json();
 
                             if (finalizeData.success) {
-                                window.location.href = '/'; // Redirect after login
+                                window.location.href = '/profile'; // Redirect after login
                             } else {
                                 console.error('Login finalize failed');
                             }

@@ -9,7 +9,8 @@ use App\Http\Controllers\{
     HolderController,
     LogController,
     BadgeController,
-    ClaimController
+    ClaimController,
+    ProfileController
 };
 use App\Http\Controllers\Admin\LogEntryController;
 use App\Http\Controllers\Admin\ClaimController as AdminClaimController;
@@ -19,6 +20,8 @@ Route::group(['middleware' => 'web'], function () {
 
     Route::get('/', [WelcomeController::class, 'index'])->name('welcome');
     Route::get('/welcome', [WelcomeController::class, 'index'])->name('login');
+    Route::get('/profile/{wallet?}', [ProfileController::class, 'index'])
+        ->name('profile');
     Route::get('/about-cto', [AboutController::class, 'showCtoPage'])->name('about.cto');
     Route::get('/holders', [HolderController::class, 'index'])->name('holders.index');
     Route::get('/logs', [LogController::class, 'index'])->name('logs');

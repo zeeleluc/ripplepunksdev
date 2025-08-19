@@ -37,7 +37,7 @@ class XamanController extends Controller
                 }
 
                 // Als al ingelogd, redirect of toon andere melding
-                return redirect('/')->with('message', 'Already logged in or payload used.');
+                return redirect('/profile')->with('message', 'Already logged in or payload used.');
 
             } catch (\Throwable $e) {
                 // UUID bestaat niet (meer) of fout bij ophalen, dus opnieuw proberen
