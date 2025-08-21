@@ -4,9 +4,11 @@
     <div class="max-w-6xl mx-auto px-0 py-6">
         <h1 class="text-2xl font-bold text-center">RipplePunk Badges</h1>
         <h2 class="text-1xl font-bold text-center">
-            <a class="text-primary-600 hover:text-primary-800" href="{{ route('holder', ['wallet' => $holder->wallet]) }}">
-                {{ $holder->wallet }}
-            </a>
+            @if ($holder)
+                <a class="text-primary-600 hover:text-primary-800" href="{{ route('holder', ['wallet' => $holder->wallet]) }}">
+                    {{ $holder->wallet }}
+                </a>
+            @endif
         </h2>
 
         <p class="text-center my-3">
