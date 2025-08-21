@@ -2,11 +2,11 @@
 
 namespace App\Livewire;
 
-use App\Models\User;
 use Livewire\Component;
-use App\Models\Shout;
-use Illuminate\Support\Facades\Auth;
 use Livewire\WithPagination;
+use App\Models\Shout;
+use App\Models\Holder;
+use Illuminate\Support\Facades\Auth;
 
 class Shoutboard extends Component
 {
@@ -22,16 +22,22 @@ class Shoutboard extends Component
         'editingMessage' => 'required|string|max:255',
     ];
 
-    public function postShout()
+    protected function ensureCanShout(): void
     {
         if (!Auth::check()) {
-            abort(403);
+            abort(403, 'You must be logged in to post a shout.');
         }
 
-        if (!User::walletHasSticker(Auth::user()->wallet, 'Other Punk')) {
-            abort(403);
-        }
+        $holder = Holder::where('wallet', Auth::user()->wallet)->first();
 
+        if (!$holder || !$holder->walletHasSticker(Auth::user()->wallet, 'Other Punk')) {
+            abort(403, 'You need the "Other Punk" badge to use the shoutboard.');
+        }
+    }
+
+    public function postShout()
+    {
+        $this->ensureCanShout();
         $this->validateOnly('message');
 
         Shout::create([
@@ -50,11 +56,9 @@ class Shoutboard extends Component
             abort(403);
         }
 
-        if (!User::walletHasSticker(Auth::user()->wallet, 'Other Punk')) {
-            abort(403);
-        }
+        $this->ensureCanShout();
 
-        // ✅ Check if older than 1 hour
+        // ✅ Must be within 1 hour of posting
         if ($shout->created_at->lt(now()->subHour())) {
             abort(403, 'You can only edit a shout within 1 hour of posting.');
         }
@@ -73,11 +77,8 @@ class Shoutboard extends Component
             abort(403);
         }
 
-        if (!User::walletHasSticker(Auth::user()->wallet, 'Other Punk')) {
-            abort(403);
-        }
+        $this->ensureCanShout();
 
-        // ✅ Check if older than 1 hour
         if ($shout->created_at->lt(now()->subHour())) {
             abort(403, 'You can only edit a shout within 1 hour of posting.');
         }
@@ -97,7 +98,6 @@ class Shoutboard extends Component
             abort(403);
         }
 
-        // ✅ Check if older than 1 hour
         if ($shout->created_at->lt(now()->subHour())) {
             abort(403, 'You can only delete a shout within 1 hour of posting.');
         }
