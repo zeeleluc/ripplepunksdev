@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Models\Claim;
 use App\Models\ClaimSubmission;
+use App\Models\Holder;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 
@@ -60,10 +61,13 @@ class PublicClaim extends Component
 
         $requiredBadges = array_map('trim', explode(',', $this->claim->required_badges));
         $userWallet = Auth::user()->wallet;
+
+        // Fetch the Holder instance for this wallet
+        $holder = Holder::where('wallet', $userWallet)->first();
         $missingBadges = [];
 
         foreach ($requiredBadges as $badge) {
-            if (!\App\Models\User::walletHasSticker($userWallet, $badge)) {
+            if (!$holder || !$holder->walletHasSticker($userWallet, $badge)) {
                 $missingBadges[] = $badge;
             }
         }

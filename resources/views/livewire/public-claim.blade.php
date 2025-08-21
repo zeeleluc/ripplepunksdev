@@ -1,3 +1,8 @@
+@php
+    $claimedCount = count($submissions);
+    $totalPlots = $claim->total ?? 0;
+@endphp
+
 <div class="bg-white border rounded p-5 text-center">
     {{-- Title / description / prize --}}
     <h2 class="text-xl font-bold">{{ $claim->title }}</h2>
@@ -15,7 +20,7 @@
         @endforeach
     </div>
 
-    {{-- Per-card messages: prefer local $message/$error, fall back to session --}}
+    {{-- Messages --}}
     @if (!empty($message))
         <div class="bg-green-200 p-2 mt-3 rounded">{{ $message }}</div>
     @elseif (session()->has('message'))
@@ -28,13 +33,13 @@
         <div class="bg-red-200 p-2 mt-3 rounded">{{ session('error') }}</div>
     @endif
 
-    {{-- Claim button (only when there are open spots) --}}
-    @if (!($claim->isFull ?? false) && !$hasClaimed)
+    {{-- Claim button --}}
+    @if (!($isFull ?? false) && !$hasClaimed)
         <button
             wire:click="claimNow"
             class="mt-6 mb-4 bg-gray-600 text-white px-6 py-3 rounded hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed text-lg"
-            {{ ($hasClaimed ?? false) ? 'disabled' : '' }}>
-            {{ ($hasClaimed ?? false) ? 'Already Claimed' : 'Claim Now' }}
+            {{ $hasClaimed ? 'disabled' : '' }}>
+            {{ $hasClaimed ? 'Already Claimed' : 'Claim Now' }}
         </button>
     @elseif ($hasClaimed)
         <p class="mt-6 text-gray-600 font-semibold">You have already claimed a spot.</p>
@@ -42,25 +47,20 @@
         <p class="mt-6 text-red-600 font-semibold">All claim spots have been filled.</p>
     @endif
 
-    {{-- Spots grid (responsive) --}}
-    @php
-        $claimedCount = $submissions->count() ?? 0;
-        $totalPlots = $claim->total ?? 0;
-    @endphp
-
+    {{-- Spots grid --}}
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 mt-6">
         @for ($i = 1; $i <= $totalPlots; $i++)
             @if ($i <= $claimedCount)
                 @php
-                    $submission = $submissions[$i - 1];
-                    $isDistributed = !empty($submission->received_at);
+                    $submission = $submissions[$i - 1] ?? null;
+                    $isDistributed = !empty($submission['received_at']);
                 @endphp
 
                 <div class="p-4 bg-primary-500 rounded text-white text-center break-words relative">
                     Claimed by<br />
                     <span class="text-xs">
-                        {{ isset($submission->user->wallet)
-                            ? substr($submission->user->wallet, 0, 6) . '...' . substr($submission->user->wallet, -4)
+                        {{ isset($submission['user']['wallet'])
+                            ? substr($submission['user']['wallet'], 0, 6) . '...' . substr($submission['user']['wallet'], -4)
                             : 'Unknown'
                         }}
                     </span>
@@ -80,12 +80,12 @@
         @endfor
     </div>
 
-    {{-- Missing badges modal (per-card state) --}}
+    {{-- Missing badges modal --}}
     @if (!empty($confirmingMissingBadges))
         <div class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
             <div class="bg-white p-6 rounded shadow-lg max-w-sm w-full">
-                <h3 class="font-semibold mb-4 text-lg">Missing Required Badge{{ count($missingBadgesList ?? []) > 1 ? 's' : '' }}</h3>
-                <p class="mb-4">You are missing the following required badge{{ count($missingBadgesList ?? []) > 1 ? 's' : '' }}:</p>
+                <h3 class="font-semibold mb-4 text-lg">Missing Required Badge{{ count($missingBadgesList) > 1 ? 's' : '' }}</h3>
+                <p class="mb-4">You are missing the following required badge{{ count($missingBadgesList) > 1 ? 's' : '' }}:</p>
 
                 <div class="mb-6 text-center">
                     @foreach ($missingBadgesList as $badge)
