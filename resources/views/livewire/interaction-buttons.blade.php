@@ -1,11 +1,11 @@
 @php
     $emojis = [
         'thumb-up' => '👍🏼',
-        'thumb-down' => '👎🏼',
-        'middle-finger' => '🖕🏼',
         'eyes' => '👀',
         'lightning' => '⚡️',
         'heart' => '💙',
+        'thumb-down' => '👎🏼',
+        'middle-finger' => '🖕🏼',
     ];
 
     // Merge default classes with passed $class property
