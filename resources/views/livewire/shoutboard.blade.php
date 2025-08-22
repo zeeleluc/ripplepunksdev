@@ -84,7 +84,11 @@
 
                     <p class="text-lg mt-2">{{ $shout->message }}</p>
 
-                    <livewire:interaction-buttons :identifier="'shout-' . $shout->id" class="my-2" />
+                    <livewire:interaction-buttons
+                        :identifier="'shout-' . $shout->id"
+                        wire:key="shout-{{ $shout->id }}"
+                        class="my-2"
+                    />
 
                     <p class="text-xs text-gray-500">{{ $shout->created_at->diffForHumans() }}</p>
 

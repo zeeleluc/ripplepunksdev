@@ -8,8 +8,7 @@
         'middle-finger' => '🖕🏼',
     ];
 
-    // Merge default classes with passed $class property
-    $wrapperClass = 'flex space-x-2';
+    $wrapperClass = 'inline-flex rounded-md overflow-hidden border border-gray-300';
     if (!empty($class)) {
         $wrapperClass .= ' ' . $class;
     }
@@ -25,15 +24,15 @@
         <button
             wire:click="toggle('{{ $type }}')"
             {{ $canInteract ? '' : 'disabled' }}
-            class="flex items-center space-x-1 px-2 py-1 rounded border
+            class="flex items-center gap-1 px-1.5 py-1 text-xs
                 {{ $canInteract
                     ? ($pressed
-                        ? 'border-primary-500 hover:bg-primary-100'
-                        : 'border-gray-300 hover:bg-gray-100')
-                    : 'border-gray-200 bg-gray-50 cursor-not-allowed' }}"
+                        ? 'bg-primary-50 text-primary-600'
+                        : 'bg-white hover:bg-gray-100 text-gray-600')
+                    : 'bg-gray-50 text-gray-400 cursor-not-allowed' }}"
         >
-            <span class="text-base {{ $pressed ? 'text-current' : 'text-gray-400' }}">{{ $emoji }}</span>
-            <span class="text-sm {{ $pressed ? 'text-primary-500 font-bold' : 'text-gray-500' }}">{{ $count }}</span>
+            <span>{{ $emoji }}</span>
+            <span class="text-xs {{ $pressed ? 'font-bold text-primary-600' : '' }}">{{ $count }}</span>
         </button>
     @endforeach
 </div>

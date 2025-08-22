@@ -19,7 +19,7 @@
                                     <div>
                                         <p class="mb-5">
                                             This asset is held in the <strong>project's wallet</strong>.<br>
-                                            Newly minted from <em>The Other Punks</em> — offers welcome starting at <strong>2 XRP</strong>.
+                                            Newly minted <em>"The Other Punks"</em> — offers welcome starting at <strong>2 XRP</strong>.
                                         </p>
 
                                         <a
@@ -48,8 +48,12 @@
                                     </table>
                                 @endif
 
-                                <div style="display: flex; justify-content: center;">
-                                    <livewire:interaction-buttons :identifier="'holders-table-' . $holder->id" class="mt-6" />
+                                <div class="flex justify-center mt-6">
+                                    <livewire:interaction-buttons
+                                        :identifier="'holders-table-' . $holder->id"
+                                        wire:key="holders-table-{{ $holder->id }}"
+                                        class="mt-6"
+                                    />
                                 </div>
 
                             </td>
