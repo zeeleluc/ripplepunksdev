@@ -49,6 +49,11 @@
                                         </tbody>
                                     </table>
                                 @endif
+
+                                <div style="display: flex; justify-content: center;">
+                                    <livewire:interaction-buttons :identifier="'holders-table-' . $holder->id" class="mt-6" />
+                                </div>
+
                             </td>
                             <td class="border px-4 py-2 align-middle text-xl text-center min-w-[100px] max-w-[100px]">
                                 {{ $holder->holdings }}

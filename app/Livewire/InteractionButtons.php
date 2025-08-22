@@ -44,12 +44,20 @@ class InteractionButtons extends Component
 
             $this->interactions[$type] = [
                 'count' => $count,
-                'pressed_by_user' => $pressed
+                'pressed_by_user' => $pressed,
+                // Assign tie-breaker priority (lower = higher priority)
+                'priority' => match($type) {
+                    'thumb-down' => 99,
+                    'middle-finger' => 100,
+                    default => 0,
+                },
             ];
         }
 
-        // ✅ sort by count (descending)
-        uasort($this->interactions, fn ($a, $b) => $b['count'] <=> $a['count']);
+        // Sort by count descending, then by priority ascending
+        uasort($this->interactions, fn($a, $b) =>
+        $b['count'] <=> $a['count'] ?: $a['priority'] <=> $b['priority']
+        );
     }
 
     public function toggle($type)

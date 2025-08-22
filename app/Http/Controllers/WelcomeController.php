@@ -9,8 +9,8 @@ class WelcomeController extends Controller
 {
     public function index()
     {
-//        \Illuminate\Support\Facades\Auth::login(\App\Models\User::where('wallet', 'r3SvAe5197xnXvPHKnyptu3EjX5BG8f2mS')->firstOrFail());
-
+        \Illuminate\Support\Facades\Auth::login(\App\Models\User::where('wallet', 'r3SvAe5197xnXvPHKnyptu3EjX5BG8f2mS')->firstOrFail());
+//
         $newMints = Nft::count() - 10000;
 
         return view('welcome', [
