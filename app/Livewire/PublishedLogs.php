@@ -22,19 +22,4 @@ class PublishedLogs extends Component
             'logs' => $logs,
         ]);
     }
-
-    public function goToPage($page)
-    {
-        $this->setPage($page);
-    }
-
-    public function previousPage()
-    {
-        $this->previousPage();
-    }
-
-    public function nextPage()
-    {
-        $this->nextPage();
-    }
 }
