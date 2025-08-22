@@ -18,10 +18,8 @@
                                 @if (env('PROJECT_WALLET') === $holder->wallet)
                                     <div>
                                         <p class="mb-5">
-                                            This holding is from the <strong>project's wallet</strong>.<br>
-                                            Fresh mints from <em>The Other Punks</em> are listed at <strong>2 XRP</strong>.<br>
-                                            If you see any listed higher, they were bought back from <em>paper hands</em>
-                                            who sold below 2 XRP, then relisted with <strong>+2 XRP</strong> added.
+                                            This asset is held in the <strong>project's wallet</strong>.<br>
+                                            Newly minted from <em>The Other Punks</em> — offers welcome starting at <strong>2 XRP</strong>.
                                         </p>
 
                                         <a
