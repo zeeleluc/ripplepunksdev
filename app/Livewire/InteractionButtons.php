@@ -28,6 +28,7 @@ class InteractionButtons extends Component
     public function loadInteractions()
     {
         $types = ['thumb-up','thumb-down','middle-finger','eyes','lightning','heart'];
+
         foreach ($types as $type) {
             $count = Interaction::where('identifier', $this->identifier)
                 ->where('type', $type)
@@ -46,6 +47,9 @@ class InteractionButtons extends Component
                 'pressed_by_user' => $pressed
             ];
         }
+
+        // ✅ sort by count (descending)
+        uasort($this->interactions, fn ($a, $b) => $b['count'] <=> $a['count']);
     }
 
     public function toggle($type)

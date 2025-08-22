@@ -16,10 +16,11 @@
 @endphp
 
 <div class="{{ $wrapperClass }}">
-    @foreach($emojis as $type => $emoji)
+    @foreach($interactions as $type => $data)
         @php
-            $count = $interactions[$type]['count'] ?? 0;
-            $pressed = $interactions[$type]['pressed_by_user'] ?? false;
+            $emoji = $emojis[$type] ?? '';
+            $count = $data['count'];
+            $pressed = $data['pressed_by_user'];
         @endphp
         <button
             wire:click="toggle('{{ $type }}')"
