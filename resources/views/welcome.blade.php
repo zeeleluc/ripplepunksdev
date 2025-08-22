@@ -18,7 +18,7 @@
             <div class="flex flex-col items-center gap-2 sm:gap-3 text-center w-full">
                 <a
                     target="_blank"
-                    href="https://xrp.cafe/usercollection/r3SvAe5197xnXvPHKnyptu3EjX5BG8f2mS/r3SvAe5197xnXvPHKnyptu3EjX5BG8f2mS/604"
+                    href="https://xrp.cafe/usercollection/r3SvAe5197xnXvPHKnyptu3EjX5BG8f2mS/r3SvAe5197xnXvPHKnyptu3EjX5BG8f2mS/604/0/rarity%20high/false/"
                     class="w-full max-w-xs sm:w-auto mx-auto bg-yellow-500 hover:bg-yellow-600 text-white text-sm sm:text-lg font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded-lg shadow"
                 >
                     Buy The Other Punks
@@ -47,6 +47,10 @@
                 <a href="/holders"
                    class="w-full sm:w-auto bg-primary-600 hover:bg-primary-500 text-white text-sm sm:text-base font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded-lg shadow text-center">
                     Holders
+                </a>
+                <a target="_blank" href="https://discord.gg/TmHWFSHdSn"
+                   class="w-full sm:w-auto bg-primary-500 hover:bg-primary-400 text-white text-sm sm:text-base font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded-lg shadow text-center">
+                    Discord
                 </a>
             </div>
         </div>
