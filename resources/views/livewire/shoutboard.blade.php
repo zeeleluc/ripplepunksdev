@@ -17,7 +17,7 @@
         @endif
 
         <!-- Create / Edit Form -->
-        @if (Auth::check() && Auth::user()->holder?->walletHasSticker(Auth::user()->wallet, 'Other Punk'))
+        @if (Auth::check() && Auth::user()->holder?->hasBadge('Other Punk'))
             <form wire:submit.prevent="{{ $editingId ? 'updateShout' : 'postShout' }}">
                 <textarea wire:model.defer="{{ $editingId ? 'editingMessage' : 'message' }}"
                           placeholder="Say something..."
@@ -83,9 +83,12 @@
                     @endif
 
                     <p class="text-lg mt-2">{{ $shout->message }}</p>
+
+                    <livewire:interaction-buttons :identifier="'shout-' . $shout->id" class="my-2" />
+
                     <p class="text-xs text-gray-500">{{ $shout->created_at->diffForHumans() }}</p>
 
-                    @if (Auth::check() && $shout->wallet === Auth::user()->wallet && Auth::user()->holder?->walletHasSticker(Auth::user()->wallet, 'Other Punk'))
+                    @if (Auth::check() && $shout->wallet === Auth::user()->wallet && Auth::user()->holder?->hasBadge('Other Punk'))
                         @if ($shout->created_at->gt(now()->subHour()))
                             <div class="mt-2">
                                 <button wire:click="editShout({{ $shout->id }})"
@@ -109,7 +112,7 @@
                 $shoutToDelete = $shouts->firstWhere('id', $confirmingDeletionId);
             @endphp
 
-            @if ($shoutToDelete && $shoutToDelete->wallet === Auth::user()->wallet && Auth::user()->holder?->walletHasSticker(Auth::user()->wallet, 'Other Punk'))
+            @if ($shoutToDelete && $shoutToDelete->wallet === Auth::user()->wallet && Auth::user()->holder?->hasBadge('Other Punk'))
                 <div class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
                     <div class="bg-white p-6 rounded shadow-lg max-w-sm w-full">
                         <p class="mb-4">Are you sure you want to delete this shout?</p>

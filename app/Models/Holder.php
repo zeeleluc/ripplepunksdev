@@ -23,9 +23,9 @@ class Holder extends Model
         return $this->hasMany(Nft::class, 'owner', 'wallet');
     }
 
-    public function walletHasSticker(string $wallet, string $sticker): bool
+    public function hasBadge(string $badge): bool
     {
-        return in_array($sticker, $this->badges, true);
+        return in_array($badge, $this->badges, true);
     }
 
     /**

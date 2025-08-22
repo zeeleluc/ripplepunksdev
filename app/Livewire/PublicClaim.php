@@ -67,7 +67,7 @@ class PublicClaim extends Component
         $missingBadges = [];
 
         foreach ($requiredBadges as $badge) {
-            if (!$holder || !$holder->walletHasSticker($userWallet, $badge)) {
+            if (!$holder || !$holder->hasBadge($badge)) {
                 $missingBadges[] = $badge;
             }
         }

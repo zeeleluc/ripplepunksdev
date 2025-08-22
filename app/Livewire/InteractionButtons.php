@@ -1,0 +1,80 @@
+<?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+use Illuminate\Support\Facades\Auth;
+use App\Models\Interaction;
+
+class InteractionButtons extends Component
+{
+    public $identifier;
+    public $class = '';
+    public $canInteract = false;
+    public $interactions = [];
+
+    public function mount($identifier, $class = '')
+    {
+        $this->identifier = $identifier;
+        $this->class = $class;
+
+        $holder = optional(Auth::user())->holder;
+
+        $this->canInteract = Auth::check() && $holder && $holder->hasBadge('Punk');
+
+        $this->loadInteractions();
+    }
+
+    public function loadInteractions()
+    {
+        $types = ['thumb-up','thumb-down','middle-finger','eyes','lightning','heart'];
+        foreach ($types as $type) {
+            $count = Interaction::where('identifier', $this->identifier)
+                ->where('type', $type)
+                ->count();
+
+            $pressed = false;
+            if (Auth::check() && optional(Auth::user()->holder)->id) {
+                $pressed = Interaction::where('identifier', $this->identifier)
+                    ->where('type', $type)
+                    ->where('holder_id', Auth::user()->holder->id)
+                    ->exists();
+            }
+
+            $this->interactions[$type] = [
+                'count' => $count,
+                'pressed_by_user' => $pressed
+            ];
+        }
+    }
+
+    public function toggle($type)
+    {
+        if (!$this->canInteract) return;
+
+        $holderId = Auth::user()->holder->id;
+
+        $interaction = Interaction::where('identifier', $this->identifier)
+            ->where('type', $type)
+            ->where('holder_id', $holderId)
+            ->first();
+
+        if ($interaction) {
+            $interaction->delete();
+        } else {
+            Interaction::create([
+                'identifier' => $this->identifier,
+                'type' => $type,
+                'holder_id' => $holderId,
+                'interacted_at' => now(),
+            ]);
+        }
+
+        $this->loadInteractions();
+    }
+
+    public function render()
+    {
+        return view('livewire.interaction-buttons');
+    }
+}

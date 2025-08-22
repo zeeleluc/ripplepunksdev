@@ -30,7 +30,7 @@ class Shoutboard extends Component
 
         $holder = Holder::where('wallet', Auth::user()->wallet)->first();
 
-        if (!$holder || !$holder->walletHasSticker(Auth::user()->wallet, 'Other Punk')) {
+        if (!$holder || !$holder->hasBadge('Other Punk')) {
             abort(403, 'You need the "Other Punk" badge to use the shoutboard.');
         }
     }
