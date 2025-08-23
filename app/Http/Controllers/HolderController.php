@@ -22,6 +22,6 @@ class HolderController extends Controller
     {
         $holder = Holder::where('wallet', $wallet)->first();
 
-        return view('holders.show', compact('holder'));
+        return view('holders.show', compact('holder', 'wallet'));
     }
 }

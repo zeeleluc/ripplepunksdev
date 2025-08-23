@@ -9,8 +9,7 @@ use App\Http\Controllers\{
     HolderController,
     LogController,
     BadgeController,
-    ClaimController,
-    ProfileController
+    ClaimController
 };
 use App\Http\Controllers\Admin\LogEntryController;
 use App\Http\Controllers\Admin\ClaimController as AdminClaimController;
