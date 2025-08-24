@@ -6,21 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Nft extends Model
 {
-    protected $fillable = [
-        'nftoken_id',
-        'issuer',
-        'owner',
-        'nftoken_taxon',
-        'transfer_fee',
-        'uri',
-        'url',
-        'flags',
-        'assets',
-        'metadata',
-        'sequence',
-        'name',
-        'nft_id',
-    ];
+    // ✅ Allow all columns to be mass assignable (safe in this case because
+    // you're controlling the input via your sync command)
+    protected $guarded = [];
 
     protected $casts = [
         'flags' => 'array',
