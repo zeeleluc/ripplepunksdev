@@ -25,6 +25,8 @@
                 </a>
                 <p class="text-gray-700 text-xs sm:text-base leading-snug sm:leading-normal px-4 sm:px-0">
                     Newly minted <em>"The Other Punks"</em> — offers welcome starting at <strong>2 XRP</strong>.
+                    <br />
+                    (Listings are set higher to support a rising floor and benefit holders, but 2 XRP offers are still gladly accepted into the project wallet.)
                 </p>
             </div>
         </div>
