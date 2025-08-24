@@ -68,7 +68,7 @@ class Punks extends Component
                 ->where($this->accessory, '!=', false);
         }
 
-        $nfts = $query->paginate(64);
+        $nfts = $query->paginate(12);
 
         // Filters data for selects
         $colors = Nft::select('color')
