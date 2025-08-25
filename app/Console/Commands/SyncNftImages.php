@@ -18,19 +18,26 @@ class SyncNftImages extends Command
 
     public function handle()
     {
-        // Fetch NFTs where has_image is false or null
+        // Total NFTs that still have has_image = false or null
+        $totalMissing = Nft::where('has_image', false)
+            ->orWhereNull('has_image')
+            ->count();
+
+        SlackNotifier::info("Total NFTs with has_image = false: {$totalMissing}");
+
+        if ($totalMissing === 0) {
+            SlackNotifier::info("🎉 All NFTs already synced.");
+            return;
+        }
+
+        // Fetch up to 100 NFTs for this run
         $nfts = Nft::where('has_image', false)
             ->orWhereNull('has_image')
             ->limit($this->limit)
             ->get();
 
-        $total = $nfts->count();
-        SlackNotifier::info("Total NFTs to process: {$total}");
-
-        if ($total === 0) {
-            SlackNotifier::info("🎉 All NFTs already synced.");
-            return;
-        }
+        $totalToProcess = $nfts->count();
+        SlackNotifier::info("Processing up to {$totalToProcess} NFTs in this run...");
 
         foreach ($nfts as $nft) {
             $metadata = $nft->metadata ?? [];
@@ -70,6 +77,6 @@ class SyncNftImages extends Command
             }
         }
 
-        SlackNotifier::info("✅ NFT image sync run complete. Processed {$total} NFTs.");
+        SlackNotifier::info("✅ NFT image sync run complete. Processed {$totalToProcess} NFTs.");
     }
 }
