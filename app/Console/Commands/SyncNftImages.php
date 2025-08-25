@@ -92,17 +92,12 @@ class SyncNftImages extends Command
 
                     $nft->has_image = true;
                     $nft->save();
-
-                    SlackNotifier::info("⬆️ Uploaded: {$path}");
-                },
+                    },
                 function ($reason) use ($client, $urls, $nft, $path, $retries) {
                     if ($retries > 0) {
                         sleep(2);
-                        SlackNotifier::info("🔄 Retrying NFT {$nft->nft_id}...");
                         return $this->fetchWithRetries($client, $urls, $nft, $path, $retries - 1);
                     }
-
-                    SlackNotifier::error("❌ Could not fetch NFT {$nft->nft_id}: " . $reason->getMessage());
                 }
             );
     }
