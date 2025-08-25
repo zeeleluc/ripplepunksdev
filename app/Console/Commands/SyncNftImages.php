@@ -21,66 +21,70 @@ class SyncNftImages extends Command
     {
         $missingCount = Nft::where('has_image', false)->orWhereNull('has_image')->count();
 
+        SlackNotifier::info("Total NFTs missing images: {$missingCount}");
+
         if ($missingCount === 0) {
             SlackNotifier::info("🎉 All NFTs already synced.");
             return;
         }
 
-        SlackNotifier::info("Found {$missingCount} NFTs missing images. Starting sync...");
-
-        Nft::where('has_image', false)
+        // Grab only 100 NFTs that haven't been synced
+        $nfts = Nft::where('has_image', false)
             ->orWhereNull('has_image')
-            ->chunk(100, function ($nfts) {
-                $client = new Client([
-                    'timeout' => 20,
-                    'headers' => [
-                        'User-Agent' => $this->randomUserAgent(),
-                        'Accept' => 'image/*,*/*;q=0.8',
-                        'Accept-Language' => 'en-US,en;q=0.9',
-                        'Connection' => 'keep-alive',
-                    ],
-                ]);
+            ->limit(100)
+            ->get();
 
+        SlackNotifier::info("Processing " . $nfts->count() . " NFTs...");
+
+        $client = new Client([
+            'timeout' => 20,
+            'headers' => [
+                'User-Agent' => $this->randomUserAgent(),
+                'Accept' => 'image/*,*/*;q=0.8',
+                'Accept-Language' => 'en-US,en;q=0.9',
+                'Connection' => 'keep-alive',
+            ],
+        ]);
+
+        $promises = [];
+        $active = 0;
+
+        foreach ($nfts as $nft) {
+            $metadata = $nft->metadata ?? [];
+            $imageUrl = $metadata['image'] ?? null;
+
+            if (!$imageUrl) continue;
+
+            $path = "ogs/{$nft->nft_id}.png";
+
+            // First check if already exists on DO
+            if (Storage::disk('spaces')->exists($path)) {
+                $this->line("✅ NFT {$nft->nft_id} already exists on DO");
+
+                if (!$nft->has_image) {
+                    $nft->has_image = true;
+                    $nft->save();
+                }
+                continue;
+            }
+
+            $urls = $this->resolveUrls($imageUrl);
+
+            $promises[] = $this->fetchWithRetries($client, $urls, $nft, $path, $this->maxRetries);
+
+            $active++;
+            if ($active >= $this->concurrency) {
+                Promise\Utils::settle($promises)->wait();
                 $promises = [];
                 $active = 0;
+            }
+        }
 
-                foreach ($nfts as $nft) {
-                    $metadata = $nft->metadata ?? [];
-                    $imageUrl = $metadata['image'] ?? null;
+        if (!empty($promises)) {
+            Promise\Utils::settle($promises)->wait();
+        }
 
-                    if (!$imageUrl) continue;
-
-                    $path = "ogs/{$nft->nft_id}.png";
-
-                    // First check if already exists on DO
-                    if (Storage::disk('spaces')->exists($path)) {
-                        $this->line("✅ NFT {$nft->nft_id} already exists on DO");
-
-                        if (!$nft->has_image) {
-                            $nft->has_image = true;
-                            $nft->save();
-                        }
-                        continue;
-                    }
-
-                    $urls = $this->resolveUrls($imageUrl);
-
-                    $promises[] = $this->fetchWithRetries($client, $urls, $nft, $path, $this->maxRetries);
-
-                    $active++;
-                    if ($active >= $this->concurrency) {
-                        Promise\Utils::settle($promises)->wait();
-                        $promises = [];
-                        $active = 0;
-                    }
-                }
-
-                if (!empty($promises)) {
-                    Promise\Utils::settle($promises)->wait();
-                }
-            });
-
-        SlackNotifier::info("✅ Sync complete.");
+        SlackNotifier::info("✅ Batch sync complete for this run.");
     }
 
     private function fetchWithRetries(Client $client, array $urls, $nft, string $path, int $retries)

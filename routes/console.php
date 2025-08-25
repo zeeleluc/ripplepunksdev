@@ -10,5 +10,5 @@ if (app()->environment('prod')) {
     ])->everyFifteenMinutes();
 
     Schedule::command('holders:sync')->everyMinute();
-    Schedule::command('nfts:sync-images')->everySixHours();
+    Schedule::command('nfts:sync-images')->everyThirtyMinutes();
 }
