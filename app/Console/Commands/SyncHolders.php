@@ -25,49 +25,46 @@ class SyncHolders extends Command
 
             if ($count > 0) {
                 $holder = Holder::firstOrNew(['wallet' => $wallet]);
-
-                $badges = Holder::calculateBadges($wallet);
-
                 $oldHoldings = $holder->holdings ?? 0;
 
-                $holder->badges = $badges;
+                $holder->badges = Holder::calculateBadges($wallet);
                 $holder->holdings = $count;
                 $holder->last_seen_at = now();
                 $holder->save();
 
                 $processed[] = $wallet;
 
-                if (!$holder->wasRecentlyCreated && $oldHoldings != $count) {
-                    $updatedCount++;
-                    SlackNotifier::info("Holder updated: {$wallet} – holdings changed from {$oldHoldings} to {$count}");
-                }
-
                 if ($holder->wasRecentlyCreated) {
                     $addedCount++;
                     SlackNotifier::info("New holder added: {$wallet} – holdings: {$count}");
+                } elseif ($oldHoldings != $count) {
+                    $updatedCount++;
+                    SlackNotifier::info("Holder updated: {$wallet} – holdings changed from {$oldHoldings} to {$count}");
                 }
             }
         }
 
-        // Remove holders with no NFTs anymore
+        // Handle holders with no NFTs anymore
         $deleted = Holder::whereNotIn('wallet', $processed)->get();
         $deletedCount = $deleted->count();
 
-        foreach ($deleted as $holder) {
-            SlackNotifier::warning("Holder removed: {$holder->wallet} – no NFTs remaining");
+        if ($deletedCount > 0) {
+            foreach ($deleted as $holder) {
+                SlackNotifier::warning("Holder removed: {$holder->wallet} – no NFTs remaining");
+            }
+            Holder::whereNotIn('wallet', $processed)->delete();
         }
 
-        Holder::whereNotIn('wallet', $processed)->delete();
-
-        $totalProcessed = count($processed);
-
-        SlackNotifier::info(
-            "Holder sync completed ✅\n" .
-            "Total processed: {$totalProcessed}\n" .
-            "Added: {$addedCount}\n" .
-            "Updated: {$updatedCount}\n" .
-            "Removed: {$deletedCount}"
-        );
+        // Send summary only if there are any changes
+        if ($addedCount > 0 || $updatedCount > 0 || $deletedCount > 0) {
+            SlackNotifier::info(
+                "Holder sync completed ✅\n" .
+                "Total processed: " . count($processed) . "\n" .
+                "Added: {$addedCount}\n" .
+                "Updated: {$updatedCount}\n" .
+                "Removed: {$deletedCount}"
+            );
+        }
 
         return Command::SUCCESS;
     }
