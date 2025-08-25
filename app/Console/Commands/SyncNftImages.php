@@ -54,6 +54,8 @@ class SyncNftImages extends Command
 
                     // First check if already exists on DO
                     if (Storage::disk('spaces')->exists($path)) {
+                        $this->line("✅ NFT {$nft->nft_id} already exists on DO");
+
                         if (!$nft->has_image) {
                             $nft->has_image = true;
                             $nft->save();
@@ -100,8 +102,6 @@ class SyncNftImages extends Command
                         sleep(2);
                         return $this->fetchWithRetries($client, $urls, $nft, $path, $retries - 1);
                     }
-
-                    SlackNotifier::warning("❌ Could not fetch NFT {$nft->nft_id}: " . $reason->getMessage());
                 }
             );
     }
