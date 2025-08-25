@@ -5,12 +5,13 @@ namespace App\Livewire;
 use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\Nft;
+use Illuminate\Support\Facades\Storage;
 
 class NftGrid extends Component
 {
     use WithPagination;
 
-    public ?string $owner = null; // optional parameter
+    public ?string $owner = null;
 
     public function mount($owner = null)
     {
@@ -32,10 +33,15 @@ class NftGrid extends Component
         ]);
     }
 
-    public function ipfsToHttp($url)
+    public function getImageUrl($nft)
     {
-        return str_starts_with($url, 'ipfs://')
-            ? 'https://ipfs.io/ipfs/' . substr($url, 7)
-            : $url;
+        $path = "ogs/{$nft->nft_id}.png";
+
+        if (Storage::disk('spaces')->exists($path)) {
+            return Storage::disk('spaces')->url($path);
+        }
+
+        // Return a placeholder image if the file doesn't exist
+        return asset('images/nft-placeholder.png');
     }
 }

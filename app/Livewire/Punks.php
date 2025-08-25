@@ -6,6 +6,7 @@ use App\Models\Nft;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Storage;
 
 class Punks extends Component
 {
@@ -25,7 +26,6 @@ class Punks extends Component
 
     public function mount()
     {
-        // Initialize filters from query string
         $this->color = request()->query('color', '');
         $this->type = request()->query('type', '');
         $this->totalAccessories = request()->query('totalAccessories', '');
@@ -34,7 +34,6 @@ class Punks extends Component
 
     public function updating($name, $value)
     {
-        // Reset pagination when any filter changes
         if (in_array($name, ['color', 'type', 'totalAccessories', 'accessory'])) {
             $this->resetPage();
         }
@@ -42,7 +41,6 @@ class Punks extends Component
 
     public function render()
     {
-        // Cache column listing for performance
         static $columns = null;
         if ($columns === null) {
             $columns = Schema::getColumnListing('nfts');
@@ -50,7 +48,6 @@ class Punks extends Component
 
         $query = Nft::query()->orderBy('nft_id', 'desc');
 
-        // Apply filters
         if ($this->color && in_array('color', $columns)) {
             $query->where('color', $this->color);
         }
@@ -70,27 +67,9 @@ class Punks extends Component
 
         $nfts = $query->paginate(10);
 
-        // Filters data for selects
-        $colors = Nft::select('color')
-            ->distinct()
-            ->pluck('color')
-            ->filter()
-            ->sort()
-            ->values();
-
-        $types = Nft::select('type')
-            ->distinct()
-            ->pluck('type')
-            ->filter()
-            ->sort()
-            ->values();
-
-        $totals = Nft::select('total_accessories')
-            ->distinct()
-            ->pluck('total_accessories')
-            ->filter()
-            ->sort()
-            ->values();
+        $colors = Nft::select('color')->distinct()->pluck('color')->filter()->sort()->values();
+        $types = Nft::select('type')->distinct()->pluck('type')->filter()->sort()->values();
+        $totals = Nft::select('total_accessories')->distinct()->pluck('total_accessories')->filter()->sort()->values();
 
         $excluded = [
             'id', 'nftoken_id', 'issuer', 'owner', 'nftoken_taxon', 'transfer_fee',
@@ -108,10 +87,15 @@ class Punks extends Component
         ]);
     }
 
-    public function ipfsToHttp($url)
+    public function getImageUrl($nft)
     {
-        return str_starts_with($url, 'ipfs://')
-            ? 'https://ipfs.io/ipfs/' . substr($url, 7)
-            : $url;
+        $path = "ogs/{$nft->nft_id}.png";
+
+        if (Storage::disk('spaces')->exists($path)) {
+            return Storage::disk('spaces')->url($path);
+        }
+
+        // Placeholder image if not in Spaces
+        return asset('images/nft-placeholder.png');
     }
 }

@@ -1,15 +1,14 @@
 <?php
 
-use Illuminate\Console\Scheduling\Schedule;
-
-$schedule = app(Schedule::class);
+use Illuminate\Support\Facades\Schedule;
 
 // ========== Production ==========
 if (app()->environment('prod')) {
-    $schedule->command('nfts:sync', [
+    Schedule::command('nfts:sync', [
         '--issuer' => 'r3SvAe5197xnXvPHKnyptu3EjX5BG8f2mS',
         '--taxon'  => '604',
-    ])->cron('*/20 * * * *'); // runs every 20 minutes
+    ])->everyFifteenMinutes();
 
-    $schedule->command('holders:sync')->everyMinute();
+    Schedule::command('holders:sync')->everyMinute();
+    Schedule::command('nfts:sync-images')->everyThirtyMinutes();
 }
