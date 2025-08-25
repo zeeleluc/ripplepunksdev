@@ -34,8 +34,6 @@ class SyncNftImages extends Command
             ->limit(100)
             ->get();
 
-        SlackNotifier::info("Processing " . $nfts->count() . " NFTs...");
-
         $client = new Client([
             'timeout' => 20,
             'headers' => [
@@ -83,8 +81,6 @@ class SyncNftImages extends Command
         if (!empty($promises)) {
             Promise\Utils::settle($promises)->wait();
         }
-
-        SlackNotifier::info("✅ Batch sync complete for this run.");
     }
 
     private function fetchWithRetries(Client $client, array $urls, $nft, string $path, int $retries)
