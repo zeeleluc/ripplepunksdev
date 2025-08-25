@@ -4,136 +4,63 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Http;
 use App\Models\Nft;
-use GuzzleHttp\Client;
-use GuzzleHttp\Promise;
 use App\Helpers\SlackNotifier;
 
 class SyncNftImages extends Command
 {
     protected $signature = 'nfts:sync-images';
-    protected $description = 'Sync missing NFT images to DigitalOcean Spaces as .png with retries and limited concurrency';
-
-    protected int $concurrency = 20;
-    protected int $maxRetries = 2;
+    protected $description = 'Sync missing NFT images to DigitalOcean Spaces as .png';
 
     public function handle()
     {
-        $missingCount = Nft::where('has_image', false)->orWhereNull('has_image')->count();
-
-        SlackNotifier::info("Total NFTs missing images: {$missingCount}");
-
-        if ($missingCount === 0) {
-            SlackNotifier::info("🎉 All NFTs already synced.");
-            return;
-        }
-
-        // Grab only 100 NFTs that haven't been synced
         $nfts = Nft::where('has_image', false)
             ->orWhereNull('has_image')
             ->limit(100)
             ->get();
 
-        $client = new Client([
-            'timeout' => 20,
-            'headers' => [
-                'User-Agent' => $this->randomUserAgent(),
-                'Accept' => 'image/*,*/*;q=0.8',
-                'Accept-Language' => 'en-US,en;q=0.9',
-                'Connection' => 'keep-alive',
-            ],
-        ]);
+        $total = $nfts->count();
+        SlackNotifier::info("Total NFTs to process: {$total}");
 
-        $promises = [];
-        $active = 0;
+        if ($total === 0) {
+            SlackNotifier::info("🎉 All NFTs already synced.");
+            return;
+        }
 
         foreach ($nfts as $nft) {
             $metadata = $nft->metadata ?? [];
             $imageUrl = $metadata['image'] ?? null;
-
-            if (!$imageUrl) continue;
-
             $path = "ogs/{$nft->nft_id}.png";
 
-            // First check if already exists on DO
-            if (Storage::disk('spaces')->exists($path)) {
-                $this->line("✅ NFT {$nft->nft_id} already exists on DO");
-
-                if (!$nft->has_image) {
-                    $nft->has_image = true;
-                    $nft->save();
-                }
+            if (!$imageUrl) {
+                $this->line("⚠️ NFT {$nft->nft_id} has no image URL, skipping.");
                 continue;
             }
 
-            $urls = $this->resolveUrls($imageUrl);
+            // Already exists on DO
+            if (Storage::disk('spaces')->exists($path)) {
+                $nft->has_image = true;
+                $nft->save();
+                $this->line("✅ NFT {$nft->nft_id} already exists on DO");
+                continue;
+            }
 
-            $promises[] = $this->fetchWithRetries($client, $urls, $nft, $path, $this->maxRetries);
-
-            $active++;
-            if ($active >= $this->concurrency) {
-                Promise\Utils::settle($promises)->wait();
-                $promises = [];
-                $active = 0;
+            try {
+                $response = Http::get($imageUrl);
+                if ($response->ok()) {
+                    Storage::disk('spaces')->put($path, $response->body(), 'public');
+                    $nft->has_image = true;
+                    $nft->save();
+                    $this->line("⬆️ Uploaded NFT {$nft->nft_id}");
+                } else {
+                    $this->line("❌ Failed to fetch NFT {$nft->nft_id}");
+                }
+            } catch (\Exception $e) {
+                $this->line("❌ Error fetching NFT {$nft->nft_id}: " . $e->getMessage());
             }
         }
 
-        if (!empty($promises)) {
-            Promise\Utils::settle($promises)->wait();
-        }
-    }
-
-    private function fetchWithRetries(Client $client, array $urls, $nft, string $path, int $retries)
-    {
-        $url = $urls[0]; // try first URL only
-
-        return $client->getAsync($url)
-            ->then(
-                function ($response) use ($nft, $path) {
-                    if ($response->getStatusCode() !== 200) return;
-
-                    Storage::disk('spaces')->put($path, $response->getBody()->getContents(), 'public');
-
-                    $nft->has_image = true;
-                    $nft->save();
-                },
-                function ($reason) use ($client, $urls, $nft, $path, $retries) {
-                    if ($retries > 0) {
-                        sleep(2);
-                        return $this->fetchWithRetries($client, $urls, $nft, $path, $retries - 1);
-                    }
-                }
-            );
-    }
-
-    private function resolveUrls(string $url): array
-    {
-        if (str_starts_with($url, 'ipfs://')) {
-            $cidPath = substr($url, 7);
-            $encodedUri = urlencode("ipfs://{$cidPath}");
-
-            return [
-                "https://ipfs.io/ipfs/{$cidPath}",
-                "https://cloudflare-ipfs.com/ipfs/{$cidPath}",
-                "https://gateway.pinata.cloud/ipfs/{$cidPath}",
-                "https://nftstorage.link/ipfs/{$cidPath}",
-                "https://image-cdn-v2.bidds.com/api/image/?uri={$encodedUri}&collection=27779563&width=1000",
-            ];
-        }
-
-        return [$url];
-    }
-
-    private function randomUserAgent(): string
-    {
-        $agents = [
-            'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:117.0) Gecko/20100101 Firefox/117.0',
-            'Mozilla/5.0 (Macintosh; Intel Mac OS X 13_4) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.5 Safari/605.1.15',
-            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36',
-            'Mozilla/5.0 (iPhone; CPU iPhone OS 16_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.5 Mobile Safari/605.1.15',
-            'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36',
-        ];
-
-        return $agents[array_rand($agents)];
+        SlackNotifier::info("✅ NFT image sync run complete.");
     }
 }
