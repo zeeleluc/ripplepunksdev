@@ -78,6 +78,7 @@ class PublicClaim extends Component
             return;
         }
 
+        // Create the claim submission
         ClaimSubmission::create([
             'claim_id' => $this->claim->id,
             'user_id' => Auth::id(),
@@ -87,6 +88,13 @@ class PublicClaim extends Component
         $this->hasClaimed = true;
         $this->message = 'You claimed successfully!';
         $this->loadSubmissions();
+
+        // --- Slack Notification ---
+        \App\Helpers\SlackNotifier::info(
+            "🎉 New claim!\n" .
+            "User: " . Auth::user()->name . " ({$userWallet})\n" .
+            "Claim: {$this->claim->title} (ID: {$this->claim->id})"
+        );
     }
 
     public function render()

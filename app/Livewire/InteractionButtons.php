@@ -80,6 +80,21 @@ class InteractionButtons extends Component
                 'holder_id' => $holderId,
                 'interacted_at' => now(),
             ]);
+
+            $emojiMap = [
+                'thumb-up' => '👍🏼',
+                'eyes' => '👀',
+                'lightning' => '⚡️',
+                'heart' => '💙',
+                'thumb-down' => '👎🏼',
+                'middle-finger' => '🖕🏼',
+            ];
+
+            $emoji = $emojiMap[$type] ?? $type;
+
+            \App\Helpers\SlackNotifier::info("{$emoji} pressed by " . Auth::user()->wallet . " on '{$this->identifier}'", false);
+
+
         }
 
         $this->loadInteractions();
