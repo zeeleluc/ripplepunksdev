@@ -48,18 +48,20 @@ class SyncNftImages extends Command
                     $metadata = $nft->metadata ?? [];
                     $imageUrl = $metadata['image'] ?? null;
 
-                    if (!$imageUrl) {
+                    if (!$imageUrl) continue;
+
+                    $path = "ogs/{$nft->nft_id}.png";
+
+                    // First check if already exists on DO
+                    if (Storage::disk('spaces')->exists($path)) {
+                        if (!$nft->has_image) {
+                            $nft->has_image = true;
+                            $nft->save();
+                        }
                         continue;
                     }
 
                     $urls = $this->resolveUrls($imageUrl);
-                    $path = "ogs/{$nft->nft_id}.png";
-
-                    if (Storage::disk('spaces')->exists($path)) {
-                        $nft->has_image = true;
-                        $nft->save();
-                        continue;
-                    }
 
                     $promises[] = $this->fetchWithRetries($client, $urls, $nft, $path, $this->maxRetries);
 
@@ -81,7 +83,7 @@ class SyncNftImages extends Command
 
     private function fetchWithRetries(Client $client, array $urls, $nft, string $path, int $retries)
     {
-        $url = $urls[0];
+        $url = $urls[0]; // try first URL only
 
         return $client->getAsync($url)
             ->then(
@@ -92,12 +94,14 @@ class SyncNftImages extends Command
 
                     $nft->has_image = true;
                     $nft->save();
-                    },
+                },
                 function ($reason) use ($client, $urls, $nft, $path, $retries) {
                     if ($retries > 0) {
                         sleep(2);
                         return $this->fetchWithRetries($client, $urls, $nft, $path, $retries - 1);
                     }
+
+                    SlackNotifier::warning("❌ Could not fetch NFT {$nft->nft_id}: " . $reason->getMessage());
                 }
             );
     }
