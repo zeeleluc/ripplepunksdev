@@ -15,6 +15,7 @@ class Nft extends Model
         'assets' => 'array',
         'metadata' => 'array',
         'burned_at' => 'datetime',
+        'has_image' => 'bool',
     ];
 
     public static function ctoWalletCount(): int
