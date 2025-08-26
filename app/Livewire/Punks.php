@@ -70,7 +70,9 @@ class Punks extends Component
 
     public function render()
     {
-        $columns = Cache::remember('nft_columns', now()->addDay(), fn() => Nft::getTableColumns());
+        $columns = Cache::remember('nft_columns', now()->addDay(), function () {
+            return Schema::getColumnListing((new Nft)->getTable());
+        });
 
         $query = Nft::query()->orderBy('nft_id', 'desc');
 
