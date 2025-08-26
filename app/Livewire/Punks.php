@@ -18,6 +18,7 @@ class Punks extends Component
     public $selectedAccessories = [];
     public $tempSelectedAccessories = [];
     public $showAccessoryModal = false;
+    public $openingModal = false;
     public $applyingFilters = false;
 
     protected $queryString = [
@@ -39,11 +40,15 @@ class Punks extends Component
     public function updatingType() { $this->resetPage(); }
     public function updatingTotalAccessories() { $this->resetPage(); }
 
-    // Open modal instantly
+    // Open modal with loading spinner
     public function openAccessoryModal()
     {
+        $this->openingModal = true;                 // Show spinner
         $this->tempSelectedAccessories = $this->selectedAccessories;
+
+        $this->dispatch('open-modal'); // Trigger modal immediately on frontend
         $this->showAccessoryModal = true;
+        $this->openingModal = false;               // Remove spinner
     }
 
     // Close modal instantly
@@ -52,18 +57,14 @@ class Punks extends Component
         $this->showAccessoryModal = false;
     }
 
-    // Apply filters and close modal
+    // Apply filters
     public function applyFilters()
     {
         $this->applyingFilters = true;
 
-        // Update selected accessories
         $this->selectedAccessories = array_values($this->tempSelectedAccessories);
 
-        // Close modal immediately
         $this->showAccessoryModal = false;
-
-        // Reset pagination
         $this->resetPage();
 
         $this->applyingFilters = false;
@@ -78,41 +79,23 @@ class Punks extends Component
 
         $query = Nft::query()->orderBy('nft_id', 'desc');
 
-        if ($this->color && in_array('color', $columns)) {
-            $query->where('color', $this->color);
-        }
-
-        if ($this->type && in_array('type', $columns)) {
-            $query->where('type', $this->type);
-        }
-
-        if ($this->totalAccessories !== '' && in_array('total_accessories', $columns)) {
-            $query->where('total_accessories', (int) $this->totalAccessories);
-        }
+        if ($this->color && in_array('color', $columns)) $query->where('color', $this->color);
+        if ($this->type && in_array('type', $columns)) $query->where('type', $this->type);
+        if ($this->totalAccessories !== '' && in_array('total_accessories', $columns)) $query->where('total_accessories', (int)$this->totalAccessories);
 
         foreach ($this->selectedAccessories as $accessory) {
-            if (in_array($accessory, $columns)) {
-                $query->where($accessory, true);
-            }
+            if (in_array($accessory, $columns)) $query->where($accessory, true);
         }
 
         $nfts = $query->paginate(25);
 
         $colors = Nft::select('color')->distinct()->pluck('color')->filter()->sort()->values();
         $types = Nft::select('type')->distinct()->pluck('type')->filter()->sort()->values();
-        $totals = Nft::select('total_accessories')
-            ->distinct()
-            ->pluck('total_accessories')
-            ->filter(fn($v) => $v !== null)
-            ->push(0)
-            ->unique()
-            ->sort()
-            ->values();
+        $totals = Nft::select('total_accessories')->distinct()->pluck('total_accessories')->filter(fn($v) => $v !== null)->push(0)->unique()->sort()->values();
 
         $excluded = [
-            'id', 'nftoken_id', 'issuer', 'owner', 'nftoken_taxon', 'transfer_fee',
-            'uri', 'url', 'flags', 'assets', 'metadata', 'sequence', 'name', 'nft_id',
-            'created_at', 'updated_at', 'color', 'type', 'total_accessories', 'burned_at'
+            'id','nftoken_id','issuer','owner','nftoken_taxon','transfer_fee','uri','url',
+            'flags','assets','metadata','sequence','name','nft_id','created_at','updated_at','color','type','total_accessories','burned_at'
         ];
 
         $accessories = collect(array_diff($columns, $excluded))
@@ -132,19 +115,13 @@ class Punks extends Component
     public function getImageUrl($nft)
     {
         $path = "ogs/{$nft->nft_id}.png";
-        if (Storage::disk('spaces')->exists($path)) {
-            return Storage::disk('spaces')->url($path);
-        }
+        if (Storage::disk('spaces')->exists($path)) return Storage::disk('spaces')->url($path);
         return asset('images/nft-placeholder.png');
     }
 
     protected function mapAccessoryDisplayName(string $accessory): string
     {
-        $customMap = [
-            'v_r' => 'VR',
-            '3d_glasses' => '3D Glasses',
-        ];
-
-        return $customMap[$accessory] ?? ucwords(str_replace(['_', '-'], ' ', strtolower($accessory)));
+        $customMap = ['v_r'=>'VR','3d_glasses'=>'3D Glasses'];
+        return $customMap[$accessory] ?? ucwords(str_replace(['_','-'],' ', strtolower($accessory)));
     }
 }

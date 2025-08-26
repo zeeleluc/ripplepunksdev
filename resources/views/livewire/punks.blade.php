@@ -26,11 +26,18 @@
             @endforeach
         </select>
 
-        <button wire:click="openAccessoryModal" class="border rounded px-2 py-1 sm:px-3 sm:py-2 bg-gray-200 hover:bg-gray-300 text-sm sm:text-base">
-            Select Accessories
+        {{-- Select Accessories Button with spinner --}}
+        <button wire:click="openAccessoryModal"
+                wire:loading.attr="disabled"
+                class="border rounded px-2 py-1 sm:px-3 sm:py-2 bg-gray-200 hover:bg-gray-300 text-sm sm:text-base flex items-center justify-center space-x-2">
+            <span>Select Accessories</span>
             @if(count($selectedAccessories) > 0)
                 <span class="ml-1 text-blue-600 font-semibold">({{ count($selectedAccessories) }})</span>
             @endif
+            <svg wire:loading wire:target="openAccessoryModal" class="animate-spin h-4 w-4 text-gray-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+            </svg>
         </button>
     </div>
 
@@ -75,25 +82,38 @@
     {{-- Accessory Modal --}}
     @if($showAccessoryModal)
         <div class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 px-2">
-            <div class="bg-white p-4 sm:p-6 rounded shadow-lg max-h-[80vh] overflow-y-auto w-full max-w-2xl">
-                <h3 class="text-lg sm:text-xl font-semibold mb-3 sm:mb-4 text-center">Select Accessories</h3>
-                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-1 sm:gap-2 mb-3 sm:mb-4">
-                    @foreach($accessories as $key => $label)
-                        <label class="inline-block w-full">
-                            <input
-                                type="checkbox"
-                                wire:model.defer="tempSelectedAccessories"
-                                value="{{ $key }}"
-                                class="hidden peer"
-                            >
-                            <span class="block px-2 py-1 sm:px-3 sm:py-2 rounded text-xs sm:text-sm text-center cursor-pointer bg-gray-200 text-gray-700 peer-checked:bg-blue-600 peer-checked:text-white hover:bg-blue-500 hover:text-white">
+            <div class="bg-white rounded shadow-lg w-full max-w-2xl max-h-[80vh] flex flex-col overflow-hidden">
+
+                {{-- Modal Header --}}
+                <h3 class="text-lg sm:text-xl font-semibold mb-2 sm:mb-3 text-center py-3 border-b">
+                    Select Accessories
+                </h3>
+
+                {{-- Modal Scrollable Content --}}
+                <div class="flex-1 overflow-y-auto px-2 sm:px-4 py-2 sm:py-3">
+                    <div class="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-1 sm:gap-2">
+                        @foreach($accessories as $key => $label)
+                            <label class="inline-block w-full">
+                                <input
+                                    type="checkbox"
+                                    wire:model.defer="tempSelectedAccessories"
+                                    value="{{ $key }}"
+                                    class="hidden peer"
+                                >
+                                <span class="block px-2 py-1 sm:px-3 sm:py-2 rounded text-xs sm:text-sm text-center cursor-pointer bg-gray-200 text-gray-700 peer-checked:bg-blue-600 peer-checked:text-white hover:bg-blue-500 hover:text-white">
                                 {{ $label }}
                             </span>
-                        </label>
-                    @endforeach
+                            </label>
+                        @endforeach
+                    </div>
                 </div>
-                <div class="flex justify-center sm:justify-end space-x-2">
-                    <button type="button" wire:click="closeAccessoryModal" class="px-3 py-1 sm:px-4 sm:py-2 bg-gray-200 rounded hover:bg-gray-300 text-sm sm:text-base">Cancel</button>
+
+                {{-- Modal Footer --}}
+                <div class="flex justify-center sm:justify-end space-x-2 px-2 sm:px-4 py-2 border-t bg-white">
+                    <button type="button" wire:click="closeAccessoryModal"
+                            class="px-3 py-1 sm:px-4 sm:py-2 bg-gray-200 rounded hover:bg-gray-300 text-sm sm:text-base">
+                        Cancel
+                    </button>
 
                     <button type="button"
                             wire:click="applyFilters"
