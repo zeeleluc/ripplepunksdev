@@ -10,7 +10,6 @@ class Holder extends Model
         'wallet',
         'badges',
         'holdings',
-        'last_seen_at',
     ];
 
     protected $casts = [

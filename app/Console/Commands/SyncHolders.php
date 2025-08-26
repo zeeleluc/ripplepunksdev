@@ -28,45 +28,33 @@ class SyncHolders extends Command
 
         foreach ($ownerCounts as $wallet => $count) {
             $holder = Holder::where('wallet', $wallet)->first();
-
             $badges = Holder::calculateBadges($wallet);
-            $now = now();
 
             if (!$holder) {
                 // New holder
                 Holder::create([
-                    'wallet'      => $wallet,
-                    'holdings'    => $count,
-                    'badges'      => $badges,
-                    'last_seen_at'=> $now,
+                    'wallet'   => $wallet,
+                    'holdings' => $count,
+                    'badges'   => $badges,
                 ]);
 
                 $addedCount++;
                 SlackNotifier::info("🆕 New holder added: {$wallet} – holdings: {$count}");
             } else {
-                // Only update if values actually changed
-                $dirty = false;
+                $changes = [];
 
                 if ($holder->holdings !== $count) {
-                    $dirty = true;
-                    $msg = "Holder updated: {$wallet} – holdings changed from {$holder->holdings} to {$count}";
-                    SlackNotifier::info("✏️ {$msg}");
+                    $changes['holdings'] = $count;
+                    SlackNotifier::info("✏️ Holder updated: {$wallet} – holdings changed from {$holder->holdings} to {$count}");
+                    $updatedCount++;
                 }
 
                 if ($holder->badges !== $badges) {
-                    $dirty = true;
+                    $changes['badges'] = $badges;
                 }
 
-                // Always update last_seen_at if the record is touched
-                if ($dirty || $holder->last_seen_at->lt($now->subMinutes(1))) {
-                    $holder->update([
-                        'holdings'     => $count,
-                        'badges'       => $badges,
-                        'last_seen_at' => $now,
-                    ]);
-                    if ($dirty) {
-                        $updatedCount++;
-                    }
+                if (!empty($changes)) {
+                    $holder->update($changes);
                 }
             }
 
