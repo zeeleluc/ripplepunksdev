@@ -17,18 +17,21 @@ class SyncHolders extends Command
     {
         $this->info('🔄 Starting holder sync...');
 
-        // Aggregate current NFT ownership by wallet
+        // 1️⃣ Aggregate NFT ownership by wallet
         $ownerCounts = Nft::select('owner', DB::raw('COUNT(*) as holdings'))
             ->groupBy('owner')
-            ->pluck('holdings', 'owner');
+            ->pluck('holdings', 'owner'); // [wallet => holdings]
+
+        // 2️⃣ Load all existing holders in one query
+        $holders = Holder::all()->keyBy('wallet'); // [wallet => Holder model]
 
         $processed = [];
         $addedCount = 0;
         $updatedCount = 0;
 
         foreach ($ownerCounts as $wallet => $count) {
-            $holder = Holder::where('wallet', $wallet)->first();
             $badges = Holder::calculateBadges($wallet);
+            $holder = $holders->get($wallet);
 
             if (!$holder) {
                 // New holder
@@ -61,16 +64,14 @@ class SyncHolders extends Command
             $processed[] = $wallet;
         }
 
-        // Handle holders that no longer own NFTs
-        $deletedCount = 0;
-        Holder::whereNotIn('wallet', $processed)
-            ->chunkById(100, function ($holders) use (&$deletedCount) {
-                foreach ($holders as $holder) {
-                    SlackNotifier::warning("❌ Holder removed: {$holder->wallet} – no NFTs remaining");
-                    $holder->delete();
-                    $deletedCount++;
-                }
-            });
+        // 3️⃣ Handle holders that no longer own NFTs
+        $deletedCount = Holder::whereNotIn('wallet', $processed)->delete();
+
+        if ($deletedCount > 0) {
+            foreach (array_diff($holders->keys()->toArray(), $processed) as $wallet) {
+                SlackNotifier::warning("❌ Holder removed: {$wallet} – no NFTs remaining");
+            }
+        }
 
         // Summary
         if ($addedCount || $updatedCount || $deletedCount) {

@@ -17,6 +17,8 @@ class Holder extends Model
         'last_seen_at' => 'datetime',
     ];
 
+    public $timestamps = false;
+
     public function nfts()
     {
         return $this->hasMany(Nft::class, 'owner', 'wallet');

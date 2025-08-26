@@ -17,6 +17,8 @@ class Nft extends Model
         'burned_at' => 'datetime',
     ];
 
+    public $timestamps = false;
+
     public static function ctoWalletCount(): int
     {
         return static::where('owner', env('CTO_WALLET'))->count();
