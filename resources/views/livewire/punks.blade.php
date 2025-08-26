@@ -1,57 +1,112 @@
-<div>
-    <div class="max-w-6xl mx-auto px-0 py-6">
-        <h1 class="text-2xl font-bold text-center">RipplePunks</h1>
+<div class="flex flex-col items-center px-2 sm:px-4 md:px-6 lg:px-0">
+    <div class="max-w-6xl w-full py-4 sm:py-6">
+        <h1 class="text-2xl sm:text-3xl font-bold text-center">RipplePunks</h1>
     </div>
 
     {{-- Filters --}}
-    <div class="flex flex-wrap gap-4 justify-center mb-6">
-        <select wire:model.live="color" class="border rounded px-3 py-2">
+    <div class="flex flex-wrap gap-2 sm:gap-4 justify-center mb-4 sm:mb-6">
+        <select wire:model.live="color" class="border rounded px-2 py-1 sm:px-3 sm:py-2 text-sm sm:text-base">
             <option value="">All Colors</option>
             @foreach ($colors as $c)
                 <option value="{{ $c }}">{{ $c }}</option>
             @endforeach
         </select>
 
-        <select wire:model.live="type" class="border rounded px-3 py-2">
+        <select wire:model.live="type" class="border rounded px-2 py-1 sm:px-3 sm:py-2 text-sm sm:text-base">
             <option value="">All Types</option>
             @foreach ($types as $t)
                 <option value="{{ $t }}">{{ $t }}</option>
             @endforeach
         </select>
 
-        <select wire:model.live="totalAccessories" class="border rounded px-3 py-2">
+        <select wire:model.live="totalAccessories" class="border rounded px-2 py-1 sm:px-3 sm:py-2 text-sm sm:text-base">
             <option value="">All Accessories Count</option>
             @foreach ($totals as $t)
                 <option value="{{ $t }}">{{ $t }}</option>
             @endforeach
         </select>
 
-        <select wire:model.live="accessory" class="border rounded px-3 py-2">
-            <option value="">All Accessories</option>
-            @foreach ($accessories as $a)
-                <option value="{{ $a }}">{{ ucfirst(str_replace('_', ' ', $a)) }}</option>
-            @endforeach
-        </select>
+        <button wire:click="openAccessoryModal" class="border rounded px-2 py-1 sm:px-3 sm:py-2 bg-gray-200 hover:bg-gray-300 text-sm sm:text-base">
+            Select Accessories
+            @if(count($selectedAccessories) > 0)
+                <span class="ml-1 text-blue-600 font-semibold">({{ count($selectedAccessories) }})</span>
+            @endif
+        </button>
     </div>
 
-    @include('components.custom-pagination', ['paginator' => $nfts])
+    {{-- Loading Indicator --}}
+    <div wire:loading wire:target="color,type,totalAccessories,selectedAccessories" class="text-center my-4 sm:my-8">
+        <span class="inline-block px-3 py-1 sm:px-4 sm:py-2 bg-blue-100 text-blue-700 rounded animate-pulse text-sm sm:text-lg">
+            Loading RipplePunks...
+        </span>
+    </div>
 
-    <div class="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-5 gap-6">
-        @foreach ($nfts as $nft)
-            @php
-                $metadata = $nft->metadata ?? [];
-                $imageUrl = $this->getImageUrl($nft);
-            @endphp
-            <div class="border rounded p-4 bg-white shadow">
-                <img src="{{ $imageUrl }}"
-                     alt="{{ $metadata['name'] ?? 'NFT Image' }}"
-                     class="w-full object-cover rounded mb-2" />
-                <h3 class="text-center font-semibold text-gray-700">
-                    {{ $metadata['name'] ?? 'Unnamed NFT' }}
-                </h3>
+    {{-- NFT Grid --}}
+    <div wire:loading.remove wire:target="color,type,totalAccessories,selectedAccessories" class="w-full max-w-6xl">
+        @if($nfts->count() === 0)
+            <div class="text-center py-8 sm:py-16 text-gray-500 space-y-1 sm:space-y-2">
+                <p class="text-lg sm:text-xl font-semibold">No RipplePunks found 😢</p>
+                <p class="text-sm sm:text-base">Try changing the filters or selecting different accessories.</p>
             </div>
-        @endforeach
+        @else
+            @include('components.custom-pagination', ['paginator' => $nfts])
+
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-6 justify-items-center">
+                @foreach ($nfts as $nft)
+                    @php
+                        $metadata = $nft->metadata ?? [];
+                        $imageUrl = $this->getImageUrl($nft);
+                    @endphp
+                    <div class="border rounded p-2 sm:p-4 bg-white shadow w-full max-w-[180px] sm:max-w-full">
+                        <img src="{{ $imageUrl }}"
+                             alt="{{ $metadata['name'] ?? 'NFT Image' }}"
+                             class="w-full h-36 sm:h-48 object-cover rounded mb-1 sm:mb-2" />
+                        <h3 class="text-center font-semibold text-gray-700 text-sm sm:text-base">
+                            {{ $metadata['name'] ?? 'Unnamed NFT' }}
+                        </h3>
+                    </div>
+                @endforeach
+            </div>
+
+            @include('components.custom-pagination', ['paginator' => $nfts])
+        @endif
     </div>
 
-    @include('components.custom-pagination', ['paginator' => $nfts])
+    {{-- Accessory Modal --}}
+    @if($showAccessoryModal)
+        <div class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 px-2">
+            <div class="bg-white p-4 sm:p-6 rounded shadow-lg max-h-[80vh] overflow-y-auto w-full max-w-2xl">
+                <h3 class="text-lg sm:text-xl font-semibold mb-3 sm:mb-4 text-center">Select Accessories</h3>
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-1 sm:gap-2 mb-3 sm:mb-4">
+                    @foreach($accessories as $key => $label)
+                        <label class="inline-block w-full">
+                            <input
+                                type="checkbox"
+                                wire:model.defer="tempSelectedAccessories"
+                                value="{{ $key }}"
+                                class="hidden peer"
+                            >
+                            <span class="block px-2 py-1 sm:px-3 sm:py-2 rounded text-xs sm:text-sm text-center cursor-pointer bg-gray-200 text-gray-700 peer-checked:bg-blue-600 peer-checked:text-white hover:bg-blue-500 hover:text-white">
+                                {{ $label }}
+                            </span>
+                        </label>
+                    @endforeach
+                </div>
+                <div class="flex justify-center sm:justify-end space-x-2">
+                    <button type="button" wire:click="closeAccessoryModal" class="px-3 py-1 sm:px-4 sm:py-2 bg-gray-200 rounded hover:bg-gray-300 text-sm sm:text-base">Cancel</button>
+
+                    <button type="button"
+                            wire:click="applyFilters"
+                            wire:loading.attr="disabled"
+                            class="px-3 py-1 sm:px-4 sm:py-2 bg-blue-600 text-white rounded hover:bg-blue-700 flex items-center justify-center space-x-2 text-sm sm:text-base">
+                        <span>Apply</span>
+                        <svg wire:loading wire:target="applyFilters" class="animate-spin h-4 w-4 sm:h-5 sm:w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    @endif
 </div>

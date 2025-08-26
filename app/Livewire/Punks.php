@@ -15,13 +15,16 @@ class Punks extends Component
     public $color = '';
     public $type = '';
     public $totalAccessories = '';
-    public $accessory = '';
+    public $selectedAccessories = [];
+    public $tempSelectedAccessories = [];
+    public $showAccessoryModal = false;
+    public $applyingFilters = false;
 
     protected $queryString = [
         'color' => ['except' => ''],
         'type' => ['except' => ''],
         'totalAccessories' => ['except' => ''],
-        'accessory' => ['except' => ''],
+        'selectedAccessories' => ['except' => []],
     ];
 
     public function mount()
@@ -29,14 +32,41 @@ class Punks extends Component
         $this->color = request()->query('color', '');
         $this->type = request()->query('type', '');
         $this->totalAccessories = request()->query('totalAccessories', '');
-        $this->accessory = request()->query('accessory', '');
+        $this->selectedAccessories = request()->query('selectedAccessories', []);
     }
 
-    public function updating($name, $value)
+    public function updatingColor() { $this->resetPage(); }
+    public function updatingType() { $this->resetPage(); }
+    public function updatingTotalAccessories() { $this->resetPage(); }
+
+    // Open modal instantly
+    public function openAccessoryModal()
     {
-        if (in_array($name, ['color', 'type', 'totalAccessories', 'accessory'])) {
-            $this->resetPage();
-        }
+        $this->tempSelectedAccessories = $this->selectedAccessories;
+        $this->showAccessoryModal = true;
+    }
+
+    // Close modal instantly
+    public function closeAccessoryModal()
+    {
+        $this->showAccessoryModal = false;
+    }
+
+    // Apply filters and close modal
+    public function applyFilters()
+    {
+        $this->applyingFilters = true;
+
+        // Update selected accessories
+        $this->selectedAccessories = array_values($this->tempSelectedAccessories);
+
+        // Close modal immediately
+        $this->showAccessoryModal = false;
+
+        // Reset pagination
+        $this->resetPage();
+
+        $this->applyingFilters = false;
     }
 
     public function render()
@@ -60,23 +90,35 @@ class Punks extends Component
             $query->where('total_accessories', (int) $this->totalAccessories);
         }
 
-        if ($this->accessory && in_array($this->accessory, $columns)) {
-            $query->where($this->accessory, '!=', null)
-                ->where($this->accessory, '!=', false);
+        foreach ($this->selectedAccessories as $accessory) {
+            if (in_array($accessory, $columns)) {
+                $query->where($accessory, true);
+            }
         }
 
-        $nfts = $query->paginate(10);
+        $nfts = $query->paginate(25);
 
         $colors = Nft::select('color')->distinct()->pluck('color')->filter()->sort()->values();
         $types = Nft::select('type')->distinct()->pluck('type')->filter()->sort()->values();
-        $totals = Nft::select('total_accessories')->distinct()->pluck('total_accessories')->filter()->sort()->values();
+        $totals = Nft::select('total_accessories')
+            ->distinct()
+            ->pluck('total_accessories')
+            ->filter(fn($v) => $v !== null)
+            ->push(0)
+            ->unique()
+            ->sort()
+            ->values();
 
         $excluded = [
             'id', 'nftoken_id', 'issuer', 'owner', 'nftoken_taxon', 'transfer_fee',
             'uri', 'url', 'flags', 'assets', 'metadata', 'sequence', 'name', 'nft_id',
             'created_at', 'updated_at', 'color', 'type', 'total_accessories', 'burned_at'
         ];
-        $accessories = array_values(array_diff($columns, $excluded));
+
+        $accessories = collect(array_diff($columns, $excluded))
+            ->mapWithKeys(fn($item) => [$item => $this->mapAccessoryDisplayName($item)])
+            ->sortBy(fn($label) => $label)
+            ->toArray();
 
         return view('livewire.punks', [
             'nfts' => $nfts,
@@ -90,12 +132,19 @@ class Punks extends Component
     public function getImageUrl($nft)
     {
         $path = "ogs/{$nft->nft_id}.png";
-
         if (Storage::disk('spaces')->exists($path)) {
             return Storage::disk('spaces')->url($path);
         }
-
-        // Placeholder image if not in Spaces
         return asset('images/nft-placeholder.png');
+    }
+
+    protected function mapAccessoryDisplayName(string $accessory): string
+    {
+        $customMap = [
+            'v_r' => 'VR',
+            '3d_glasses' => '3D Glasses',
+        ];
+
+        return $customMap[$accessory] ?? ucwords(str_replace(['_', '-'], ' ', strtolower($accessory)));
     }
 }

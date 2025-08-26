@@ -77,12 +77,29 @@ class SyncNfts extends Command
                     } elseif ($traitType === 'Accessory') {
                         $totalAccessories++;
 
-                        $column = Str::snake($value);
-                        if ($column && !is_numeric($column[0])) {
+                        // Map known special cases
+                        $specialMap = [
+                            '3D Glasses' => '3d_glasses',
+                            'Do-rag' => 'do_rag',
+                        ];
+
+                        if (isset($specialMap[$value])) {
+                            $column = $specialMap[$value];
+                        } else {
+                            // Only use snake_case if it does not start with a number
+                            $column = Str::snake($value);
+                            if (is_numeric(substr($column, 0, 1))) {
+                                // Skip columns that would start with a number
+                                continue;
+                            }
+                        }
+
+                        if ($column) {
                             $accessoryFlags[$column] = true;
                         }
                     }
                 }
+
 
                 $totalAccessories--; // Accessory "total attributes"
 
