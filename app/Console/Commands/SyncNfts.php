@@ -7,8 +7,8 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Str;
-use App\Models\Nft;
 use Illuminate\Support\Facades\Log;
+use App\Models\Nft;
 
 class SyncNfts extends Command
 {
@@ -21,7 +21,7 @@ class SyncNfts extends Command
         $taxon = $this->option('taxon');
 
         if (!$issuer) {
-            $this->error('Issuer is required.');
+            $this->error('❌ Issuer is required.');
             return;
         }
 
@@ -35,7 +35,7 @@ class SyncNfts extends Command
         $this->ensureColumn('nfts', 'has_image', 'boolean', true);
 
         do {
-            $this->info("Fetching NFTs for issuer={$issuer}, taxon={$taxon}, marker={$marker}");
+            $this->info("📡 Fetching NFTs (issuer={$issuer}, taxon={$taxon}, marker={$marker})");
 
             $response = Http::withHeaders([
                 'x-bithomp-token' => env('BITHOMP_API_KEY'),
@@ -47,7 +47,7 @@ class SyncNfts extends Command
             ]);
 
             if (!$response->successful()) {
-                $this->error("Request failed with status: {$response->status()}");
+                $this->error("❌ Request failed with status: {$response->status()}");
                 return;
             }
 
@@ -85,33 +85,18 @@ class SyncNfts extends Command
                     } elseif ($traitType === 'Accessory') {
                         $totalAccessories++;
 
-                        // Convert to snake_case and validate column name
+                        // Convert to snake_case column
                         $column = Str::snake($value);
                         if (!$column || is_numeric($column[0])) {
-                            continue; // Skip invalid columns
+                            continue; // skip invalid names
                         }
 
                         $accessoryFlags[$column] = true;
-                        $this->ensureColumn('nfts', $column, 'boolean', false); // No index for accessories
+                        $this->ensureColumn('nfts', $column, 'boolean', false);
                     }
                 }
 
-                // Reset all accessory booleans to false
-                $allColumns = Schema::getColumnListing('nfts');
-                $reserved = [
-                    'id', 'nftoken_id', 'issuer', 'owner', 'nftoken_taxon', 'transfer_fee',
-                    'uri', 'url', 'flags', 'assets', 'metadata', 'sequence', 'name', 'nft_id',
-                    'created_at', 'updated_at', 'color', 'type', 'total_accessories', 'burned_at',
-                    'has_image'
-                ];
-
-                foreach ($allColumns as $col) {
-                    if (!in_array($col, $reserved)) {
-                        $accessoryFlags[$col] = false;
-                    }
-                }
-
-                // Build record
+                // Build base record
                 $record = [
                     'issuer' => $nft['issuer'],
                     'owner' => $nft['owner'],
@@ -131,33 +116,56 @@ class SyncNfts extends Command
                     'burned_at' => null,
                 ];
 
-                // Merge accessory flags
-                $record = array_merge($record, $accessoryFlags);
-
-                // Preserve locally managed flags like has_image
+                // Get existing record if present
                 $existing = Nft::where('nftoken_id', $nftokenId)->first();
-                if ($existing) {
-                    $record['has_image'] = $existing->has_image;
-                }
 
-                Nft::updateOrCreate(['nftoken_id' => $nftokenId], $record);
+                if ($existing) {
+                    // Preserve locally managed fields
+                    $record['has_image'] = $existing->has_image;
+
+                    // Only update accessory flags present in metadata
+                    foreach ($accessoryFlags as $col => $val) {
+                        $record[$col] = true;
+                    }
+
+                    $existing->fill($record)->save();
+                } else {
+                    // New NFT: initialize accessory columns to false
+                    $allColumns = Schema::getColumnListing('nfts');
+                    $reserved = [
+                        'id','nftoken_id','issuer','owner','nftoken_taxon','transfer_fee',
+                        'uri','url','flags','assets','metadata','sequence','name','nft_id',
+                        'created_at','updated_at','color','type','total_accessories','burned_at','has_image'
+                    ];
+                    foreach ($allColumns as $col) {
+                        if (!in_array($col, $reserved)) {
+                            $record[$col] = false;
+                        }
+                    }
+
+                    // Apply flags found in metadata
+                    foreach ($accessoryFlags as $col => $val) {
+                        $record[$col] = true;
+                    }
+
+                    Nft::create(array_merge(['nftoken_id' => $nftokenId], $record));
+                }
             }
 
-            $this->info('Fetched ' . count($nfts) . ' NFTs...');
+            $this->info('✅ Synced ' . count($nfts) . ' NFTs...');
             $marker = $data['marker'] ?? null;
 
         } while ($marker);
 
-        // Delete NFTs no longer returned by API
+        // Delete NFTs no longer returned
         if (!empty($seenIds)) {
             $deleted = Nft::where('issuer', $issuer)
                 ->whereNotIn('nftoken_id', $seenIds)
                 ->delete();
-
-            $this->info("Deleted $deleted missing NFTs.");
+            $this->info("🗑️ Deleted $deleted missing NFTs.");
         }
 
-        $this->info('NFT sync completed ✅');
+        $this->info('🎉 NFT sync completed');
     }
 
     /**
@@ -183,18 +191,16 @@ class SyncNfts extends Command
                     try {
                         $blueprint->index($column, $indexName);
                     } catch (\Exception $e) {
-                        // Log warning if index creation fails (e.g., due to 64-index limit)
                         Log::warning('Failed to create index for column', [
                             'table' => $table,
                             'column' => $column,
                             'error' => $e->getMessage(),
                         ]);
-                        $this->warn("Could not create index for {$column}: {$e->getMessage()}");
                     }
                 }
             });
 
-            $this->info("🆕 Added missing column: {$column} ({$type})" . ($index ? ' with index' : ''));
+            $this->info("🆕 Added column: {$column} ({$type})" . ($index ? ' with index' : ''));
         }
     }
 }
