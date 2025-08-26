@@ -23,11 +23,8 @@ class SyncNftImages extends Command
             ->orWhereNull('has_image')
             ->count();
 
-        SlackNotifier::info("Total NFTs with has_image = false: {$totalMissing}");
-
-        if ($totalMissing === 0) {
-            SlackNotifier::info("🎉 All NFTs already synced.");
-            return;
+        if ($totalMissing > 0) {
+            SlackNotifier::info("Total NFTs with has_image = false: {$totalMissing}");
         }
 
         // Fetch up to 100 NFTs for this run
