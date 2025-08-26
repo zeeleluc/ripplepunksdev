@@ -94,9 +94,9 @@ class SyncNfts extends Command
                         $accessoryFlags[$column] = true;
                         $this->ensureColumn('nfts', $column, 'boolean', false);
                     }
-
-                    $totalAccessories--; // Accessory "total attributes"
                 }
+
+                $totalAccessories--; // Accessory "total attributes"
 
                 // Build base record
                 $record = [
