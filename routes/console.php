@@ -7,8 +7,8 @@ if (app()->environment('prod')) {
     Schedule::command('nfts:sync', [
         '--issuer' => 'r3SvAe5197xnXvPHKnyptu3EjX5BG8f2mS',
         '--taxon'  => '604',
-    ])->everyFifteenMinutes();
+    ])->everyThirtyMinutes();
 
-    Schedule::command('holders:sync')->everyMinute();
-    Schedule::command('nfts:sync-images')->everyThirtyMinutes();
+    Schedule::command('holders:sync')->everyTenMinutes();
+    Schedule::command('nfts:sync-images')->everyFourHours();
 }
