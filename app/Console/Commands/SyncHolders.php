@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
 use App\Models\Nft;
 use App\Models\Holder;
 use App\Helpers\SlackNotifier;
@@ -14,57 +15,89 @@ class SyncHolders extends Command
 
     public function handle()
     {
-        $owners = Nft::select('owner')->distinct()->pluck('owner');
+        $this->info('🔄 Starting holder sync...');
+
+        // Aggregate current NFT ownership by wallet
+        $ownerCounts = Nft::select('owner', DB::raw('COUNT(*) as holdings'))
+            ->groupBy('owner')
+            ->pluck('holdings', 'owner');
 
         $processed = [];
         $addedCount = 0;
         $updatedCount = 0;
 
-        foreach ($owners as $wallet) {
-            $count = Nft::where('owner', $wallet)->count();
+        foreach ($ownerCounts as $wallet => $count) {
+            $holder = Holder::where('wallet', $wallet)->first();
 
-            if ($count > 0) {
-                $holder = Holder::firstOrNew(['wallet' => $wallet]);
-                $oldHoldings = $holder->holdings ?? 0;
+            $badges = Holder::calculateBadges($wallet);
+            $now = now();
 
-                $holder->badges = Holder::calculateBadges($wallet);
-                $holder->holdings = $count;
-                $holder->last_seen_at = now();
-                $holder->save();
+            if (!$holder) {
+                // New holder
+                Holder::create([
+                    'wallet'      => $wallet,
+                    'holdings'    => $count,
+                    'badges'      => $badges,
+                    'last_seen_at'=> $now,
+                ]);
 
-                $processed[] = $wallet;
+                $addedCount++;
+                SlackNotifier::info("🆕 New holder added: {$wallet} – holdings: {$count}");
+            } else {
+                // Only update if values actually changed
+                $dirty = false;
 
-                if ($holder->wasRecentlyCreated) {
-                    $addedCount++;
-                    SlackNotifier::info("New holder added: {$wallet} – holdings: {$count}");
-                } elseif ($oldHoldings != $count) {
-                    $updatedCount++;
-                    SlackNotifier::info("Holder updated: {$wallet} – holdings changed from {$oldHoldings} to {$count}");
+                if ($holder->holdings !== $count) {
+                    $dirty = true;
+                    $msg = "Holder updated: {$wallet} – holdings changed from {$holder->holdings} to {$count}";
+                    SlackNotifier::info("✏️ {$msg}");
+                }
+
+                if ($holder->badges !== $badges) {
+                    $dirty = true;
+                }
+
+                // Always update last_seen_at if the record is touched
+                if ($dirty || $holder->last_seen_at->lt($now->subMinutes(1))) {
+                    $holder->update([
+                        'holdings'     => $count,
+                        'badges'       => $badges,
+                        'last_seen_at' => $now,
+                    ]);
+                    if ($dirty) {
+                        $updatedCount++;
+                    }
                 }
             }
+
+            $processed[] = $wallet;
         }
 
-        // Handle holders with no NFTs anymore
-        $deleted = Holder::whereNotIn('wallet', $processed)->get();
-        $deletedCount = $deleted->count();
+        // Handle holders that no longer own NFTs
+        $deletedCount = 0;
+        Holder::whereNotIn('wallet', $processed)
+            ->chunkById(100, function ($holders) use (&$deletedCount) {
+                foreach ($holders as $holder) {
+                    SlackNotifier::warning("❌ Holder removed: {$holder->wallet} – no NFTs remaining");
+                    $holder->delete();
+                    $deletedCount++;
+                }
+            });
 
-        if ($deletedCount > 0) {
-            foreach ($deleted as $holder) {
-                SlackNotifier::warning("Holder removed: {$holder->wallet} – no NFTs remaining");
-            }
-            Holder::whereNotIn('wallet', $processed)->delete();
-        }
-
-        // Send summary only if there are any changes
-        if ($addedCount > 0 || $updatedCount > 0 || $deletedCount > 0) {
+        // Summary
+        if ($addedCount || $updatedCount || $deletedCount) {
             SlackNotifier::info(
-                "Holder sync completed ✅\n" .
-                "Total processed: " . count($processed) . "\n" .
+                "✅ Holder sync completed\n" .
+                "Processed: " . count($processed) . "\n" .
                 "Added: {$addedCount}\n" .
                 "Updated: {$updatedCount}\n" .
                 "Removed: {$deletedCount}"
             );
+        } else {
+            $this->info('ℹ️ No changes detected — skipped DB writes.');
         }
+
+        $this->info('🎉 Holder sync finished.');
 
         return Command::SUCCESS;
     }
