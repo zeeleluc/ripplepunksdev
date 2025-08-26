@@ -7,6 +7,7 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Schema;
 
 class Punks extends Component
 {
@@ -25,14 +26,6 @@ class Punks extends Component
         'totalAccessories' => ['except' => ''],
         'selectedAccessories' => ['except' => []],
     ];
-
-    public function mount()
-    {
-        $this->color = request()->query('color', '');
-        $this->type = request()->query('type', '');
-        $this->totalAccessories = request()->query('totalAccessories', '');
-        $this->selectedAccessories = request()->query('selectedAccessories', []);
-    }
 
     public function updatingColor() { $this->resetPage(); }
     public function updatingType() { $this->resetPage(); }
@@ -70,7 +63,8 @@ class Punks extends Component
 
     public function render()
     {
-        $columns = Cache::remember('nft_columns', now()->addDay(), function () {
+        // Get table columns once (cached)
+        $columns = Cache::remember('nft_columns', 86400, function () {
             return Schema::getColumnListing((new Nft)->getTable());
         });
 
@@ -83,7 +77,7 @@ class Punks extends Component
             $query->where('type', $this->type);
         }
         if ($this->totalAccessories !== '' && in_array('total_accessories', $columns)) {
-            $query->where('total_accessories', (int)$this->totalAccessories);
+            $query->where('total_accessories', (int) $this->totalAccessories);
         }
 
         foreach ($this->selectedAccessories as $accessory) {
@@ -94,9 +88,9 @@ class Punks extends Component
 
         $nfts = $query->paginate(25);
 
-        $colors = Cache::remember('nft_colors', now()->addHour(), fn() => Nft::select('color')->distinct()->pluck('color')->filter()->sort()->values());
-        $types = Cache::remember('nft_types', now()->addHour(), fn() => Nft::select('type')->distinct()->pluck('type')->filter()->sort()->values());
-        $totals = Cache::remember('nft_totals', now()->addHour(), fn() => Nft::select('total_accessories')->distinct()->pluck('total_accessories')->filter(fn($v) => $v !== null)->push(0)->unique()->sort()->values());
+        $colors = Cache::remember('nft_colors', 3600, fn() => Nft::select('color')->distinct()->pluck('color')->filter()->sort()->values());
+        $types = Cache::remember('nft_types', 3600, fn() => Nft::select('type')->distinct()->pluck('type')->filter()->sort()->values());
+        $totals = Cache::remember('nft_totals', 3600, fn() => Nft::select('total_accessories')->distinct()->pluck('total_accessories')->filter()->unique()->sort()->values());
 
         $excluded = [
             'id', 'nftoken_id', 'issuer', 'owner', 'nftoken_taxon', 'transfer_fee', 'uri', 'url',
@@ -106,7 +100,7 @@ class Punks extends Component
 
         $accessories = collect(array_diff($columns, $excluded))
             ->mapWithKeys(fn($item) => [$item => $this->mapAccessoryDisplayName($item)])
-            ->sortBy(fn($label) => $label)
+            ->sort()
             ->toArray();
 
         return view('livewire.punks', compact('nfts', 'colors', 'types', 'totals', 'accessories'));
@@ -115,15 +109,17 @@ class Punks extends Component
     public function getImageUrl($nft)
     {
         $path = "ogs/{$nft->nft_id}.png";
-        if (Storage::disk('spaces')->exists($path)) {
-            return Storage::disk('spaces')->url($path);
-        }
-        return asset('images/nft-placeholder.png');
+        return Storage::disk('spaces')->exists($path)
+            ? Storage::disk('spaces')->url($path)
+            : asset('images/nft-placeholder.png');
     }
 
     protected function mapAccessoryDisplayName(string $accessory): string
     {
-        $customMap = ['v_r' => 'VR', '3d_glasses' => '3D Glasses'];
+        $customMap = [
+            'v_r' => 'VR',
+            '3d_glasses' => '3D Glasses',
+        ];
         return $customMap[$accessory] ?? ucwords(str_replace(['_', '-'], ' ', $accessory));
     }
 }
