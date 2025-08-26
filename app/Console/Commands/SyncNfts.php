@@ -5,9 +5,7 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Log;
 use App\Models\Nft;
 
 class SyncNfts extends Command
@@ -27,11 +25,6 @@ class SyncNfts extends Command
 
         $marker = null;
         $seenIds = [];
-
-        // Ensure required columns exist
-        $this->ensureColumn('nfts', 'color', 'string', true);
-        $this->ensureColumn('nfts', 'type', 'string', true);
-        $this->ensureColumn('nfts', 'total_accessories', 'integer', true);
 
         do {
             $this->info("📡 Fetching NFTs (issuer={$issuer}, taxon={$taxon}, marker={$marker})");
@@ -84,20 +77,15 @@ class SyncNfts extends Command
                     } elseif ($traitType === 'Accessory') {
                         $totalAccessories++;
 
-                        // Convert to snake_case column
                         $column = Str::snake($value);
-                        if (!$column || is_numeric($column[0])) {
-                            continue; // skip invalid names
+                        if ($column && !is_numeric($column[0])) {
+                            $accessoryFlags[$column] = true;
                         }
-
-                        $accessoryFlags[$column] = true;
-                        $this->ensureColumn('nfts', $column, 'boolean', false);
                     }
                 }
 
                 $totalAccessories--; // Accessory "total attributes"
 
-                // Build base record
                 $record = [
                     'issuer' => $nft['issuer'],
                     'owner' => $nft['owner'],
@@ -117,19 +105,14 @@ class SyncNfts extends Command
                     'burned_at' => null,
                 ];
 
-                // Get existing record if present
                 $existing = Nft::where('nftoken_id', $nftokenId)->first();
 
                 if ($existing) {
-
-                    // Only update accessory flags present in metadata
                     foreach ($accessoryFlags as $col => $val) {
                         $record[$col] = true;
                     }
-
                     $existing->fill($record)->save();
                 } else {
-                    // New NFT: initialize accessory columns to false
                     $allColumns = Schema::getColumnListing('nfts');
                     $reserved = [
                         'id','nftoken_id','issuer','owner','nftoken_taxon','transfer_fee',
@@ -141,8 +124,6 @@ class SyncNfts extends Command
                             $record[$col] = false;
                         }
                     }
-
-                    // Apply flags found in metadata
                     foreach ($accessoryFlags as $col => $val) {
                         $record[$col] = true;
                     }
@@ -156,7 +137,6 @@ class SyncNfts extends Command
 
         } while ($marker);
 
-        // Delete NFTs no longer returned
         if (!empty($seenIds)) {
             $deleted = Nft::where('issuer', $issuer)
                 ->whereNotIn('nftoken_id', $seenIds)
@@ -165,41 +145,5 @@ class SyncNfts extends Command
         }
 
         $this->info('🎉 NFT sync completed');
-    }
-
-    /**
-     * Ensure a column exists in the table, create it with an index if specified.
-     */
-    protected function ensureColumn(string $table, string $column, string $type, bool $index = false): void
-    {
-        if (!Schema::hasColumn($table, $column)) {
-            Schema::table($table, function (Blueprint $blueprint) use ($table, $column, $type, $index) {
-                switch ($type) {
-                    case 'string':
-                        $blueprint->string($column)->nullable();
-                        break;
-                    case 'integer':
-                        $blueprint->integer($column)->nullable();
-                        break;
-                    case 'boolean':
-                        $blueprint->boolean($column)->default(false);
-                        break;
-                }
-                if ($index) {
-                    $indexName = 'idx_' . Str::snake($table) . '_' . Str::snake($column);
-                    try {
-                        $blueprint->index($column, $indexName);
-                    } catch (\Exception $e) {
-                        Log::warning('Failed to create index for column', [
-                            'table' => $table,
-                            'column' => $column,
-                            'error' => $e->getMessage(),
-                        ]);
-                    }
-                }
-            });
-
-            $this->info("🆕 Added column: {$column} ({$type})" . ($index ? ' with index' : ''));
-        }
     }
 }
