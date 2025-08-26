@@ -20,7 +20,7 @@ Route::group(['middleware' => 'web'], function () {
 
     Route::get('/', [WelcomeController::class, 'index'])->name('welcome');
     Route::get('/welcome', [WelcomeController::class, 'index'])->name('login');
-    Route::get('/punks', [PunksController::class, 'index'])->name('punks');
+//    Route::get('/punks', [PunksController::class, 'index'])->name('punks');
     Route::get('/holder/{wallet}', [HolderController::class, 'show'])->name('holder');
     Route::get('/about-cto', [AboutController::class, 'showCtoPage'])->name('about.cto');
     Route::get('/holders', [HolderController::class, 'index'])->name('holders.index');
