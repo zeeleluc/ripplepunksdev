@@ -32,7 +32,6 @@ class SyncNfts extends Command
         $this->ensureColumn('nfts', 'color', 'string', true);
         $this->ensureColumn('nfts', 'type', 'string', true);
         $this->ensureColumn('nfts', 'total_accessories', 'integer', true);
-        $this->ensureColumn('nfts', 'has_image', 'boolean', true);
 
         do {
             $this->info("📡 Fetching NFTs (issuer={$issuer}, taxon={$taxon}, marker={$marker})");
@@ -122,8 +121,6 @@ class SyncNfts extends Command
                 $existing = Nft::where('nftoken_id', $nftokenId)->first();
 
                 if ($existing) {
-                    // Preserve locally managed fields
-                    $record['has_image'] = $existing->has_image;
 
                     // Only update accessory flags present in metadata
                     foreach ($accessoryFlags as $col => $val) {
@@ -137,7 +134,7 @@ class SyncNfts extends Command
                     $reserved = [
                         'id','nftoken_id','issuer','owner','nftoken_taxon','transfer_fee',
                         'uri','url','flags','assets','metadata','sequence','name','nft_id',
-                        'created_at','updated_at','color','type','total_accessories','burned_at','has_image'
+                        'created_at','updated_at','color','type','total_accessories','burned_at'
                     ];
                     foreach ($allColumns as $col) {
                         if (!in_array($col, $reserved)) {
