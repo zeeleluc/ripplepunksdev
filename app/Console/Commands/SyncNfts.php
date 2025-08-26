@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Str;
 use App\Models\Nft;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class SyncNfts extends Command
@@ -29,10 +28,11 @@ class SyncNfts extends Command
         $marker = null;
         $seenIds = [];
 
-        // Ensure base columns exist with indexes
+        // Ensure required columns exist
         $this->ensureColumn('nfts', 'color', 'string', true);
         $this->ensureColumn('nfts', 'type', 'string', true);
         $this->ensureColumn('nfts', 'total_accessories', 'integer', true);
+        $this->ensureColumn('nfts', 'has_image', 'boolean', true);
 
         do {
             $this->info("Fetching NFTs for issuer={$issuer}, taxon={$taxon}, marker={$marker}");
@@ -101,7 +101,8 @@ class SyncNfts extends Command
                 $reserved = [
                     'id', 'nftoken_id', 'issuer', 'owner', 'nftoken_taxon', 'transfer_fee',
                     'uri', 'url', 'flags', 'assets', 'metadata', 'sequence', 'name', 'nft_id',
-                    'created_at', 'updated_at', 'color', 'type', 'total_accessories', 'burned_at'
+                    'created_at', 'updated_at', 'color', 'type', 'total_accessories', 'burned_at',
+                    'has_image'
                 ];
 
                 foreach ($allColumns as $col) {
@@ -127,11 +128,17 @@ class SyncNfts extends Command
                     'color' => $color,
                     'type' => $type,
                     'total_accessories' => $totalAccessories,
-                    'burned_at' => null, // prevents MySQL datetime errors
+                    'burned_at' => null,
                 ];
 
                 // Merge accessory flags
                 $record = array_merge($record, $accessoryFlags);
+
+                // Preserve locally managed flags like has_image
+                $existing = Nft::where('nftoken_id', $nftokenId)->first();
+                if ($existing) {
+                    $record['has_image'] = $existing->has_image;
+                }
 
                 Nft::updateOrCreate(['nftoken_id' => $nftokenId], $record);
             }
