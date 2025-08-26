@@ -6,7 +6,6 @@ use App\Models\Nft;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 
 class Punks extends Component
@@ -19,7 +18,6 @@ class Punks extends Component
     public $selectedAccessories = [];
     public $tempSelectedAccessories = [];
     public $showAccessoryModal = false;
-    public $openingModal = false;
 
     protected $queryString = [
         'color' => ['except' => ''],
@@ -39,13 +37,12 @@ class Punks extends Component
     public function updatingColor() { $this->resetPage(); }
     public function updatingType() { $this->resetPage(); }
     public function updatingTotalAccessories() { $this->resetPage(); }
+    public function updatingSelectedAccessories() { $this->resetPage(); }
 
     public function openAccessoryModal()
     {
-        $this->openingModal = true;
         $this->tempSelectedAccessories = $this->selectedAccessories;
         $this->showAccessoryModal = true;
-        $this->openingModal = false;
     }
 
     public function closeAccessoryModal()
@@ -73,8 +70,7 @@ class Punks extends Component
 
     public function render()
     {
-        // Cache schema for 24 hours to avoid repeated queries
-        $columns = Cache::remember('nft_columns', 60 * 60 * 24, fn() => Schema::getColumnListing('nfts'));
+        $columns = Cache::remember('nft_columns', now()->addDay(), fn() => Nft::getTableColumns());
 
         $query = Nft::query()->orderBy('nft_id', 'desc');
 
@@ -96,10 +92,9 @@ class Punks extends Component
 
         $nfts = $query->paginate(25);
 
-        // Optimize distinct queries with caching (assuming indexes on these columns)
-        $colors = Cache::remember('nft_colors', 60 * 60, fn() => Nft::select('color')->distinct()->pluck('color')->filter()->sort()->values());
-        $types = Cache::remember('nft_types', 60 * 60, fn() => Nft::select('type')->distinct()->pluck('type')->filter()->sort()->values());
-        $totals = Cache::remember('nft_totals', 60 * 60, fn() => Nft::select('total_accessories')->distinct()->pluck('total_accessories')->filter(fn($v) => $v !== null)->push(0)->unique()->sort()->values());
+        $colors = Cache::remember('nft_colors', now()->addHour(), fn() => Nft::select('color')->distinct()->pluck('color')->filter()->sort()->values());
+        $types = Cache::remember('nft_types', now()->addHour(), fn() => Nft::select('type')->distinct()->pluck('type')->filter()->sort()->values());
+        $totals = Cache::remember('nft_totals', now()->addHour(), fn() => Nft::select('total_accessories')->distinct()->pluck('total_accessories')->filter(fn($v) => $v !== null)->push(0)->unique()->sort()->values());
 
         $excluded = [
             'id', 'nftoken_id', 'issuer', 'owner', 'nftoken_taxon', 'transfer_fee', 'uri', 'url',
@@ -127,6 +122,6 @@ class Punks extends Component
     protected function mapAccessoryDisplayName(string $accessory): string
     {
         $customMap = ['v_r' => 'VR', '3d_glasses' => '3D Glasses'];
-        return $customMap[$accessory] ?? ucwords(str_replace(['_', '-'], ' ', strtolower($accessory)));
+        return $customMap[$accessory] ?? ucwords(str_replace(['_', '-'], ' ', $accessory));
     }
 }
