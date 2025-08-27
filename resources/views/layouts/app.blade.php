@@ -101,6 +101,12 @@
                         Logs
                     </a>
                 </div>
+            @else
+                <div>
+                    <a href="{{ route('holder', ['wallet' => Auth::user()->wallet]) }}" class="ml-4 flex-shrink-0">
+                        Your Profile
+                    </a>
+                </div>
             @endif
         </div>
 
