@@ -21,8 +21,6 @@
                 <a href="/shoutboard" class="w-full sm:w-auto bg-primary-800 hover:bg-primary-700 text-white text-sm sm:text-base font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded shadow text-center">Shoutboard</a>
                 <a href="/badges" class="w-full sm:w-auto bg-primary-700 hover:bg-primary-600 text-white text-sm sm:text-base font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded shadow text-center">Badges</a>
                 <a href="/holders" class="w-full sm:w-auto bg-primary-600 hover:bg-primary-500 text-white text-sm sm:text-base font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded shadow text-center">Holders</a>
-                <a href="/punks" class="w-full sm:w-auto bg-primary-600 hover:bg-primary-500 text-white text-sm sm:text-base font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded shadow text-center">Punks</a>
-                <a target="_blank" href="https://discord.gg/TmHWFSHdSn" class="w-full sm:w-auto bg-primary-500 hover:bg-primary-400 text-white text-sm sm:text-base font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded shadow text-center">Discord</a>
             </div>
         </div>
 
@@ -42,27 +40,34 @@
 
         {{-- NFT Preview & Dev Log --}}
         <div class="flex flex-col md:flex-row md:gap-6 mt-6 sm:mt-10">
+
             {{-- NFT Preview --}}
             <div class="w-full md:w-1/2 border bg-white p-4 sm:p-6 shadow text-center">
-                <img src="{{ asset('images/project-nft.png') }}" class="mx-auto w-full rounded" alt="Project NFT">
+                <img src="{{ asset('images/project-nft.png') }}" class="mx-auto w-full rounded mb-4" alt="Project NFT">
+
+                <a href="/punks"
+                   class="w-full bg-primary-600 hover:bg-primary-500 text-white text-sm sm:text-base font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded shadow text-center block">
+                    All Punks
+                </a>
             </div>
+
 
             {{-- Dev Log --}}
             <div class="w-full md:w-1/2 border bg-white p-4 sm:p-6 shadow mt-6 md:mt-0 overflow-y-auto max-h-[600px]">
                 <h2 class="text-lg sm:text-2xl font-bold mb-3 sm:mb-4">The Dev 🤘🏼</h2>
                 @foreach ($logEntries as $logEntry)
-                    <div class="pt-2 pb-3 sm:pb-4 border-t">
-                        <p class="text-sm sm:text-base mb-1">
+                    <div class="border rounded-xl pt-2 p-3 sm:p-4 mb-4">
+                        <p class="text-sm sm:text-base mb-0">
                             @if ($logEntry->link)
                                 <a target="_blank" href="{{ $logEntry->link }}" class="text-blue-600 underline">🔗</a>
                             @endif
                             {{ $logEntry->text }}
                         </p>
-                        <livewire:interaction-buttons :identifier="'log-' . $logEntry->id" class="my-1 sm:my-2" />
-                        <small class="text-xs text-gray-500">{{ $logEntry->created_at->diffForHumans() }}</small>
+                        <div class="text-xs text-gray-500">{{ $logEntry->created_at->diffForHumans() }}</div>
+                        <livewire:interaction-buttons :identifier="'log-' . $logEntry->id" class="mt-2 sm:mt-4" />
                     </div>
                 @endforeach
-                <a class="bg-primary-500 hover:bg-primary-600 text-white text-sm sm:text-base font-semibold mt-3 sm:mt-4 py-2 px-4 rounded shadow inline-block" href="{{ route('logs') }}">More Dev Logs</a>
+                <a class="text-primary-600 underline" href="{{ route('logs') }}">Read more dev logs..</a>
             </div>
         </div>
 
