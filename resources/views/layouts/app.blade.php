@@ -23,7 +23,7 @@
     <header class="hidden sm:flex p-10 bg-primary-600 text-white shadow justify-between items-center relative">
         <!-- Big Centered Title -->
         <h1 class="text-7xl font-extrabold text-center flex-1">
-            <a href="{{ url('/') }}" class="font-karmatic hover:underline">
+            <a href="{{ url('/') }}" class="font-karmatic">
                 {{ config('app.name') }}
             </a>
         </h1>
@@ -52,7 +52,7 @@
     <!-- Left: Logo -->
     <div class="flex flex-wrap items-center gap-3 sm:gap-6">
         <h1 class="text-base sm:text-xl font-bold">
-            <a href="{{ url('/') }}" class="font-karmatic hover:underline">
+            <a href="{{ url('/') }}" class="font-karmatic">
                 {{ config('app.name') }}
             </a>
         </h1>

@@ -2,11 +2,27 @@
 @tailwind components;
 @tailwind utilities;
 
+
 @font-face {
-    font-family: 'Karmatic Arcade';
-    src: url('/fonts/ka1_2-webfont.woff2') format('woff2'),
-    url('/fonts/ka1_2-webfont.woff') format('woff');
+    font-family: 'arcaderegular';
+    src: url('/fonts/arcade-webfont-webfont.eot');
+    src: url('/fonts/arcade-webfont-webfont.eot?#iefix') format('embedded-opentype'),
+    url('/fonts/arcade-webfont-webfont.woff2') format('woff2'),
+    url('/fonts/arcade-webfont-webfont.woff') format('woff'),
+    url('/fonts/arcade-webfont-webfont.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
-    font-display: swap;
+}
+
+
+@font-face {
+    font-family: 'karmatic_arcaderegular';
+    src: url('/fonts/ka1_2-webfont-webfont.eot');
+    src: url('/fonts/ka1_2-webfont-webfont.eot?#iefix') format('embedded-opentype'),
+    url('/fonts/ka1_2-webfont-webfont.woff2') format('woff2'),
+    url('/fonts/ka1_2-webfont-webfont.woff') format('woff'),
+    url('/fonts/ka1_2-webfont-webfont.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+
 }
