@@ -26,22 +26,6 @@
                 {{ config('app.name') }}
             </a>
         </h1>
-
-        <!-- Outgoing Links -->
-        <nav class="flex flex-wrap items-center gap-2 sm:gap-4 text-xs sm:text-sm font-medium">
-            <a href="https://xrp.cafe/collection/ripplepunks" target="_blank" class="hover:underline flex items-center gap-0.5 sm:gap-1">
-                xrp.cafe
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 sm:w-4 sm:h-4 inline-block ml-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 3h7m0 0v7m0-7L10 14M5 5v14h14v-5" />
-                </svg>
-            </a>
-            <a href="https://bidds.com/collection/ripplepunks/" target="_blank" class="hover:underline flex items-center gap-0.5 sm:gap-1">
-                bidds
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 sm:w-4 sm:h-4 inline-block ml-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 3h7m0 0v7m0-7L10 14M5 5v14h14v-5" />
-                </svg>
-            </a>
-        </nav>
     </div>
 
     <!-- Right: Auth Button -->

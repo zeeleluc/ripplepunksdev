@@ -13,44 +13,38 @@
 
     <div class="container mx-auto px-2 sm:px-6 max-w-7xl">
 
-        {{-- Quick Links --}}
-        <div class="pb-2 sm:pb-3 pt-3 sm:pt-0 mt-4 sm:mt-5 mb-4">
-            <div class="flex flex-col sm:flex-row sm:justify-center sm:items-center gap-2 sm:gap-4">
-                <livewire:buy-button />
-                <a href="/rewards" class="w-full sm:w-auto bg-primary-900 hover:bg-primary-800 text-white text-sm sm:text-base font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded shadow text-center">Rewards</a>
-                <a href="/shoutboard" class="w-full sm:w-auto bg-primary-800 hover:bg-primary-700 text-white text-sm sm:text-base font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded shadow text-center">Shoutboard</a>
-                <a href="/badges" class="w-full sm:w-auto bg-primary-700 hover:bg-primary-600 text-white text-sm sm:text-base font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded shadow text-center">Badges</a>
-                <a href="/holders" class="w-full sm:w-auto bg-primary-600 hover:bg-primary-500 text-white text-sm sm:text-base font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded shadow text-center">Holders</a>
-            </div>
-        </div>
-
-        {{-- Progress Bar --}}
-        <div class="bg-white border rounded shadow p-3 sm:p-4 mb-6 sm:mb-8 mt-3 sm:mt-0">
-            <div class="mb-1 sm:mb-2 font-semibold text-base sm:text-lg">Punks Minting Progress</div>
-            <div class="w-full bg-gray-300 rounded h-4 sm:h-6 overflow-hidden flex">
-                <div class="h-full bg-primary-300" style="width: {{ $bar1Percent }}%;"></div>
-                <div class="h-full bg-primary-500" style="width: {{ $bar2Percent }}%;"></div>
-                <div class="h-full bg-gray-100" style="width: {{ $bar3Percent }}%;"></div>
-            </div>
-            <div class="flex justify-between mt-1 sm:mt-2 text-xs sm:text-sm font-semibold">
-                <span>The Original Punks</span>
-                <span>The Other Punks</span>
-            </div>
-        </div>
-
         {{-- NFT Preview & Dev Log --}}
         <div class="flex flex-col md:flex-row md:gap-6 mt-6 sm:mt-10">
 
             {{-- NFT Preview --}}
             <div class="w-full md:w-1/2 border bg-white p-4 sm:p-6 shadow text-center">
-                <img src="{{ asset('images/project-nft.png') }}" class="mx-auto w-full rounded mb-4" alt="Project NFT">
-
-                <a href="/punks"
-                   class="w-full bg-primary-600 hover:bg-primary-500 text-white text-sm sm:text-base font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded shadow text-center block">
-                    All Punks
-                </a>
+                <img src="{{ asset('images/project-nft.png') }}" class="mx-auto w-full rounded" alt="Project NFT">
             </div>
 
+            {{-- Quick Links --}}
+            <div class="w-full md:w-1/2 p-0 sm:p-1 mt-6 md:mt-0 overflow-y-auto max-h-[600px]">
+                <livewire:buy-button />
+                <a href="/punks"
+                   class="w-full bg-primary-800 hover:bg-gray-900 mb-2 text-white text-sm sm:text-base font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded shadow text-center block">
+                    All Punks
+                </a>
+                <a href="/rewards"
+                   class="w-full bg-primary-600 hover:bg-gray-900 mb-2 text-white text-sm sm:text-base font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded shadow text-center block">
+                    Rewards
+                </a>
+                <a href="/shoutboard"
+                   class="w-full sm:w-auto bg-primary-600 hover:bg-gray-900 mb-2 text-white text-sm sm:text-base font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded shadow text-center block">
+                    Shoutboard
+                </a>
+                <a href="/badges"
+                   class="w-full sm:w-auto bg-primary-600 hover:bg-gray-900 mb-2 text-white text-sm sm:text-base font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded shadow text-center block">
+                    Badges
+                </a>
+                <a href="/holders"
+                   class="w-full sm:w-auto bg-primary-600 hover:bg-gray-900 mb-2 text-white text-sm sm:text-base font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded shadow text-center block">
+                    Holders
+                </a>
+            </div>
 
             {{-- Dev Log --}}
             <div class="w-full md:w-1/2 border bg-white p-4 sm:p-6 shadow mt-6 md:mt-0 overflow-y-auto max-h-[600px]">
@@ -71,8 +65,22 @@
             </div>
         </div>
 
+        {{-- Progress Bar --}}
+        <div class="bg-white border rounded shadow p-3 sm:p-4 mb-5 mt-5">
+            <div class="mb-1 sm:mb-2 font-semibold text-base sm:text-lg">Punks Minting Progress</div>
+            <div class="w-full bg-gray-300 rounded h-4 sm:h-6 overflow-hidden flex">
+                <div class="h-full bg-primary-300" style="width: {{ $bar1Percent }}%;"></div>
+                <div class="h-full bg-primary-500" style="width: {{ $bar2Percent }}%;"></div>
+                <div class="h-full bg-gray-100" style="width: {{ $bar3Percent }}%;"></div>
+            </div>
+            <div class="flex justify-between mt-1 sm:mt-2 text-xs sm:text-sm font-semibold">
+                <span>The Original Punks</span>
+                <span>The Other Punks</span>
+            </div>
+        </div>
+
         {{-- Supply Breakdown --}}
-        <div class="flex flex-col md:flex-row md:gap-6 mt-6 sm:mt-10">
+        <div class="flex flex-col md:flex-row md:gap-6 mt-2">
             <div class="w-full border bg-white p-3 sm:p-6 shadow">
                 <div class="overflow-x-auto">
                     <table class="min-w-full table-auto text-left border text-xs sm:text-sm">
