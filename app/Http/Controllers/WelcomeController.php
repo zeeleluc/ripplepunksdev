@@ -23,7 +23,7 @@ class WelcomeController extends Controller
             'logEntries' => LogEntry::query()
                 ->where('is_published', true)
                 ->orderBy('created_at', 'desc')
-                ->limit(10)
+                ->limit(2)
                 ->get(),
         ]);
     }
