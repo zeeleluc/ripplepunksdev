@@ -4,7 +4,7 @@
     <p class="text-center my-3 text-lg">
         You need to hold the
         <a href="{{ route('badges') }}">
-            <span class="bg-primary-600 text-white text-lg font-medium px-2 py-1 rounded-lg">Other Punk</span>
+            <span class="bg-primary-600 text-white text-lg font-medium px-2 py-1 rounded">Other Punk</span>
         </a>
         badge to shout.
     </p>
@@ -53,7 +53,7 @@
 
                     @if ($shout->user->isAdmin())
                         <a href="{{ route('badges') }}">
-                            <span class="bg-yellow-400 text-yellow-800 text-xs font-medium px-2 py-1 rounded-lg">
+                            <span class="bg-yellow-400 text-yellow-800 text-xs font-medium px-2 py-1 rounded">
                                 The Dev
                             </span>
                         </a>
@@ -67,13 +67,13 @@
                         @if ($first)
                             <div class="flex gap-2 items-center">
                                 <a href="{{ route('badges') }}">
-                                    <span class="bg-primary-600 text-white text-xs font-medium px-2 py-1 rounded-lg">
+                                    <span class="bg-primary-600 text-white text-xs font-medium px-2 py-1 rounded">
                                         {{ $first }}
                                     </span>
                                 </a>
                                 @if ($extra > 0)
                                     <a href="{{ route('badges') }}">
-                                        <span class="bg-gray-200 text-gray-700 text-xs font-medium px-2 py-1 rounded-lg">
+                                        <span class="bg-gray-200 text-gray-700 text-xs font-medium px-2 py-1 rounded">
                                             +{{ $extra }}
                                         </span>
                                     </a>

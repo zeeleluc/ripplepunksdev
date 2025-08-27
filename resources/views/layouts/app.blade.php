@@ -104,21 +104,21 @@
             <div class="flex gap-2 items-center">
                 @if ($first)
                     <a href="{{ route('badges') }}">
-                <span class="bg-primary-600 text-white text-xs font-medium px-2 py-1 rounded-lg">
+                <span class="bg-primary-600 text-white text-xs font-medium px-2 py-1 rounded">
                     {{ $first }}
                 </span>
                     </a>
 
                     @if ($extra > 0)
                         <a href="{{ route('badges') }}">
-                    <span class="bg-gray-200 text-gray-700 text-xs font-medium px-2 py-1 rounded-lg">
+                    <span class="bg-gray-200 text-gray-700 text-xs font-medium px-2 py-1 rounded">
                         +{{ $extra }}
                     </span>
                         </a>
                     @endif
                 @else
                     <a href="{{ route('badges') }}">
-                <span class="bg-gray-100 text-gray-500 text-xs font-medium px-2 py-1 rounded-lg">
+                <span class="bg-gray-100 text-gray-500 text-xs font-medium px-2 py-1 rounded">
                     Available Badges
                 </span>
                     </a>

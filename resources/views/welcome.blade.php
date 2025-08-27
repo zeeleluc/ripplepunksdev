@@ -13,45 +13,28 @@
 
     <div class="container mx-auto px-2 sm:px-6">
 
-        {{-- CTA Section --}}
-        <div class="bg-white border rounded shadow pb-3 pt-5 sm:pb-4 sm:pt-7">
-            <div class="flex flex-col items-center gap-2 sm:gap-3 text-center w-full">
-                <a
-                    target="_blank"
-                    href="https://xrp.cafe/usercollection/r3SvAe5197xnXvPHKnyptu3EjX5BG8f2mS/r3SvAe5197xnXvPHKnyptu3EjX5BG8f2mS/604/0/rarity%20high/false/"
-                    class="w-full max-w-xs sm:w-auto mx-auto bg-yellow-500 hover:bg-yellow-600 text-white text-sm sm:text-lg font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded-lg shadow"
-                >
-                    Buy The Other Punks
-                </a>
-                <p class="text-gray-700 text-xs sm:text-base leading-snug sm:leading-normal px-4 sm:px-0">
-                    Newly minted <em>"The Other Punks"</em> — offers welcome starting at <strong>2 XRP</strong>.
-                    <br />
-                    (Listings are set higher to support a rising floor and benefit holders, but 2 XRP offers are still gladly accepted into the project wallet.)
-                </p>
-            </div>
-        </div>
-
         {{-- Quick Links --}}
         <div class="px-0 sm:px-6 pb-2 sm:pb-3 pt-3 sm:pt-0 mt-4 sm:mt-5">
             <div class="flex flex-col sm:flex-row sm:justify-center sm:items-center gap-2 sm:gap-4">
+                <livewire:buy-button />
                 <a href="/rewards"
-                   class="w-full sm:w-auto bg-primary-900 hover:bg-primary-800 text-white text-sm sm:text-base font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded-lg shadow text-center">
+                   class="w-full sm:w-auto bg-primary-900 hover:bg-primary-800 text-white text-sm sm:text-base font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded shadow text-center">
                     Rewards
                 </a>
                 <a href="/shoutboard"
-                   class="w-full sm:w-auto bg-primary-800 hover:bg-primary-700 text-white text-sm sm:text-base font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded-lg shadow text-center">
+                   class="w-full sm:w-auto bg-primary-800 hover:bg-primary-700 text-white text-sm sm:text-base font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded shadow text-center">
                     Shoutboard
                 </a>
                 <a href="/badges"
-                   class="w-full sm:w-auto bg-primary-700 hover:bg-primary-600 text-white text-sm sm:text-base font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded-lg shadow text-center">
+                   class="w-full sm:w-auto bg-primary-700 hover:bg-primary-600 text-white text-sm sm:text-base font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded shadow text-center">
                     Badges
                 </a>
                 <a href="/holders"
-                   class="w-full sm:w-auto bg-primary-600 hover:bg-primary-500 text-white text-sm sm:text-base font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded-lg shadow text-center">
+                   class="w-full sm:w-auto bg-primary-600 hover:bg-primary-500 text-white text-sm sm:text-base font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded shadow text-center">
                     Holders
                 </a>
                 <a target="_blank" href="https://discord.gg/TmHWFSHdSn"
-                   class="w-full sm:w-auto bg-primary-500 hover:bg-primary-400 text-white text-sm sm:text-base font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded-lg shadow text-center">
+                   class="w-full sm:w-auto bg-primary-500 hover:bg-primary-400 text-white text-sm sm:text-base font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded shadow text-center">
                     Discord
                 </a>
             </div>
@@ -196,4 +179,5 @@
             Join the revolution. Own your punk. Shape the future on XRPL.
         </p>
     </div>
+
 @endsection

@@ -25,7 +25,7 @@
                                         <a
                                             target="_blank"
                                             href="https://xrp.cafe/usercollection/r3SvAe5197xnXvPHKnyptu3EjX5BG8f2mS/r3SvAe5197xnXvPHKnyptu3EjX5BG8f2mS/604"
-                                            class="w-full sm:w-auto bg-primary-500 hover:bg-primary-600 text-white text-base font-semibold py-3 px-6 mb-3 rounded-lg shadow text-center"
+                                            class="w-full sm:w-auto bg-primary-500 hover:bg-primary-600 text-white text-base font-semibold py-3 px-6 mb-3 rounded shadow text-center"
                                         >
                                             Buy The Other Punks
                                         </a>

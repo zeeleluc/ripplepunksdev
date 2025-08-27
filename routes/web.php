@@ -31,6 +31,10 @@ Route::group(['middleware' => 'web'], function () {
     })->name('shoutboard');
     Route::get('/rewards', [ClaimController::class, 'index'])->name('claim');
 
+    Route::get('/buy-modal', function () {
+        return redirect()->back()->with('showBuyModal', true);
+    })->name('showBuyModal');
+
     // Giveaway routes
     Route::prefix('giveaway')->group(function () {
         Route::get('/', [GiveawayController::class, 'index'])->name('giveaway.index');

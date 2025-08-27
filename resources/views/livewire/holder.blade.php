@@ -11,21 +11,21 @@
     <div class="mt-3">
         @if ($first)
             <a href="{{ route('badges', ['wallet' => $holder->wallet]) }}">
-                <span class="bg-primary-600 mr-2 text-white text-xs font-medium px-2 py-1 rounded-lg">
+                <span class="bg-primary-600 mr-2 text-white text-xs font-medium px-2 py-1 rounded">
                     {{ $first }}
                 </span>
             </a>
 
             @if ($extra > 0)
                 <a href="{{ route('badges', ['wallet' => $holder->wallet]) }}">
-                    <span class="bg-gray-200 mr-2 text-gray-700 text-xs font-medium px-2 py-1 rounded-lg">
+                    <span class="bg-gray-200 mr-2 text-gray-700 text-xs font-medium px-2 py-1 rounded">
                         +{{ $extra }}
                     </span>
                 </a>
             @endif
         @else
             <a href="{{ route('badges', ['wallet' => $holder->wallet]) }}">
-                <span class="bg-gray-100 mr-2 text-gray-500 text-xs font-medium px-2 py-1 rounded-lg">
+                <span class="bg-gray-100 mr-2 text-gray-500 text-xs font-medium px-2 py-1 rounded">
                     Available Badges
                 </span>
             </a>
