@@ -1,3 +1,12 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@font-face {
+    font-family: 'Karmatic Arcade';
+    src: url('/fonts/ka1_2-webfont.woff2') format('woff2'),
+    url('/fonts/ka1_2-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}

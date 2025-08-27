@@ -18,6 +18,7 @@ export default {
                     'Segoe UI Symbol',
                     'Noto Color Emoji',
                 ],
+                karmatic: ['"Karmatic Arcade"', 'sans-serif'],
             },
             colors: {
                 primary: {

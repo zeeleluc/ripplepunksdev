@@ -18,18 +18,48 @@
 </head>
 <body class="bg-gray-100 text-gray-900">
 
-<header class="p-4 sm:p-6 bg-primary-600 text-white shadow flex flex-wrap justify-between items-center">
-    <!-- Left: Logo and Links -->
+{{-- Homepage Header (desktop only) --}}
+@if (request()->is('/'))
+    <header class="hidden sm:flex p-10 bg-primary-600 text-white shadow justify-between items-center relative">
+        <!-- Big Centered Title -->
+        <h1 class="text-7xl font-extrabold text-center flex-1">
+            <a href="{{ url('/') }}" class="font-karmatic hover:underline">
+                {{ config('app.name') }}
+            </a>
+        </h1>
+
+        <!-- Right: Auth Button -->
+        <div class="absolute right-10 top-14">
+            @auth
+                <form method="POST" action="{{ route('xaman.logout') }}">
+                    @csrf
+                    <button type="submit" class="bg-white text-primary-700 text-lg px-4 py-2 rounded hover:bg-gray-100">
+                        Logout
+                    </button>
+                </form>
+            @else
+                <a href="{{ route('xaman.login') }}" class="bg-white text-primary-700 text-lg px-4 py-2 rounded hover:bg-gray-100">
+                    Login
+                </a>
+            @endauth
+        </div>
+    </header>
+@endif
+
+{{-- Default Header (all pages, incl. homepage on mobile) --}}
+<header class="p-4 sm:p-6 bg-primary-600 text-white shadow flex flex-wrap justify-between items-center
+    @if (request()->is('/')) sm:hidden @endif">
+    <!-- Left: Logo -->
     <div class="flex flex-wrap items-center gap-3 sm:gap-6">
         <h1 class="text-base sm:text-xl font-bold">
-            <a href="{{ url('/') }}" class="hover:underline">
+            <a href="{{ url('/') }}" class="font-karmatic hover:underline">
                 {{ config('app.name') }}
             </a>
         </h1>
     </div>
 
     <!-- Right: Auth Button -->
-    <div class="mt-2 sm:mt-0">
+    <div>
         @auth
             <form method="POST" action="{{ route('xaman.logout') }}">
                 @csrf
@@ -44,6 +74,7 @@
         @endauth
     </div>
 </header>
+
 
 {{--    @if (request()->is('/'))--}}
 {{--        <div class="bg-red-500 shadow text-sm text-white text-center px-6 py-2 border-b font-bold">--}}
