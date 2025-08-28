@@ -46,9 +46,6 @@ class FetchXRPPrice extends Command
                 'price_usd' => $price,
             ]);
 
-            $this->info("Price saved: $price USD");
-            SlackNotifier::info("Price saved: $price USD");
-
             // Verwijder oude prijzen ouder dan 1 week
             $deleted = XrpPrice::where('created_at', '<', Carbon::now()->subWeek())->delete();
             $this->info("Deleted $deleted old records.");
