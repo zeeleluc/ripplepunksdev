@@ -32,6 +32,7 @@
                     <h3 class="font-semibold text-primary-100">Buy</h3>
                     <a target="_blank" href="https://xrp.cafe/collection/ripplepunks" class="text-sm text-primary-200 hover:text-primary-50 transition">xrp.cafe</a>
                     <a target="_blank" href="https://bidds.com/collection/ripplepunks" class="text-sm text-primary-200 hover:text-primary-50 transition">bidds</a>
+                    <a target="_blank" href="https://xpmarket.com/dex/RPUNK-rhRKGxf5NbtfVxSUu9kamuicrne6gja7cz/XRP?trade=market" class="text-sm text-primary-200 hover:text-primary-50 transition">$RPUNK</a>
                 </div>
 
                 <div class="flex flex-col space-y-2">
