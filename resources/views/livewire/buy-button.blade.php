@@ -1,7 +1,7 @@
 <div>
     <!-- Buy button -->
     <button wire:click="toggleModal"
-            class="w-full bg-yellow-500 hover:bg-gray-900 text-white text-lg font-semibold py-2 sm:py-3 px-4 sm:px-6 mb-2 rounded shadow text-center block">
+            class="w-full bg-gray-900 hover:bg-gray-800 text-white text-lg font-semibold py-2 sm:py-3 px-4 sm:px-6 mb-2 rounded shadow text-center block">
         Buy
     </button>
 

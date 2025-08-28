@@ -25,23 +25,23 @@
             <div class="w-full md:w-1/2 p-0 sm:p-1 mt-6 md:mt-0 overflow-y-auto max-h-[600px]">
                 <livewire:buy-button />
                 <a href="/punks"
-                   class="w-full bg-primary-800 hover:bg-gray-900 mb-2 text-white text-sm sm:text-base font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded shadow text-center block">
+                   class="w-full bg-primary-800 hover:bg-gray-800 mb-2 text-white text-sm sm:text-base font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded shadow text-center block">
                     All Punks
                 </a>
                 <a href="/rewards"
-                   class="w-full bg-primary-600 hover:bg-gray-900 mb-2 text-white text-sm sm:text-base font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded shadow text-center block">
+                   class="w-full bg-primary-600 hover:bg-gray-800 mb-2 text-white text-sm sm:text-base font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded shadow text-center block">
                     Rewards
                 </a>
                 <a href="/shoutboard"
-                   class="w-full sm:w-auto bg-primary-600 hover:bg-gray-900 mb-2 text-white text-sm sm:text-base font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded shadow text-center block">
+                   class="w-full sm:w-auto bg-primary-600 hover:bg-gray-800 mb-2 text-white text-sm sm:text-base font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded shadow text-center block">
                     Shoutboard
                 </a>
                 <a href="/badges"
-                   class="w-full sm:w-auto bg-primary-600 hover:bg-gray-900 mb-2 text-white text-sm sm:text-base font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded shadow text-center block">
+                   class="w-full sm:w-auto bg-primary-600 hover:bg-gray-800 mb-2 text-white text-sm sm:text-base font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded shadow text-center block">
                     Badges
                 </a>
                 <a href="/holders"
-                   class="w-full sm:w-auto bg-primary-600 hover:bg-gray-900 mb-2 text-white text-sm sm:text-base font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded shadow text-center block">
+                   class="w-full sm:w-auto bg-primary-600 hover:bg-gray-800 mb-2 text-white text-sm sm:text-base font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded shadow text-center block">
                     Holders
                 </a>
             </div>
