@@ -20,7 +20,7 @@
                 <thead class="bg-gray-50 text-left text-lg font-semibold text-gray-700">
                 <tr>
                     <th class="px-4 py-2 w-[135px] min-w-[135px] max-w-[135px]">Min. Punks</th>
-                    <th class="px-4 py-2">RipplePunks</th>
+                    <th class="px-4 py-2">Badge</th>
                 </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-100">
