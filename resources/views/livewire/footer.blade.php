@@ -1,4 +1,4 @@
-<footer class="bg-primary-900 text-white py-12 mt-12">
+<footer class="bg-primary-700 text-white py-12 mt-12">
     <div class="max-w-7xl mx-auto px-4">
 
         {{-- Top Section: Logo + Quick Links --}}
@@ -6,7 +6,7 @@
 
             {{-- Logo / Branding --}}
             <div class="flex flex-col items-center md:items-start text-center md:text-left">
-                <h2 class="text-2xl sm:text-3xl font-extrabold text-primary-50 mb-2">RipplePunks</h2>
+                <h2 class="font-arcade text-5xl font-extrabold text-primary-50 mb-2">RipplePunks</h2>
                 <p class="text-primary-200 text-sm sm:text-base">20,000 Punks on the XRPL</p>
             </div>
 
@@ -15,25 +15,29 @@
 
                 <div class="flex flex-col space-y-2">
                     <h3 class="font-semibold text-primary-100">Explore</h3>
-                    <a href="/" class="hover:text-primary-50 transition">Home</a>
-                    <a href="/rewards" class="hover:text-primary-50 transition">Rewards</a>
-                    <a href="/shoutboard" class="hover:text-primary-50 transition">Shoutboard</a>
-                    <a href="/badges" class="hover:text-primary-50 transition">Badges</a>
-                    <a href="/holders" class="hover:text-primary-50 transition">Holders</a>
-                    <a href="/punks" class="hover:text-primary-50 transition">Punks</a>
+                    <a href="/" class="text-sm text-primary-200 hover:text-primary-50 transition">Home</a>
+                    <a href="/shoutboard" class="text-sm text-primary-200 hover:text-primary-50 transition">Shoutboard</a>
+                    <a href="/badges" class="text-sm text-primary-200 hover:text-primary-50 transition">Badges</a>
+                    <a href="/holders" class="text-sm text-primary-200 hover:text-primary-50 transition">Holders</a>
+                    <a href="/punks" class="text-sm text-primary-200 hover:text-primary-50 transition">All Punks</a>
                 </div>
 
                 <div class="flex flex-col space-y-2">
                     <h3 class="font-semibold text-primary-100">Community</h3>
-                    <a target="_blank" href="https://discord.gg/TmHWFSHdSn" class="hover:text-primary-50 transition">Discord</a>
-                    <a target="_blank" href="https://twitter.com/RipplePunks" class="hover:text-primary-50 transition">Twitter</a>
-                    <a target="_blank" href="https://xrp.cafe/user/rpLqwPLX9ZHhQvismadgHmWFfK2nWxxGTx" class="hover:text-primary-50 transition">Rewards Wallet</a>
+                    <a target="_blank" href="https://twitter.com/RipplePunks" class="text-sm text-primary-200 hover:text-primary-50 transition">Twitter</a>
+                    <a target="_blank" href="https://discord.gg/TmHWFSHdSn" class="text-sm text-primary-200 hover:text-primary-50 transition">Discord</a>
                 </div>
 
                 <div class="flex flex-col space-y-2">
                     <h3 class="font-semibold text-primary-100">Buy</h3>
-                    <a target="_blank" href="https://xrp.cafe/collection/ripplepunks" class="hover:text-primary-50 transition">xrp.cafe</a>
-                    <a target="_blank" href="https://bidds.com/collection/ripplepunks" class="hover:text-primary-50 transition">bidds</a>
+                    <a target="_blank" href="https://xrp.cafe/collection/ripplepunks" class="text-sm text-primary-200 hover:text-primary-50 transition">xrp.cafe</a>
+                    <a target="_blank" href="https://bidds.com/collection/ripplepunks" class="text-sm text-primary-200 hover:text-primary-50 transition">bidds</a>
+                </div>
+
+                <div class="flex flex-col space-y-2">
+                    <h3 class="font-semibold text-primary-100">Rewards</h3>
+                    <a href="/rewards" class="text-sm text-primary-200 hover:text-primary-50 transition">Claim Rewards</a>
+                    <a target="_blank" href="https://xrp.cafe/user/rpLqwPLX9ZHhQvismadgHmWFfK2nWxxGTx" class="text-sm text-primary-200 hover:text-primary-50 transition">View Rewards Wallet</a>
                 </div>
 
             </div>
@@ -41,7 +45,7 @@
         </div>
 
         {{-- Divider --}}
-        <div class="border-t border-primary-700 mb-6"></div>
+        <div class="border-t border-primary-500 mb-6"></div>
 
         {{-- Bottom Section: Copyright + Social Icons --}}
         <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
@@ -54,7 +58,9 @@
                     <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z"/></svg>
                 </a>
                 <a target="_blank" href="https://discord.gg/TmHWFSHdSn" class="text-primary-200 hover:text-primary-50 transition">
-                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M20 0H4C1.8 0 0 1.8 0 4v16c0 2.2 1.8 4 4 4h16c2.2 0 4-1.8 4-4V4c0-2.2-1.8-4-4-4zm-3.2 17.1c-.6.3-1.2.5-1.8.6-.4.1-.9.2-1.3.2-.5 0-.9-.1-1.4-.2-.6-.1-1.2-.3-1.8-.6-.2-.1-.3-.3-.3-.5s.1-.4.3-.5c.6-.3 1.2-.5 1.8-.6.4-.1.9-.2 1.4-.2s1 .1 1.4.2c.6.1 1.2.3 1.8.6.2.1.3.3.3.5s-.1.4-.3.5zm-5.6-3.1c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/></svg>
+                    <svg class="w-5 h-5"
+                         fill="currentColor"
+                         viewBox="0 -28.5 256 256" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="xMidYMid"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g> <path d="M216.856339,16.5966031 C200.285002,8.84328665 182.566144,3.2084988 164.041564,0 C161.766523,4.11318106 159.108624,9.64549908 157.276099,14.0464379 C137.583995,11.0849896 118.072967,11.0849896 98.7430163,14.0464379 C96.9108417,9.64549908 94.1925838,4.11318106 91.8971895,0 C73.3526068,3.2084988 55.6133949,8.86399117 39.0420583,16.6376612 C5.61752293,67.146514 -3.4433191,116.400813 1.08711069,164.955721 C23.2560196,181.510915 44.7403634,191.567697 65.8621325,198.148576 C71.0772151,190.971126 75.7283628,183.341335 79.7352139,175.300261 C72.104019,172.400575 64.7949724,168.822202 57.8887866,164.667963 C59.7209612,163.310589 61.5131304,161.891452 63.2445898,160.431257 C105.36741,180.133187 151.134928,180.133187 192.754523,160.431257 C194.506336,161.891452 196.298154,163.310589 198.110326,164.667963 C191.183787,168.842556 183.854737,172.420929 176.223542,175.320965 C180.230393,183.341335 184.861538,190.991831 190.096624,198.16893 C211.238746,191.588051 232.743023,181.531619 254.911949,164.955721 C260.227747,108.668201 245.831087,59.8662432 216.856339,16.5966031 Z M85.4738752,135.09489 C72.8290281,135.09489 62.4592217,123.290155 62.4592217,108.914901 C62.4592217,94.5396472 72.607595,82.7145587 85.4738752,82.7145587 C98.3405064,82.7145587 108.709962,94.5189427 108.488529,108.914901 C108.508531,123.290155 98.3405064,135.09489 85.4738752,135.09489 Z M170.525237,135.09489 C157.88039,135.09489 147.510584,123.290155 147.510584,108.914901 C147.510584,94.5396472 157.658606,82.7145587 170.525237,82.7145587 C183.391518,82.7145587 193.761324,94.5189427 193.539891,108.914901 C193.539891,123.290155 183.391518,135.09489 170.525237,135.09489 Z"> </path> </g> </g></svg>
                 </a>
             </div>
         </div>
