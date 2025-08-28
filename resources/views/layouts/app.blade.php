@@ -76,12 +76,9 @@
 </header>
 
 
-{{--    @if (request()->is('/'))--}}
-{{--        <div class="bg-red-500 shadow text-sm text-white text-center px-6 py-2 border-b font-bold">--}}
-{{--            This isn’t the CTO version—this is the original RipplePunks by The Dev, now expanding to 20,000.--}}
-{{--            How and why? Browse through the <a href="{{ route('logs') }}">logs</a> to find out.--}}
-{{--        </div>--}}
-{{--    @endif--}}
+    <div class="bg-primary-700 shadow text-sm text-white text-center px-6 py-2 font-bold">
+        1 XRP &nbsp;is&nbsp; ~${{ number_format(\App\Helpers\XRP::getRate(), 2) }}
+    </div>
 
     @auth
         <div class="bg-white shadow text-sm text-gray-700 px-6 py-2 flex items-center justify-between border-b">
