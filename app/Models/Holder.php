@@ -37,22 +37,13 @@ class Holder extends Model
         $nfts = Nft::where('owner', $wallet)->get();
 
         $stickers = [];
-
         $total = $nfts->count();
-        $ogCount = $nfts->whereBetween('nft_id', [0, 9999])->count();
-        $otherCount = $nfts->whereBetween('nft_id', [10000, 19999])->count();
 
         $tiers = config('badges.tiers');
 
-        foreach ($tiers as $threshold => [$anyBadge, $ogBadge, $otherBadge]) {
-            if ($total >= $threshold && !in_array($anyBadge, $stickers)) {
-                $stickers[] = $anyBadge;
-            }
-            if ($ogCount >= $threshold && !in_array($ogBadge, $stickers)) {
-                $stickers[] = $ogBadge;
-            }
-            if ($otherCount >= $threshold && !in_array($otherBadge, $stickers)) {
-                $stickers[] = $otherBadge;
+        foreach ($tiers as $threshold => $badge) {
+            if ($total >= $threshold && !in_array($badge, $stickers)) {
+                $stickers[] = $badge;
             }
         }
 

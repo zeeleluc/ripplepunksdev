@@ -40,18 +40,16 @@
             @enderror
 
             <div class="space-y-4">
-                @foreach($badges as $tier => $tierBadges)
+                @foreach($badges as $tier => $badge)
                     <div class="flex flex-col md:flex-row md:items-start md:space-x-6 border-b pb-3">
                         <div class="w-full md:w-1/5 mb-2 md:mb-0 shrink-0">
                             <span class="font-medium text-gray-700">{{ $tier }}+ Punks</span>
                         </div>
                         <div class="w-full md:flex-1 flex flex-wrap gap-3">
-                            @foreach($tierBadges as $badge)
-                                <label class="flex items-center space-x-2 border rounded px-3 py-2 cursor-pointer hover:bg-gray-50">
-                                    <input type="checkbox" wire:model="selectedBadges" value="{{ $badge }}">
-                                    <span>{{ $badge }}</span>
-                                </label>
-                            @endforeach
+                            <label class="flex items-center space-x-2 border rounded px-3 py-2 cursor-pointer hover:bg-gray-50">
+                                <input type="checkbox" wire:model="selectedBadges" value="{{ $badge }}">
+                                <span>{{ $badge }}</span>
+                            </label>
                         </div>
                     </div>
                 @endforeach

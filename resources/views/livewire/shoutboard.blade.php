@@ -4,7 +4,7 @@
     <p class="text-center my-3 text-lg">
         You need to hold the
         <a href="{{ route('badges') }}">
-            <span class="bg-primary-600 text-white text-lg font-medium px-2 py-1 rounded">Other Punk</span>
+            <span class="bg-primary-600 text-white text-lg font-medium px-2 py-1 rounded">Punk</span>
         </a>
         badge to shout.
     </p>
@@ -17,7 +17,7 @@
         @endif
 
         <!-- Create / Edit Form -->
-        @if (Auth::check() && Auth::user()->holder?->hasBadge('Other Punk'))
+        @if (Auth::check() && Auth::user()->holder?->hasBadge('Punk'))
             <form wire:submit.prevent="{{ $editingId ? 'updateShout' : 'postShout' }}">
                 <textarea wire:model.defer="{{ $editingId ? 'editingMessage' : 'message' }}"
                           placeholder="Say something..."
@@ -92,7 +92,7 @@
 
                     <p class="text-xs text-gray-500">{{ $shout->created_at->diffForHumans() }}</p>
 
-                    @if (Auth::check() && $shout->wallet === Auth::user()->wallet && Auth::user()->holder?->hasBadge('Other Punk'))
+                    @if (Auth::check() && $shout->wallet === Auth::user()->wallet && Auth::user()->holder?->hasBadge('Punk'))
                         @if ($shout->created_at->gt(now()->subHour()))
                             <div class="mt-2">
                                 <button wire:click="editShout({{ $shout->id }})"
@@ -116,7 +116,7 @@
                 $shoutToDelete = $shouts->firstWhere('id', $confirmingDeletionId);
             @endphp
 
-            @if ($shoutToDelete && $shoutToDelete->wallet === Auth::user()->wallet && Auth::user()->holder?->hasBadge('Other Punk'))
+            @if ($shoutToDelete && $shoutToDelete->wallet === Auth::user()->wallet && Auth::user()->holder?->hasBadge('Punk'))
                 <div class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
                     <div class="bg-white p-6 rounded shadow-lg max-w-sm w-full">
                         <p class="mb-4">Are you sure you want to delete this shout?</p>

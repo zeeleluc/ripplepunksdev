@@ -33,15 +33,13 @@
                                 @else
                                     <table class="w-full px-0 mt-3 text-xs text-center">
                                         <tbody>
-                                        @foreach ($tiers as $count => $badges)
+                                        @foreach ($tiers as $count => $badge)
                                             <tr>
-                                                @foreach ($badges as $badge)
-                                                    <td class="py-1">
-                                                        <span class="@if(in_array($badge, $holder->badges ?? [])) bg-primary-200 text-primary-900 @else bg-gray-100 text-gray-300 @endif font-medium px-2.5 py-0.5 rounded-full">
-                                                            {{ $badge }}
-                                                        </span>
-                                                    </td>
-                                                @endforeach
+                                                <td class="py-1">
+                                                    <span class="@if(in_array($badge, $holder->badges ?? [])) bg-primary-200 text-primary-900 @else bg-gray-100 text-gray-300 @endif font-medium px-2.5 py-0.5 rounded-full">
+                                                        {{ $badge }}
+                                                    </span>
+                                                </td>
                                             </tr>
                                         @endforeach
                                         </tbody>
