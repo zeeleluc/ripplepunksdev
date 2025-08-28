@@ -48,7 +48,7 @@
 
             {{-- Dev Log --}}
             <div class="w-full md:w-1/2 border bg-white p-4 sm:p-6 shadow mt-6 md:mt-0 overflow-y-auto max-h-[600px]">
-                <h2 class="text-lg sm:text-2xl font-bold mb-3 sm:mb-4">The Dev 🤘🏼</h2>
+                <h2 class="text-lg sm:text-2xl font-bold mb-3 sm:mb-4">The Dev ✍️</h2>
                 @foreach ($logEntries as $logEntry)
                     <div class="border rounded-xl pt-2 p-3 sm:p-4 mb-4">
                         <p class="text-sm sm:text-base mb-0">

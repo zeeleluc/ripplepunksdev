@@ -1,6 +1,6 @@
 <div class="max-w-6xl mx-auto px-0 py-6">
 
-    <h1 class="text-2xl font-bold mb-6 text-center">The Dev 🤘🏼</h1>
+    <h1 class="text-2xl font-bold mb-6 text-center">The Dev ✍️</h1>
 
     <div class="overflow-x-auto  bg-white border rounded p-4">
         @foreach ($logs as $log)
