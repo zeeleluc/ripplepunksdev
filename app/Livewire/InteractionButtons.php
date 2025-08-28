@@ -27,7 +27,7 @@ class InteractionButtons extends Component
 
     public function loadInteractions()
     {
-        $types = ['thumb-up','thumb-down','middle-finger','eyes','lightning','heart'];
+        $types = ['thumb-up','thumb-down','middle-finger','eyes','lightning','heart','eggplant'];
 
         foreach ($types as $type) {
             $count = Interaction::where('identifier', $this->identifier)
@@ -86,6 +86,7 @@ class InteractionButtons extends Component
                 'eyes' => '👀',
                 'lightning' => '⚡️',
                 'heart' => '💙',
+                'eggplant' => '🍆',
                 'thumb-down' => '👎🏼',
                 'middle-finger' => '🖕🏼',
             ];

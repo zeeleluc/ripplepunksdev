@@ -4,6 +4,7 @@
         'eyes' => '👀',
         'lightning' => '⚡️',
         'heart' => '💙',
+        'eggplant' => '🍆',
         'thumb-down' => '👎🏼',
         'middle-finger' => '🖕🏼',
     ];
