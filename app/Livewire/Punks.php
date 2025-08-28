@@ -68,7 +68,7 @@ class Punks extends Component
             return Schema::getColumnListing((new Nft)->getTable());
         });
 
-        $query = Nft::query()->orderBy('nft_id', 'desc');
+        $query = Nft::query()->orderBy('nft_id', 'asc');
 
         if ($this->color && in_array('color', $columns)) {
             $query->where('color', $this->color);
