@@ -18,8 +18,7 @@
                                 @if (env('PROJECT_WALLET') === $holder->wallet)
                                     <div>
                                         <p class="mb-5">
-                                            This asset is held in the <strong>project's wallet</strong>.<br>
-                                            Newly minted <em>"The Other Punks"</em> — offers welcome starting at <strong>2 XRP</strong>.
+                                            This is the <strong>project's wallet</strong>. Fresh mints offers welcome starting at <strong>2 XRP</strong>.
                                         </p>
 
                                         <a
