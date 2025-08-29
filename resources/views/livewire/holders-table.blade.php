@@ -89,4 +89,8 @@
     </div>
 
     @include('components.custom-pagination', ['paginator' => $holders])
+
+    <div class="flex justify-center">
+        <livewire:buy-button />
+    </div>
 </div>

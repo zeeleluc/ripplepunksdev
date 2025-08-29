@@ -1,4 +1,20 @@
 <div class="bg-white border rounded p-5 text-center">
+
+    {{-- Alert for special wallets --}}
+    @php
+        $specialWallets = [
+            env('CTO_WALLET') => 'CTO',
+            env('PROJECT_WALLET') => 'Projects',
+            env('REWARDS_WALLET') => 'Rewards',
+        ];
+    @endphp
+
+    @if(array_key_exists($holder->wallet, $specialWallets))
+        <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-3 mb-3 text-sm text-left rounded">
+            ⚠️ This is the {{ $specialWallets[$holder->wallet] }} wallet.
+        </div>
+    @endif
+
     {{ $holder->wallet }}
     <br />
 
