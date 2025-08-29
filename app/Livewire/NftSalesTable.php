@@ -35,7 +35,7 @@ class NftSalesTable extends Component
         $newOnes = [];
         foreach ($sales as $sale) {
             $acceptedAt = Carbon::parse($sale->accepted_at);
-            if ($acceptedAt->diffInSeconds($now) <= 1000) {
+            if ($acceptedAt->diffInSeconds($now) <= 10) {
                 $newOnes[] = $sale->accepted_tx_hash;
             }
         }
