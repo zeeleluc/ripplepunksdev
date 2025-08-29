@@ -36,5 +36,13 @@
         {{ $holder->holdings }} RipplePunks
     </div>
 
+    <div class="my-3 text-lg">
+        @if ($holder->voting_power >= 1)
+            ⚡️ {{ $holder->voting_power }} Voting Power
+        @else
+            ⚡️ No Voting Power
+        @endif
+    </div>
+
     @livewire('nft-grid', ['owner' => $holder->wallet])
 </div>

@@ -20,8 +20,14 @@ class HoldersTable extends Component
 
     public function getHoldersProperty()
     {
+        $excludedWallets = [
+            env('CTO_WALLET'),
+            env('PROJECT_WALLET'),
+            env('REWARDS_WALLET'),
+        ];
+
         return Holder::query()
-            ->where('wallet', '!=', env('CTO_WALLET'))
+            ->whereNotIn('wallet', $excludedWallets)
             ->orderByDesc('holdings')
             ->paginate(25);
     }

@@ -24,6 +24,16 @@ class Nft extends Model
         return static::where('owner', env('CTO_WALLET'))->count();
     }
 
+    public static function projectWalletCount(): int
+    {
+        return static::where('owner', env('PROJECT_WALLET'))->count();
+    }
+
+    public static function rewardsWalletCount(): int
+    {
+        return static::where('owner', env('REWARDS_WALLET'))->count();
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class, 'owner', 'wallet');

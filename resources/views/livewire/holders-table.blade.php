@@ -15,6 +15,15 @@
                             <td class="border px-4 py-6 align-top text-center">
                                 <a href="{{ route('holder', ['wallet' => $holder->wallet]) }}">{{ $holder->wallet }}</a>
 
+                                <div class="my-3 text-sm">
+                                    @if ($holder->voting_power >= 1)
+                                        ⚡️ {{ $holder->voting_power }} Voting Power
+                                    @else
+                                        ⚡️ No Voting Power
+                                    @endif
+                                </div>
+
+
                                 @if (env('PROJECT_WALLET') === $holder->wallet)
                                     <div>
                                         <p class="mb-5">
@@ -63,9 +72,20 @@
             </table>
         </div>
 
-        <p class="m-4 italic text-sm">
-            Please note that {{ \App\Models\Nft::ctoWalletCount() }} RipplePunks held by the CTO wallet have been excluded from this list.
-        </p>
+        <ul class="m-4 italic text-sm list-disc list-inside">
+            @if(\App\Models\Nft::projectWalletCount() > 0)
+                <li>{{ \App\Models\Nft::projectWalletCount() }} RipplePunks held by the Projects wallet have been excluded from this list.</li>
+            @endif
+
+            @if(\App\Models\Nft::rewardsWalletCount() > 0)
+                <li>{{ \App\Models\Nft::rewardsWalletCount() }} RipplePunks held by the Rewards wallet have been excluded from this list.</li>
+            @endif
+
+            @if(\App\Models\Nft::ctoWalletCount() > 0)
+                <li>{{ \App\Models\Nft::ctoWalletCount() }} RipplePunks held by the CTO wallet have been excluded from this list.</li>
+            @endif
+        </ul>
+
     </div>
 
     @include('components.custom-pagination', ['paginator' => $holders])

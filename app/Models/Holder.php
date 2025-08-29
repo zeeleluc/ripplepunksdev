@@ -56,6 +56,17 @@ class Holder extends Model
      */
     public static function calculateVotingPower(string $wallet): int
     {
+        // special wallets that have no voting power
+        $excludedWallets = [
+            env('CTO_WALLET'),
+            env('PROJECT_WALLET'),
+            env('REWARDS_WALLET'),
+        ];
+
+        if (in_array($wallet, $excludedWallets, true)) {
+            return 0;
+        }
+
         $totalNfts = Nft::where('owner', $wallet)->count();
 
         if ($totalNfts <= 0) {
@@ -63,7 +74,7 @@ class Holder extends Model
         }
 
         $tiers = config('badges.tiers');
-        krsort($tiers);
+        krsort($tiers); // ensure highest threshold is checked first
 
         $powerConfig = config('badges.votingPower');
 
