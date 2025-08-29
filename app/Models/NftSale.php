@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class NftSale extends Model
 {
@@ -39,4 +41,42 @@ class NftSale extends Model
     {
         return is_string($value) ? json_decode($value, true) : $value;
     }
+
+    public static function latestHashes($limit = 50)
+    {
+        return self::orderBy('accepted_at', 'desc')
+            ->take($limit)
+            ->pluck('accepted_tx_hash')
+            ->toArray();
+    }
+
+    public static function totalXrpLast24h()
+    {
+        return self::where('accepted_at', '>=', now()->subDay())
+                ->sum('amount') / 1_000_000;
+    }
+
+    public static function totalUsdLast24h()
+    {
+        return self::where('accepted_at', '>=', now()->subDay())
+            ->get()
+            ->sum(function ($sale) {
+                $amounts = is_string($sale->amount_in_convert_currencies)
+                    ? json_decode($sale->amount_in_convert_currencies, true)
+                    : $sale->amount_in_convert_currencies;
+
+                return $amounts['usd'] ?? 0;
+            });
+    }
+
+    public static function marketplaceCountsLast24h()
+    {
+        return self::where('accepted_at', '>=', now()->subDay())
+            ->select('marketplace')
+            ->selectRaw('count(*) as total')
+            ->groupBy('marketplace')
+            ->pluck('total', 'marketplace')
+            ->toArray();
+    }
+
 }

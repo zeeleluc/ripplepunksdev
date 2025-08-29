@@ -14,20 +14,28 @@ class NftSalesTable extends Component
     public $latestHashes = [];
     public $highlighted = [];
 
+    public $totalXrp = 0;
+    public $totalUsd = 0;
+    public $marketplaceCounts = [];
+
     public function mount()
     {
-        // Initialize latest hashes to avoid flashing old rows
-        $this->latestHashes = NftSale::orderBy('accepted_at', 'desc')
-            ->take(50)
-            ->pluck('accepted_tx_hash')
-            ->toArray();
+        $this->latestHashes = NftSale::latestHashes(50);
+        $this->refreshStats();
+    }
+
+    public function refreshStats()
+    {
+        $this->totalXrp = NftSale::totalXrpLast24h();
+        $this->totalUsd = NftSale::totalUsdLast24h();
+        $this->marketplaceCounts = NftSale::marketplaceCountsLast24h();
     }
 
     public function render()
     {
         $sales = NftSale::where('amount', '>', 1)
             ->orderBy('accepted_at', 'desc')
-            ->paginate(250);
+            ->paginate(50);
 
         $now = Carbon::now();
         $currentHashes = $sales->pluck('accepted_tx_hash')->toArray();
@@ -35,14 +43,16 @@ class NftSalesTable extends Component
         // Highlight new rows accepted in last 10 seconds
         $newOnes = [];
         foreach ($sales as $sale) {
-            $acceptedAt = Carbon::parse($sale->accepted_at);
-            if ($acceptedAt->diffInSeconds($now) <= 10) {
+            if ($sale->accepted_at->diffInSeconds($now) <= 10) {
                 $newOnes[] = $sale->accepted_tx_hash;
             }
         }
 
         $this->highlighted = $newOnes;
         $this->latestHashes = $currentHashes;
+
+        // Refresh 24h stats
+        $this->refreshStats();
 
         return view('livewire.nft-sales-table', [
             'sales' => $sales,
