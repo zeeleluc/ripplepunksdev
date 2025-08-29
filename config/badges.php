@@ -2,15 +2,6 @@
 
 return [
 
-    /*
-    |--------------------------------------------------------------------------
-    | Badge Tiers (Simplified)
-    |--------------------------------------------------------------------------
-    |
-    | Only the first badge of each tier is used for holdings.
-    |
-    */
-
     'tiers' => [
         500 => 'Ledger Legend',
         350 => 'Meta Mogul',
@@ -20,6 +11,17 @@ return [
         25  => 'Vault Dweller',
         10  => 'Street Raider',
         1   => 'Punk',
+    ],
+
+    'votingPower' => [
+        'Punk'           => 1,
+        'Street Raider'  => 2,
+        'Vault Dweller'  => 3,
+        'Punk King'      => 5,
+        'Ripple Overlord'=> 8,
+        'Digital Don'    => 13,
+        'Meta Mogul'     => 21,
+        'Ledger Legend'  => 34,
     ],
 
 ];

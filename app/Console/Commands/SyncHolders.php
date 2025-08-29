@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Nft;
 use App\Models\Holder;
 use App\Helpers\SlackNotifier;
+use PHPUnit\Event\Runtime\PHP;
 
 class SyncHolders extends Command
 {
@@ -32,6 +33,8 @@ class SyncHolders extends Command
         foreach ($ownerCounts as $wallet => $count) {
             $badges = Holder::calculateBadges($wallet);
             $holder = $holders->get($wallet);
+            $votingPower = Holder::calculateVotingPower($wallet);
+            echo $votingPower . PHP_EOL;
 
             if (!$holder) {
                 // New holder
@@ -39,6 +42,7 @@ class SyncHolders extends Command
                     'wallet'   => $wallet,
                     'holdings' => $count,
                     'badges'   => $badges,
+                    'voting_power' => $votingPower,
                 ]);
 
                 $addedCount++;
@@ -54,6 +58,10 @@ class SyncHolders extends Command
 
                 if ($holder->badges !== $badges) {
                     $changes['badges'] = $badges;
+                }
+
+                if ($holder->voting_power !== $votingPower) {
+                    $changes['voting_power'] = $votingPower;
                 }
 
                 if (!empty($changes)) {

@@ -53,4 +53,9 @@ class User extends Authenticatable
         $user = self::where('wallet', $wallet)->first();
         return $user?->holder?->badges ?? [];
     }
+
+    public function votingSubmissions()
+    {
+        return $this->hasMany(VotingSubmission::class);
+    }
 }

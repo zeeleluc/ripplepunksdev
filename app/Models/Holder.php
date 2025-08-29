@@ -10,6 +10,7 @@ class Holder extends Model
         'wallet',
         'badges',
         'holdings',
+        'voting_power',
     ];
 
     protected $casts = [
@@ -48,5 +49,32 @@ class Holder extends Model
         }
 
         return $stickers;
+    }
+
+    /**
+     * Calculate voting power for a given wallet.
+     */
+    public static function calculateVotingPower(string $wallet): int
+    {
+        $totalNfts = Nft::where('owner', $wallet)->count();
+
+        if ($totalNfts <= 0) {
+            return 0;
+        }
+
+        $tiers = config('badges.tiers');
+        krsort($tiers);
+
+        $powerConfig = config('badges.votingPower');
+
+        $badge = 'Punk'; // default
+        foreach ($tiers as $threshold => $name) {
+            if ($totalNfts >= $threshold) {
+                $badge = $name;
+                break;
+            }
+        }
+
+        return $powerConfig[$badge] ?? 1;
     }
 }
