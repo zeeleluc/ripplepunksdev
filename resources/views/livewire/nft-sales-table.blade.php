@@ -48,7 +48,7 @@
                         <div class="text-center truncate text-sm">{{ substr($sale->buyer,0,6) . '...' . substr($sale->buyer,-4) }}</div>
                         <div class="text-center truncate text-sm">{{ substr($sale->seller,0,6) . '...' . substr($sale->seller,-4) }}</div>
                         <div class="text-sm">{{ $sale->marketplace }}</div>
-                        <div class="min-w-[200px] text-sm text-end">{{ $sale->accepted_at->format('Y-m-d H:i:s') }} UTC</div>
+                        <div class="min-w-[200px] text-sm text-end">{{ $sale->accepted_at->diffForHumans() }}</div>
                     </div>
                 @endforeach
             </div>
