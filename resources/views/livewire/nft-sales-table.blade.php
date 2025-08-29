@@ -1,4 +1,4 @@
-<div wire:poll.20s.keep-alive class="p-4">
+<div wire:poll.20s.keep-alive class="py-3">
     <style>
         @keyframes flash-yellow {
             0% { background-color: #fef08a; }
@@ -65,7 +65,7 @@
 
                 <div
                     wire:key="sale-{{ $sale->accepted_tx_hash }}-mobile"
-                    class="p-3 transition-colors duration-500 border-b {{ in_array($sale->accepted_tx_hash, $highlighted) ? 'flash-highlight' : '' }}"
+                    class="py-1 px-2 transition-colors duration-500 border-b {{ in_array($sale->accepted_tx_hash, $highlighted) ? 'flash-highlight' : '' }}"
                 >
                     <div class="font-medium text-lg">{{ $sale->nft_name ?? '-' }}</div>
                     <div class="text-base">XRP {{ number_format($sale->amount / 1_000_000, 2) }} / US$ {{ $amountUsd ? number_format($amountUsd, 2) : '-' }}</div>
