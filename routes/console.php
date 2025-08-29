@@ -11,4 +11,5 @@ if (app()->environment('prod')) {
 
     Schedule::command('holders:sync')->everyTenMinutes();
     Schedule::command('xrp:fetch-price')->everyFifteenSeconds();
+    Schedule::command('xrpl:fetch-sales')->everyFiveMinutes();
 }
