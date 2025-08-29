@@ -34,4 +34,9 @@ class NftSale extends Model
         'buyer_details' => 'array',
         'accepted_account_details' => 'array',
     ];
+
+    public function getAmountInConvertCurrenciesAttribute($value)
+    {
+        return is_string($value) ? json_decode($value, true) : $value;
+    }
 }
