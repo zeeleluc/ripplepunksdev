@@ -25,7 +25,8 @@ class NftSalesTable extends Component
 
     public function render()
     {
-        $sales = NftSale::orderBy('accepted_at', 'desc')
+        $sales = NftSale::where('amount', '>', 1)
+            ->orderBy('accepted_at', 'desc')
             ->paginate(250);
 
         $now = Carbon::now();
