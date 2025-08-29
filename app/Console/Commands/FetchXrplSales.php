@@ -14,7 +14,7 @@ class FetchXrplSales extends Command
 
     public function handle()
     {
-        $from = Carbon::now()->subMinutes(20)->timestamp * 1000; // in ms
+        $from = Carbon::now()->subMinutes(2)->timestamp * 1000; // in ms
         $to   = Carbon::now()->timestamp * 1000;
 
         $url = "https://bithomp.com/api/v2/nft-sales";
