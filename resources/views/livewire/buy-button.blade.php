@@ -23,7 +23,7 @@
                 </p>
 
                 <div class="flex justify-center gap-3 my-4">
-                    <a href="https://xrp.cafe/collection/ripplepunks" target="_blank" class="px-5 py-3 bg-primary-700 hover:bg-primary-600 text-white rounded border font-semibold text-lg">
+                    <a href="https://xrp.cafe/usercollection/r3SvAe5197xnXvPHKnyptu3EjX5BG8f2mS/r3SvAe5197xnXvPHKnyptu3EjX5BG8f2mS/604/0/rarity%20high/false/[]" target="_blank" class="px-5 py-3 bg-primary-700 hover:bg-primary-600 text-white rounded border font-semibold text-lg">
                         xrp.cafe
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 sm:w-4 sm:h-4 inline-block ml-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 3h7m0 0v7m0-7L10 14M5 5v14h14v-5" />
