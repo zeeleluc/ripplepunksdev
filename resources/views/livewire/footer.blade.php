@@ -15,11 +15,16 @@
 
                 <div class="flex flex-col space-y-2">
                     <h3 class="font-semibold text-primary-100">Explore</h3>
+                    <a href="/pulse" class="text-sm text-primary-200 hover:text-primary-50 transition">XRPL NFT Pulse</a>
+                </div>
+
+                <div class="flex flex-col space-y-2">
+                    <h3 class="font-semibold text-primary-100">RipplePunks</h3>
                     <a href="/" class="text-sm text-primary-200 hover:text-primary-50 transition">Home</a>
                     <a href="/shoutboard" class="text-sm text-primary-200 hover:text-primary-50 transition">Shoutboard</a>
                     <a href="/badges" class="text-sm text-primary-200 hover:text-primary-50 transition">Badges</a>
                     <a href="/holders" class="text-sm text-primary-200 hover:text-primary-50 transition">Holders</a>
-                    <a href="/punks" class="text-sm text-primary-200 hover:text-primary-50 transition">All Punks</a>
+                    <a href="/punks" class="text-sm text-primary-200 hover:text-primary-50 transition">All RipplePunks</a>
                 </div>
 
                 <div class="flex flex-col space-y-2">

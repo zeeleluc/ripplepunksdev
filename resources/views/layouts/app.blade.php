@@ -81,36 +81,14 @@
     </div>
 
     @auth
-        <div class="bg-white shadow text-sm text-gray-700 px-6 py-2 flex items-center justify-between border-b">
-            <span class="truncate max-w-[60%] overflow-hidden whitespace-nowrap">
-                {{ Auth::user()->wallet }}
-            </span>
-
-            @if (Auth::user()->isAdmin())
-                <div>
-                    <a href="{{ route('admin.users') }}" class="ml-4 flex-shrink-0">
-                        Users
-                    </a>
-                    <a href="{{ route('admin.claims') }}" class="ml-4 flex-shrink-0">
-                        Claims
-                    </a>
-                    <a href="{{ route('admin.log-entry') }}" class="ml-4 flex-shrink-0">
-                        Logs
-                    </a>
-                </div>
-            @else
-                <div>
-                    <a href="{{ route('holder', ['wallet' => Auth::user()->wallet]) }}" class="ml-4 flex-shrink-0">
-                        Your Profile
-                    </a>
-                </div>
-            @endif
-        </div>
-
-        <div class="bg-white shadow text-sm text-gray-700 px-6 py-2 flex items-center border-b">
-    <span class="truncate max-w-[60%] overflow-hidden whitespace-nowrap mr-4">
-        {{ Auth::user()->totalNFTs() }} RipplePunks
-    </span>
+        <!-- Wallet & Badges Bar -->
+        <div class="bg-white shadow text-sm text-gray-700 px-4 py-2 flex items-center justify-between gap-2 border-b flex-nowrap overflow-hidden">
+            <!-- Wallet + NFT Count -->
+            <div class="flex items-center gap-2 flex-shrink min-w-0">
+                <span class="truncate font-medium max-w-[40vw] sm:max-w-[30vw]">
+                    {{ Auth::user()->wallet }}
+                </span>
+            </div>
 
             @php
                 $holder = \App\Models\Holder::where('wallet', Auth::user()->wallet)->first();
@@ -119,33 +97,52 @@
                 $extra = max(count($badges) - 1, 0);
             @endphp
 
-            <div class="flex gap-2 items-center">
+                <!-- Badges -->
+            <div class="flex items-center gap-1 flex-shrink-0 min-w-0">
                 @if ($first)
                     <a href="{{ route('badges') }}">
-                <span class="bg-primary-600 text-white text-xs font-medium px-2 py-1 rounded">
-                    {{ $first }}
-                </span>
+                        <span class="bg-primary-600 text-white text-xs font-medium px-2 py-1 rounded truncate max-w-[20vw]">
+                            {{ $first }}
+                        </span>
                     </a>
 
                     @if ($extra > 0)
                         <a href="{{ route('badges') }}">
-                    <span class="bg-gray-200 text-gray-700 text-xs font-medium px-2 py-1 rounded">
-                        +{{ $extra }}
-                    </span>
+                            <span class="bg-gray-200 text-gray-700 text-xs font-medium px-2 py-1 rounded truncate max-w-[12vw]">
+                                +{{ $extra }}
+                            </span>
                         </a>
                     @endif
                 @else
                     <a href="{{ route('badges') }}">
-                <span class="bg-gray-100 text-gray-500 text-xs font-medium px-2 py-1 rounded">
-                    Available Badges
-                </span>
+                        <span class="bg-gray-100 text-gray-500 text-xs font-medium px-2 py-1 rounded truncate max-w-[32vw]">
+                            Available Badges
+                        </span>
                     </a>
                 @endif
             </div>
         </div>
 
-
+        <!-- Navigation Bar -->
+        <div class="bg-white shadow text-sm text-gray-700 px-2 py-1 flex items-center justify-start gap-1 flex-nowrap overflow-x-auto border-b">
+            @if (Auth::user()->isAdmin())
+                <a href="{{ route('admin.users') }}" class="flex-shrink-0 px-2 py-1 hover:underline whitespace-nowrap">
+                    Users
+                </a>
+                <a href="{{ route('admin.claims') }}" class="flex-shrink-0 px-2 py-1 hover:underline whitespace-nowrap">
+                    Claims
+                </a>
+                <a href="{{ route('admin.log-entry') }}" class="flex-shrink-0 px-2 py-1 hover:underline whitespace-nowrap">
+                    Logs
+                </a>
+            @else
+                <a href="{{ route('holder', ['wallet' => Auth::user()->wallet]) }}" class="flex-shrink-0 px-2 py-1 hover:underline whitespace-nowrap">
+                    Your Profile
+                </a>
+            @endif
+        </div>
     @endauth
+
 
 <main class="container mx-auto p-4">
     @yield('content')
