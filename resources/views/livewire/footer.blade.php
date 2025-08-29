@@ -38,7 +38,7 @@
                 <div class="flex flex-col space-y-2">
                     <h3 class="font-semibold text-primary-100">Rewards</h3>
                     <a href="/rewards" class="text-sm text-primary-200 hover:text-primary-50 transition">Claim Rewards</a>
-                    <a target="_blank" href="https://xrp.cafe/user/rpLqwPLX9ZHhQvismadgHmWFfK2nWxxGTx" class="text-sm text-primary-200 hover:text-primary-50 transition">View Rewards Wallet</a>
+                    <a target="_blank" href="https://xpmarket.com/wallet/rpLqwPLX9ZHhQvismadgHmWFfK2nWxxGTx" class="text-sm text-primary-200 hover:text-primary-50 transition">View Rewards Wallet</a>
                 </div>
 
             </div>
