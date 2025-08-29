@@ -71,12 +71,17 @@ class NftSale extends Model
 
     public static function marketplaceCountsLast24h()
     {
-        return self::where('accepted_at', '>=', now()->subDay())
+        $counts = self::where('accepted_at', '>=', now()->subDay())
             ->select('marketplace')
             ->selectRaw('count(*) as total')
             ->groupBy('marketplace')
             ->pluck('total', 'marketplace')
             ->toArray();
+
+        // Sort descending by count
+        arsort($counts);
+
+        return $counts;
     }
 
 }

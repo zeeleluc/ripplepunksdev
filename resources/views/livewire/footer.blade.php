@@ -6,7 +6,7 @@
 
             {{-- Logo / Branding --}}
             <div class="flex flex-col items-center md:items-start text-center md:text-left">
-                <h2 class="font-arcade text-4xl font-extrabold text-primary-50 mb-2">RipplePunks</h2>
+                <h2 class="font-arcade text-4xl font-extrabold text-primary-50 mb-2">Powered by RipplePunks</h2>
                 <p class="text-primary-200 text-sm sm:text-sm">20,000 Punks on the XRPL</p>
             </div>
 
