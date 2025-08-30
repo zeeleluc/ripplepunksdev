@@ -75,8 +75,7 @@
     </div>
 </header>
 
-
-    <div class="bg-primary-700 shadow text-sm text-white text-center px-6 py-2 font-bold">
+    <div class="bg-primary-700 shadow text-xs sm:text-base text-white text-center px-6 py-2 font-normal sm:font-bold">
         1 XRP &nbsp;is&nbsp; ~${{ number_format(\App\Helpers\XRP::getRate(), 2) }}
     </div>
 
