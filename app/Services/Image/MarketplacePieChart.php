@@ -21,7 +21,7 @@ class MarketplacePieChart
 
     public function __construct(
         int $size = 1000,
-        string $backgroundColor = '#cccccc',
+        string $backgroundColor = '#eeeeee',
         array $colors = []
     ) {
         $this->size = $size;

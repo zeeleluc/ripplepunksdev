@@ -21,21 +21,15 @@ if (app()->environment('prod')) {
         (new \App\Services\XPost())->tweetLeftRight();
     })->weeklyOn(6, '09:30')->timezone('America/New_York');
 
-
-
     Schedule::call(function () {
         $xPost = new \App\Services\XPost();
         $xPost->tweetXRPTrendImage();
     })->timezone('America/New_York')
         ->dailyAt('00:20');
 
-
-
     Schedule::call(function () {
         $xPost = new \App\Services\XPost();
         $xPost->tweetMarketplacePieChart();
     })->timezone('America/New_York')
         ->dailyAt('14:07');
-
-
 }
