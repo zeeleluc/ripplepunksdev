@@ -47,8 +47,8 @@
                         <div class="font-medium text-sm text-center">{{ $sale->nft_name ?? '-' }}</div>
                         <div class="text-end text-sm">{{ number_format($sale->amount / 1_000_000, 2) }} XRP</div>
                         <div class="text-end text-sm">${{ $amountUsd ? number_format($amountUsd, 2) : '-' }}</div>
-                        <div class="text-center truncate text-sm">{{ substr($sale->buyer,0,6) . '...' . substr($sale->buyer,-4) }}</div>
                         <div class="text-center truncate text-sm">{{ substr($sale->seller,0,6) . '...' . substr($sale->seller,-4) }}</div>
+                        <div class="text-center truncate text-sm">{{ substr($sale->buyer,0,6) . '...' . substr($sale->buyer,-4) }}</div>
                         <div class="text-sm text-center">
                             @if ($marketNftLink = $sale->getMarketNftLink())
                                 <a target="_blank" class="underline text-primary-600 hover:text-primary-800" href="{{ $marketNftLink }}">
@@ -80,11 +80,20 @@
                     <div class="font-bold text-lg text-center">{{ $sale->nft_name ?? '-' }}</div>
                     <div class="text-base text-center">XRP {{ number_format($sale->amount / 1_000_000, 2) }} / US$ {{ $amountUsd ? number_format($amountUsd, 2) : '-' }}</div>
                     <div class="text-sm text-center">
-                        {{ substr($sale->buyer, 0, 9) . '...' . substr($sale->buyer, -4) }}
-                        🫱🏼‍🫲🏿
                         {{ substr($sale->seller, 0, 9) . '...' . substr($sale->seller, -4) }}
+                        🫱🏼‍🫲🏿
+                        {{ substr($sale->buyer, 0, 9) . '...' . substr($sale->buyer, -4) }}
                     </div>
-                    <div class="text-sm text-center">{{ $sale->accepted_at->diffForHumans() }} via {{ $sale->marketplace ?? 'Unknown' }}</div>
+                    <div class="text-sm text-center">
+                        {{ $sale->accepted_at->diffForHumans() }} via
+                        @if ($marketNftLink = $sale->getMarketNftLink())
+                            <a target="_blank" class="underline text-primary-600 hover:text-primary-800" href="{{ $marketNftLink }}">
+                                {{ $sale->marketplace }}
+                            </a>
+                        @else
+                            {{ $sale->marketplace ?: 'Unknown' }}
+                        @endif
+                    </div>
                 </div>
             @endforeach
         </div>
