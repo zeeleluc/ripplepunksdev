@@ -96,6 +96,8 @@ class NftSale extends Model
             return 'https://account.xspectar.com/marketplace';
         } elseif ($this->marketplace === 'xrpns.com') {
             return 'https://xrpns.com';
+        } elseif ($this->marketplace === 'opulencex.io') {
+            return 'https://nftmarketplace.opulencex.io/nft/' . $this->nftoken_id;
         }
 
         return null;
