@@ -84,4 +84,20 @@ class NftSale extends Model
         return $counts;
     }
 
+    public function getMarketNftLink(): ?string
+    {
+        if ($this->marketplace === 'xrp.cafe') {
+            return 'https://xrp.cafe/nft/' . $this->nftoken_id;
+        } elseif ($this->marketplace === 'xpmarket.com') {
+            return 'https://xpmarket.com/nfts/item/' . $this->nftoken_id;
+        } elseif ($this->marketplace === 'bidds.com') {
+            return 'https://bidds.com/nft/' . $this->nftoken_id;
+        } elseif ($this->marketplace === 'xspectar.com') {
+            return 'https://account.xspectar.com/marketplace';
+        } elseif ($this->marketplace === 'xrpns.com') {
+            return 'https://xrpns.com';
+        }
+
+        return null;
+    }
 }

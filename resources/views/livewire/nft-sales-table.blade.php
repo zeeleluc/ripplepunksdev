@@ -49,7 +49,15 @@
                         <div class="text-end text-sm">${{ $amountUsd ? number_format($amountUsd, 2) : '-' }}</div>
                         <div class="text-center truncate text-sm">{{ substr($sale->buyer,0,6) . '...' . substr($sale->buyer,-4) }}</div>
                         <div class="text-center truncate text-sm">{{ substr($sale->seller,0,6) . '...' . substr($sale->seller,-4) }}</div>
-                        <div class="text-sm text-center">{{ $sale->marketplace }}</div>
+                        <div class="text-sm text-center">
+                            @if ($marketNftLink = $sale->getMarketNftLink())
+                                <a target="_blank" class="underline text-primary-600 hover:text-primary-800" href="{{ $marketNftLink }}">
+                                    {{ $sale->marketplace }}
+                                </a>
+                            @else
+                                {{ $sale->marketplace ?: 'Unknown' }}
+                            @endif
+                        </div>
                         <div class="min-w-[200px] text-sm text-end">{{ $sale->accepted_at->diffForHumans() }}</div>
                     </div>
                 @endforeach
