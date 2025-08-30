@@ -16,4 +16,9 @@ if (app()->environment('prod')) {
     Schedule::call(function () {
         (new \App\Services\XPost())->tweetGm();
     })->dailyAt('06:00')->timezone('America/New_York');
+
+    Schedule::call(function () {
+        (new \App\Services\XPost())->tweetLeftRight();
+    })->weeklyOn(6, '09:30')->timezone('America/New_York');
+
 }

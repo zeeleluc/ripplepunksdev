@@ -10,7 +10,7 @@ class XPost
 {
     private string $oauthId = '';
     private string $text = '';
-    private ?string $image = null;
+    private array $images = []; // support multiple images
 
     private string $consumerKey;
     private string $consumerSecret;
@@ -39,7 +39,16 @@ class XPost
     {
         $post = new XPost();
         $post->setText('GM XRPL!')
-            ->setImage($post->getRandomOGRipplePunkImage())
+            ->addImage($this->getRandomOGRipplePunkImage())
+            ->post();
+    }
+
+    public function tweetLeftRight()
+    {
+        $post = new XPost();
+        $post->setText('Left or right?')
+            ->addImage($this->getRandomOGRipplePunkImage())
+            ->addImage($this->getRandomOGRipplePunkImage())
             ->post();
     }
 
@@ -49,23 +58,31 @@ class XPost
         return $this;
     }
 
-    public function setImage(string $path): self
+    public function addImage(string $path): self
     {
-        $this->image = $path;
+        $this->images[] = $path;
         return $this;
     }
 
-    public function getImage(): ?string
+    public function setImages(array $paths): self
     {
-        return $this->image;
+        $this->images = $paths;
+        return $this;
+    }
+
+    public function getImages(): array
+    {
+        return $this->images;
     }
 
     public function clear(): self
     {
-        if ($this->image && file_exists($this->image)) {
-            unlink($this->image);
+        foreach ($this->images as $image) {
+            if ($image && file_exists($image)) {
+                unlink($image);
+            }
         }
-        $this->image = null;
+        $this->images = [];
         return $this;
     }
 
@@ -106,18 +123,25 @@ class XPost
 
     private function attachMedia(array &$params): void
     {
-        if (!$this->image) {
+        if (empty($this->images)) {
             return;
         }
 
-        $upload = $this->connection('1.1')->upload('media/upload', [
-            'media' => $this->image,
-        ], ['chunkedUpload' => false]);
+        $mediaIds = [];
+        foreach ($this->images as $image) {
+            $upload = $this->connection('1.1')->upload('media/upload', [
+                'media' => $image,
+            ], ['chunkedUpload' => false]);
 
-        if (!empty($upload->media_id_string)) {
+            if (!empty($upload->media_id_string)) {
+                $mediaIds[] = $upload->media_id_string;
+            }
+        }
+
+        if ($mediaIds) {
             $params['media'] = [
                 'tagged_user_ids' => $this->oauthId ? [$this->oauthId] : [],
-                'media_ids' => [$upload->media_id_string],
+                'media_ids' => $mediaIds,
             ];
         }
     }
