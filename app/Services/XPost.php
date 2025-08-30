@@ -218,4 +218,84 @@ class XPost
             ->addImage($localPath)
             ->post();
     }
+
+    /**
+     * Tweet Marketplace Pie Chart
+     */
+    public function tweetMarketplacePieChart(): void
+    {
+        // 1️⃣ Generate the pie chart
+        $pieChart = new \App\Services\Image\MarketplacePieChart();
+        $pieChart->process();
+
+        // Save chart to Spaces (returns filename)
+        $spacesPath = $pieChart->saveToSpaces();
+
+        // Download locally for Twitter
+        $localPath = storage_path('app/tmp/' . basename($spacesPath));
+        if (!file_exists($localPath)) {
+            $contents = \Illuminate\Support\Facades\Storage::disk('spaces')->get($spacesPath);
+            file_put_contents($localPath, $contents);
+        }
+
+        // 2️⃣ Build the tweet text with marketplaces & counts
+        $marketplaceCounts = \App\Models\NftSale::marketplaceCountsLast24h();
+        $marketplaceCounts = array_filter(
+            $marketplaceCounts,
+            fn($count, $marketplace) => !empty($marketplace),
+            ARRAY_FILTER_USE_BOTH
+        );
+
+        // --- Build tweet text ---
+        arsort($marketplaceCounts);
+
+// Take top 3 + sum rest as "others"
+        $top3 = array_slice($marketplaceCounts, 0, 3, true);
+        $others = array_slice($marketplaceCounts, 3, null, true);
+        if (!empty($others)) {
+            $top3['others'] = array_sum($others);
+        }
+        $marketplaceCounts = $top3;
+
+// Start with title
+        $tweetText = "⚡ Pulse the heartbeat of XRPL NFT sales ⚡\n\n";
+
+// Add bullet points with emoji
+        // --- Marketplace to Twitter handle mapping ---
+        $marketplaceMap = [
+            'xrp.cafe'      => '@xrpcafe',
+            'xpmarket.com'   => '@xpmarket',
+            'opulencex.io'    => '@OpulenceX_NFT',
+            'xspectar.com' => '@xSPECTAR',
+            'bidds.com' => '@biddsonxrpl',
+        ];
+
+        foreach ($marketplaceCounts as $marketplace => $count) {
+            if (isset($marketplaceMap[$marketplace])) {
+                $displayName = $marketplaceMap[$marketplace];
+            } else {
+                // Replace dots with (dot) if no mapping
+                $displayName = str_replace('.', '(dot)', $marketplace);
+            }
+
+            $tweetText .= "🚀 {$displayName} ({$count})\n";
+        }
+
+
+// White space
+        $tweetText .= "\n";
+
+// Add website link with emoji
+        $tweetText .= "🔗 https://ripplepunks.dev/pulse";
+        $tweetText .= "\n";
+        $tweetText .= "\n";
+        $tweetText .= "⏰ 24hrs";
+
+
+        // 3️⃣ Post tweet
+        $this->setText($tweetText)
+            ->addImage($localPath)
+            ->post();
+    }
+
 }

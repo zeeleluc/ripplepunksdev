@@ -29,4 +29,13 @@ if (app()->environment('prod')) {
     })->timezone('America/New_York')
         ->dailyAt('00:20');
 
+
+
+    Schedule::call(function () {
+        $xPost = new \App\Services\XPost();
+        $xPost->tweetMarketplacePieChart();
+    })->timezone('America/New_York')
+        ->dailyAt('14:00');
+
+
 }
