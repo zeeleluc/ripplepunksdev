@@ -35,7 +35,7 @@ if (app()->environment('prod')) {
         $xPost = new \App\Services\XPost();
         $xPost->tweetMarketplacePieChart();
     })->timezone('America/New_York')
-        ->dailyAt('14:00');
+        ->dailyAt('14:07');
 
 
 }
