@@ -100,7 +100,11 @@
     </div>
 
     {{-- Pagination --}}
-    <div class="mt-3 p-2 border-t bg-gray-50 flex justify-center">
+    <div class="mt-3 p-2 flex justify-center">
         @include('components.custom-pagination', ['paginator' => $sales])
+    </div>
+
+    <div class="flex justify-center mt-4">
+        <livewire:buy-button />
     </div>
 </div>
