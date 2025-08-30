@@ -21,4 +21,13 @@ if (app()->environment('prod')) {
         (new \App\Services\XPost())->tweetLeftRight();
     })->weeklyOn(6, '09:30')->timezone('America/New_York');
 
+
+
+    Schedule::call(function () {
+        $xPost = new \App\Services\XPost();
+        $xPost->tweetXRPTrendImage();
+    })->timezone('America/New_York')
+        ->dailyAt('10:19'); // 1 minute after midnight NY time
+        //->dailyAt('00:01'); // 1 minute after midnight NY time
+
 }

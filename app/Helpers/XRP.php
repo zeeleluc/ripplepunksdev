@@ -3,6 +3,7 @@
 namespace App\Helpers;
 
 use App\Models\XrpPrice;
+use Illuminate\Support\Facades\Storage;
 
 class XRP
 {
