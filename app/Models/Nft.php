@@ -38,4 +38,23 @@ class Nft extends Model
     {
         return $this->belongsTo(User::class, 'owner', 'wallet');
     }
+
+    public static function genericCount(?int $fromId = null, ?int $toId = null, ?array $search = null): int
+    {
+        $query = static::query();
+
+        // Filter by nft_id range if provided
+        if (!is_null($fromId) && !is_null($toId)) {
+            $query->whereBetween('nft_id', [$fromId, $toId]);
+        }
+
+        // Apply search if provided
+        if (!empty($search)) {
+            foreach ($search as $column => $value) {
+                $query->where($column, 'like', "%{$value}%");
+            }
+        }
+
+        return $query->count();
+    }
 }

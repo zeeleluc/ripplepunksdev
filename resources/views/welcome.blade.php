@@ -131,6 +131,31 @@
             </div>
         </div>
 
+        {{-- NFT Counts Table --}}
+        <div class="flex flex-col md:flex-row md:gap-6 mt-6">
+            <div class="w-full border bg-white p-3 sm:p-6 shadow">
+                <div class="overflow-x-auto">
+                    <table class="min-w-full table-auto text-left border text-xs sm:text-sm">
+                        <thead>
+                        <tr class="bg-gray-200">
+                            <th class="px-2 sm:px-4 py-1 sm:py-2"></th>
+                            <th class="px-2 sm:px-4 py-1 sm:py-2">OGs</th>
+                            <th class="px-2 sm:px-4 py-1 sm:py-2">Others</th>
+                        </tr>
+                        </thead>
+                        <tbody class="divide-y">
+                        @foreach ($counts as $type => $batches)
+                            <tr class="bg-gray-50">
+                                <td class="px-2 sm:px-4 py-1 sm:py-2 font-medium">{{ ucfirst($type) }}</td>
+                                <td class="px-2 sm:px-4 py-1 sm:py-2">{{ number_format($batches[0]) }}</td>
+                                <td class="px-2 sm:px-4 py-1 sm:py-2">{{ number_format($batches[1]) }}</td>
+                            </tr>
+                        @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
 
     </div>
 @endsection
