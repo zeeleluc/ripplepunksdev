@@ -27,7 +27,7 @@ if (app()->environment('prod')) {
         $xPost = new \App\Services\XPost();
         $xPost->tweetXRPTrendImage();
     })->timezone('America/New_York')
-        ->dailyAt('10:19'); // 1 minute after midnight NY time
+        ->dailyAt('10:53'); // 1 minute after midnight NY time
         //->dailyAt('00:01'); // 1 minute after midnight NY time
 
 }
