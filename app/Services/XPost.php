@@ -206,7 +206,7 @@ class XPost
 
     public function tweetRandomFourImages(): void
     {
-        $this->setText('Choose 1')
+        $this->setText("Choose 1\n\n🔗 https://bidds.com/collection/ripplepunks/")
             ->addImage($this->getRandomOGRipplePunkImage())
             ->addImage($this->getRandomOGRipplePunkImage())
             ->addImage($this->getRandomOGRipplePunkImage())
