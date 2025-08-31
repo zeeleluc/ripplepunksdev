@@ -12,6 +12,7 @@
         "imagine/imagine": "^1.5",
         "laravel/framework": "^12.0",
         "laravel/tinker": "^2.10.1",
+        "league/csv": "^9.24",
         "league/flysystem-aws-s3-v3": "^3.0",
         "livewire/livewire": "^3.6",
         "wireui/heroicons": "^2.9",

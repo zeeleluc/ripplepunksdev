@@ -12,7 +12,8 @@ use App\Http\Controllers\{
     ClaimController,
     PunksController,
     LaunchpadController,
-    PulseController
+    PulseController,
+    CleanupController
 };
 use App\Http\Controllers\Admin\LogEntryController;
 use App\Http\Controllers\Admin\ClaimController as AdminClaimController;
@@ -23,6 +24,7 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('/', [WelcomeController::class, 'index'])->name('welcome');
     Route::get('/welcome', [WelcomeController::class, 'index'])->name('login');
     Route::get('/punks', [PunksController::class, 'index'])->name('punks');
+    Route::get('/cleanup', [CleanupController::class, 'index'])->name('cleanup');
     Route::get('/pulse', [PulseController::class, 'index'])->name('pulse');
     Route::get('/launchpad', [LaunchpadController::class, 'index'])->name('launchpad.index');
     Route::get('/holder/{wallet}', [HolderController::class, 'show'])->name('holder');
