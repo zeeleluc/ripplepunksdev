@@ -17,14 +17,18 @@
                             {{ $pair[0]->metadata['name'] ?? 'Unnamed NFT' }}
                         </td>
                         <td class="px-4 py-2 text-sm text-gray-700">
-                            #{{ $pair[0]->nft_id ?? '-' }}
+                            <a target="_blank" class="text-primary-600 underline" href="https://xrp.cafe/nft/{{ $pair[0]->nftoken_id }}">
+                                #{{ $pair[0]->nft_id ?? '-' }}
+                            </a>
                         </td>
                         <td class="px-4 py-2 text-sm {{ in_array($pair[0]->owner, $highlightWallets) ? 'bg-yellow-300' : '' }}">
                             {{ $pair[0]->owner ?? '-' }}
                         </td>
                         <td class="px-4 py-2 text-sm text-gray-700">
                             @if(isset($pair[1]))
-                                #{{ $pair[1]->nft_id }}
+                                <a target="_blank" class="text-primary-600 underline" href="https://xrp.cafe/nft/{{ $pair[1]->nftoken_id }}">
+                                    #{{ $pair[1]->nft_id }}
+                                </a>
                             @else
                                 -
                             @endif
