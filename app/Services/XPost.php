@@ -6,6 +6,7 @@ use Abraham\TwitterOAuth\TwitterOAuth;
 use Abraham\TwitterOAuth\TwitterOAuthException;
 use App\Services\Image\XrpTrendImage;
 use Illuminate\Support\Facades\Storage;
+use App\Helpers\XRP;
 
 class XPost
 {
@@ -298,4 +299,10 @@ class XPost
             ->post();
     }
 
+    public function tweetXrpPrice(): void
+    {
+        $price = number_format(XRP::getRate(), 2);
+        $this->setText("\${$price}\n\n#XRP \$XRP")
+            ->post();
+    }
 }
