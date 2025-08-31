@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Schedule;
+use Illuminate\Support\Facades\Artisan;
 
 // ========== Production ==========
 if (app()->environment('prod')) {
@@ -12,6 +13,11 @@ if (app()->environment('prod')) {
     Schedule::command('holders:sync')->everyTenMinutes();
     Schedule::command('xrp:fetch-price')->everyMinute();
     Schedule::command('xrpl:fetch-sales')->everyMinute();
+
+    Schedule::call(function () {
+        Artisan::call('nfts:fill-skin');
+        Artisan::call('nfts:generate-checksums');
+    })->everyTenMinutes();
 
     // Daily
     Schedule::call(function () {
