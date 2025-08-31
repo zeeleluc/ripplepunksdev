@@ -13,23 +13,23 @@ if (app()->environment('prod')) {
     Schedule::command('xrp:fetch-price')->everyMinute();
     Schedule::command('xrpl:fetch-sales')->everyMinute();
 
+    // Daily AM
     Schedule::call(function () {
         (new \App\Services\XPost())->tweetGm();
-    })->dailyAt('06:00')->timezone('America/New_York');
+    })->timezone('America/New_York')->dailyAt('06:00');
 
+    // Daily AM
     Schedule::call(function () {
+        (new \App\Services\XPost())->tweetXRPTrendImage();
+    })->timezone('America/New_York')->dailyAt('00:05');
+
+    // Daily midnight
+    Schedule::call(function () {
+        (new \App\Services\XPost())->tweetMarketplacePieChart();
+    })->timezone('America/New_York')->dailyAt('14:07');
+
+    // Weekly
+    Schedule::call(function () { // Saturday
         (new \App\Services\XPost())->tweetLeftRight();
-    })->weeklyOn(6, '09:30')->timezone('America/New_York');
-
-    Schedule::call(function () {
-        $xPost = new \App\Services\XPost();
-        $xPost->tweetXRPTrendImage();
-    })->timezone('America/New_York')
-        ->dailyAt('00:20');
-
-    Schedule::call(function () {
-        $xPost = new \App\Services\XPost();
-        $xPost->tweetMarketplacePieChart();
-    })->timezone('America/New_York')
-        ->dailyAt('14:07');
+    })->timezone('America/New_York')->weeklyOn(6, '09:30');
 }
