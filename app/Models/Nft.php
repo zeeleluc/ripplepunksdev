@@ -102,7 +102,7 @@ class Nft extends Model
             ];
         }
 
-        return array_slice($groups, 0, 2);
+        return $groups;
     }
 
     public function getImageUrl(): ?string
