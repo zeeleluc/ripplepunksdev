@@ -38,11 +38,6 @@
                                 <h3 class="font-semibold text-gray-700 text-xs truncate mb-2">
                                     {{ $metadata['name'] ?? 'Unnamed NFT' }}
                                 </h3>
-                                <ul class="text-[11px] text-gray-600 text-left w-full space-y-0.5">
-                                    <li><strong>Type:</strong> {{ $nft->type }}</li>
-                                    <li><strong>Color:</strong> {{ $nft->color }}</li>
-                                    <li>✓ Blue Bandana</li>
-                                </ul>
                             </div>
                         @endforeach
                     </div>
