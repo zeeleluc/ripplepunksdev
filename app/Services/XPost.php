@@ -197,6 +197,23 @@ class XPost
             ->post();
     }
 
+    public function tweetRandomImage(): void
+    {
+        $this->setText('')
+            ->addImage($this->getRandomOGRipplePunkImage())
+            ->post();
+    }
+
+    public function tweetRandomFourImages(): void
+    {
+        $this->setText('Choose 1')
+            ->addImage($this->getRandomOGRipplePunkImage())
+            ->addImage($this->getRandomOGRipplePunkImage())
+            ->addImage($this->getRandomOGRipplePunkImage())
+            ->addImage($this->getRandomOGRipplePunkImage())
+            ->post();
+    }
+
     /** ---------------------
      * Tweet XRP Trend chart
      * --------------------- */

@@ -27,8 +27,16 @@ if (app()->environment('prod')) {
     })->timezone('America/New_York')->dailyAt('00:05');
 
     Schedule::call(function () {
+        (new \App\Services\XPost())->tweetRandomFourImages();
+    })->timezone('America/New_York')->dailyAt('03:03');
+
+    Schedule::call(function () {
         (new \App\Services\XPost())->tweetMarketplacePieChart();
     })->timezone('America/New_York')->dailyAt('14:07');
+
+    Schedule::call(function () {
+        (new \App\Services\XPost())->tweetRandomImage();
+    })->timezone('America/New_York')->dailyAt('19:15');
 
 
 
