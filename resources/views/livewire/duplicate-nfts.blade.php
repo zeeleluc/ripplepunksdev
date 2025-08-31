@@ -1,33 +1,41 @@
-<div>
-    @forelse($groups as $group)
-        <div class="mb-8 border rounded p-4 bg-gray-50 shadow w-full">
-            {{-- NFTs Grid --}}
-            <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-4 justify-items-center">
-                @foreach($group['nfts'] as $nft)
-                    @php
-                        $metadata = $nft->metadata ?? [];
-                        $imageUrl = $nft->getImageUrl();
-                    @endphp
-                    <div class="border rounded p-2 bg-white shadow-sm w-full max-w-[150px] flex flex-col items-center text-center">
-                        <img src="{{ $imageUrl }}"
-                             alt="{{ $metadata['name'] ?? 'NFT Image' }}"
-                             class="w-full h-28 object-cover rounded mb-2" />
-                        <h3 class="font-semibold text-gray-700 text-xs truncate mb-2">
-                            {{ $metadata['name'] ?? 'Unnamed NFT' }}
-                        </h3>
-                        <ul class="text-[11px] text-gray-600 text-left w-full space-y-0.5">
-                            <li><strong>Type:</strong> {{ $nft->type }}</li>
-                            <li><strong>Color:</strong> {{ $nft->color }}</li>
-                            <li><strong>Skin:</strong> {{ $nft->skin }}</li>
-                        </ul>
-                    </div>
-                @endforeach
-            </div>
-        </div>
-    @empty
-        <p class="text-gray-600">No duplicates found ✅</p>
-    @endforelse
-
-    {{-- Pagination --}}
-    @include('components.custom-pagination', ['paginator' => $dupCombos])
+<div class="overflow-x-auto">
+    @if ($group['nfts']->isNotEmpty())
+        <table class="min-w-full border border-gray-200 divide-y divide-gray-200">
+            <tbody class="bg-white divide-y divide-gray-200">
+            @foreach ($group['nfts']->chunk(2) as $pair)
+                <tr>
+                    <td class="px-4 py-2 text-sm text-gray-700">
+                        @php
+                            $first = $pair->first();
+                            $metadata = is_array($first->metadata) ? $first->metadata : [];
+                        @endphp
+                        {{ $metadata['name'] ?? 'Unnamed NFT' }}
+                    </td>
+                    <td class="px-4 py-2 text-sm text-gray-700">
+                        {{ $pair[0]->nft_id ?? '-' }}
+                    </td>
+                    <td class="px-4 py-2 text-sm text-gray-700">
+                        {{ $pair[0]->owner ?? '-' }}
+                    </td>
+                    <td class="px-4 py-2 text-sm text-gray-700">
+                        @if (isset($pair[1]))
+                            {{ $pair[1]->nft_id }}
+                        @else
+                            -
+                        @endif
+                    </td>
+                    <td class="px-4 py-2 text-sm text-gray-700">
+                        @if (isset($pair[1]))
+                            {{ $pair[1]->owner }}
+                        @else
+                            -
+                        @endif
+                    </td>
+                </tr>
+            @endforeach
+            </tbody>
+        </table>
+    @else
+        <p class="text-gray-600 text-center py-4">No duplicates found ✅</p>
+    @endif
 </div>

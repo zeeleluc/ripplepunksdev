@@ -34,7 +34,7 @@
                             <div class="border rounded p-2 bg-white shadow-sm w-full max-w-[150px] flex flex-col items-center text-center">
                                 <img src="{{ $imageUrl }}"
                                      alt="{{ $metadata['name'] ?? 'NFT Image' }}"
-                                     class="w-full h-28 object-cover rounded mb-2" />
+                                     class="w-full rounded mb-2" />
                                 <h3 class="font-semibold text-gray-700 text-xs truncate mb-2">
                                     {{ $metadata['name'] ?? 'Unnamed NFT' }}
                                 </h3>
