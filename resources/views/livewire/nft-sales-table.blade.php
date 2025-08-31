@@ -14,16 +14,16 @@
     <div class="flex flex-wrap justify-center gap-4 mb-4">
         <div class="flex flex-col items-center bg-white shadow rounded-lg p-3 w-36">
             <span class="text-gray-500 text-sm text-center">Total XRP (24h)</span>
-            <span class="text-lg font-bold text-center">{{ number_format($totalXrp, 2) }} XRP</span>
+            <span class="font-bold text-center">{{ number_format($totalXrp, 2) }} XRP</span>
         </div>
         <div class="flex flex-col items-center bg-white shadow rounded-lg p-3 w-36">
             <span class="text-gray-500 text-sm text-center">Total USD (24h)</span>
-            <span class="text-lg font-bold text-center">${{ number_format($totalUsd, 2) }}</span>
+            <span class="font-bold text-center">${{ number_format($totalUsd, 2) }}</span>
         </div>
         @foreach($marketplaceCounts as $market => $count)
             <div class="flex flex-col items-center bg-white shadow rounded-lg p-3 w-36">
                 <span class="text-gray-500 text-sm text-center">{{ $market ?: 'Unknown' }}</span>
-                <span class="text-lg font-bold text-center">{{ $count }}</span>
+                <span class="font-bold text-center">{{ $count }}</span>
             </div>
         @endforeach
     </div>
