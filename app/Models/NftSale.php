@@ -44,7 +44,8 @@ class NftSale extends Model
 
     public static function latestHashes($limit = 50)
     {
-        return self::orderBy('accepted_at', 'desc')
+        return self::where('accepted_at', '>=', now()->subDay())
+            ->orderBy('accepted_at', 'desc')
             ->take($limit)
             ->pluck('accepted_tx_hash')
             ->toArray();

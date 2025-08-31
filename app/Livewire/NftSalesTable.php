@@ -34,6 +34,7 @@ class NftSalesTable extends Component
     public function render()
     {
         $sales = NftSale::where('amount', '>', 1)
+            ->where('accepted_at', '>=', now()->subDay())
             ->orderBy('accepted_at', 'desc')
             ->paginate(50);
 
