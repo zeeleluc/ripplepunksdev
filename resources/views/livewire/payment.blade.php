@@ -5,6 +5,14 @@
         Pay {{ $amount }} XRP
     </button>
 
+    <!-- Display errors -->
+    @error('destination')
+    <p class="text-red-500 text-sm mt-2">{{ $message }}</p>
+    @enderror
+    @error('payment')
+    <p class="text-red-500 text-sm mt-2">{{ $message }}</p>
+    @enderror
+
     <!-- Modal -->
     @if($showModal)
         <div class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
@@ -22,19 +30,25 @@
                     </p>
                 @else
                     <h3 class="font-semibold mb-4 text-2xl">Make a Payment</h3>
-                    <p class="text-gray-800 text-base sm:text-lg leading-relaxed px-4 sm:px-0">
-                        Scan the QR code to pay {{ $amount }} XRP to {{ $destination }}.
-                    </p>
-                    @if ($qr)
-                        <img src="{{ $qr }}" alt="Payment QR Code" class="mx-auto my-4">
-                        <p>Or open in Xumm:
-                            <a href="{{ $url }}" target="_blank" class="text-blue-500 underline hover:text-blue-600">
-                                Click here
-                                <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 sm:w-4 sm:h-4 inline-block ml-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 3h7m0 0v7m0-7L10 14M5 5v14h14v-5" />
-                                </svg>
-                            </a>
+                    @if ($isPushed)
+                        <p class="text-gray-800 text-base sm:text-lg leading-relaxed px-4 sm:px-0">
+                            A payment request for {{ $amount }} XRP has been sent to your Xumm app. Please check your Xumm app to approve the payment.
                         </p>
+                    @else
+                        <p class="text-gray-800 text-base sm:text-lg leading-relaxed px-4 sm:px-0">
+                            Scan the QR code to pay {{ $amount }} XRP to {{ $destination }}.
+                        </p>
+                        @if ($qr)
+                            <img src="{{ $qr }}" alt="Payment QR Code" class="mx-auto my-4">
+                            <p>Or open in Xumm:
+                                <a href="{{ $url }}" target="_blank" class="text-blue-500 underline hover:text-blue-600">
+                                    Click here
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 sm:w-4 sm:h-4 inline-block ml-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 3h7m0 0v7m0-7L10 14M5 5v14h14v-5" />
+                                    </svg>
+                                </a>
+                            </p>
+                        @endif
                     @endif
                 @endif
             </div>
@@ -47,9 +61,13 @@
             @if ($showModal && !$paymentReceived)
             let interval = setInterval(() => {
                 $wire.checkPaymentStatus();
-            }, 3000);
+            }, 1000); // Poll every 1 second
             $wire.on('payment-success', () => {
                 clearInterval(interval);
+                $wire.call('$refresh');
+            });
+            $wire.on('refresh-component', () => {
+                $wire.call('$refresh');
             });
             @endif
         });

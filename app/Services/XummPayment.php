@@ -19,7 +19,7 @@ class XummPayment
         );
     }
 
-    public function createPaymentPayload(float $amount, string $destination, ?string $memo = null)
+    public function createPaymentPayload(float $amount, string $destination, ?string $memo = null, ?string $userToken = null)
     {
         $transactionBody = [
             'TransactionType' => 'Payment',
@@ -37,15 +37,22 @@ class XummPayment
             ];
         }
 
+        $payloadOptions = [
+            'submit' => false,
+            'return_url' => [
+                'web' => config('services.xaman.webhook_url'),
+                'app' => null,
+            ],
+        ];
+
+        // If userToken is provided, add it to the payload for direct push
+        if ($userToken) {
+            $payloadOptions['user_token'] = $userToken;
+        }
+
         $payload = new Payload(
             transactionBody: $transactionBody,
-            options: new Options(
-                submit: false,
-                returnUrl: new ReturnUrl(
-                    app: null,
-                    web: config('services.xaman.webhook_url')
-                )
-            )
+            options: new Options($payloadOptions)
         );
 
         return $this->sdk->createPayload($payload);
