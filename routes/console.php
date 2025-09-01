@@ -30,7 +30,7 @@ if (app()->environment('prod')) {
 
     Schedule::call(function () {
         (new \App\Services\XPost())->tweetXRPTrendImage();
-    })->timezone('America/New_York')->dailyAt('00:05');
+    })->timezone('America/New_York')->dailyAt('00:18');
 
     Schedule::call(function () {
         (new \App\Services\XPost())->tweetRandomFourImages();

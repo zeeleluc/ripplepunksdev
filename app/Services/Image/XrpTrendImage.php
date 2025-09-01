@@ -36,17 +36,21 @@ class XrpTrendImage extends AbstractImageProcessor
 
         // Timezone NY
         $nyTimezone = 'America/New_York';
-        $start = Carbon::yesterday($nyTimezone)->startOfDay(); // 00:00 NY
-        $end   = Carbon::yesterday($nyTimezone)->endOfDay();   // 23:59:59 NY
+        $startNY = Carbon::yesterday($nyTimezone)->startOfDay(); // 00:00 NY
+        $endNY   = Carbon::yesterday($nyTimezone)->endOfDay();   // 23:59:59 NY
 
-        // Fetch hourly rates for previous day
+        // Fetch hourly rates for previous day (NY calendar day)
         $rates = collect();
-        $current = $start->copy();
-        while ($current <= $end) {
-            $hourStart = $current->copy();
-            $hourEnd   = $current->copy()->addHour();
+        $currentNY = $startNY->copy();
+        while ($currentNY <= $endNY) {
+            $hourStartNY = $currentNY->copy();
+            $hourEndNY   = $currentNY->copy()->addHour();
 
-            $rate = XrpPrice::whereBetween('created_at', [$hourStart, $hourEnd])
+            // Convert to UTC for DB query
+            $hourStartUTC = $hourStartNY->copy()->setTimezone('UTC');
+            $hourEndUTC   = $hourEndNY->copy()->setTimezone('UTC');
+
+            $rate = XrpPrice::whereBetween('created_at', [$hourStartUTC, $hourEndUTC])
                 ->orderBy('created_at', 'asc')
                 ->first();
 
@@ -54,7 +58,7 @@ class XrpTrendImage extends AbstractImageProcessor
                 $rates->push($rate);
             }
 
-            $current->addHour();
+            $currentNY->addHour();
         }
 
         if ($rates->isEmpty()) {
@@ -123,7 +127,7 @@ class XrpTrendImage extends AbstractImageProcessor
         $this->image->annotateImage($textDraw, $topRightX, $topRightY, 0, $rightText);
 
         // Bottom-left: previous day US format, NY
-        $bottomLeftText = $start->format('m/d/Y') . ' NY';
+        $bottomLeftText = $startNY->format('m/d/Y') . ' NY';
         $this->image->annotateImage($textDraw, 40, $height - 30, 0, $bottomLeftText);
 
         // Bottom-right: XRP label
@@ -143,8 +147,8 @@ class XrpTrendImage extends AbstractImageProcessor
             throw new \Exception('No image to save');
         }
 
-        // Default filename with date for previous day
-        $filename = $filename ?: 'xrp_trends/xrp_trend_' . Carbon::yesterday()->format('Ymd') . '.png';
+        // Default filename with date for previous day (NY date)
+        $filename = $filename ?: 'xrp_trends/xrp_trend_' . Carbon::yesterday('America/New_York')->format('Ymd') . '.png';
         $tempPath = storage_path('app/tmp/' . basename($filename));
 
         if (!file_exists(dirname($tempPath))) {
