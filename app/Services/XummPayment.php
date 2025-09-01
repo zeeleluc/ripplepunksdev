@@ -5,6 +5,7 @@ namespace App\Services;
 use Xrpl\XummSdkPhp\XummSdk;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use App\Helpers\SlackNotifier;
 
 class XummPayment
 {
@@ -61,6 +62,14 @@ class XummPayment
         }
 
         try {
+            $logMessage = 'Creating Xumm payload: ' . json_encode([
+                    'amount' => $amount,
+                    'destination' => $destination,
+                    'userToken' => $userToken ? 'provided' : 'none',
+                ]);
+            Log::info($logMessage);
+            SlackNotifier::info($logMessage);
+
             $response = Http::withHeaders([
                 'X-API-Key' => $this->apiKey,
                 'X-API-Secret' => $this->apiSecret,
@@ -68,11 +77,16 @@ class XummPayment
             ])->post('https://xumm.app/api/v1/platform/payload', $payloadData);
 
             if ($response->failed()) {
-                throw new \Exception('Failed to create payload: ' . $response->body());
+                $errorMessage = 'Failed to create Xumm payload: ' . $response->body();
+                Log::error($errorMessage);
+                SlackNotifier::error($errorMessage);
+                throw new \Exception($errorMessage);
             }
 
             $payloadResponse = $response->json();
-            Log::info('Raw Xumm API payload response', ['response' => $payloadResponse]);
+            $logMessage = 'Xumm payload created: UUID=' . ($payloadResponse['uuid'] ?? 'unknown') . ', Pushed=' . ($payloadResponse['pushed'] ? 'true' : 'false');
+            Log::info($logMessage, ['response' => $payloadResponse]);
+            SlackNotifier::info($logMessage);
 
             // Return a simplified payload object compatible with existing code
             return (object) [
@@ -90,18 +104,30 @@ class XummPayment
                 'pushed' => $payloadResponse['pushed'] ?? false,
             ];
         } catch (\Throwable $e) {
-            Log::error('Error creating Xumm payload via API', [
-                'error' => $e->getMessage(),
+            $errorMessage = 'Error creating Xumm payload: ' . $e->getMessage();
+            Log::error($errorMessage, [
                 'amount' => $amount,
                 'destination' => $destination,
                 'userToken' => $userToken ? 'provided' : 'none',
             ]);
+            SlackNotifier::error($errorMessage);
             throw $e;
         }
     }
 
     public function getPayload(string $uuid)
     {
-        return $this->sdk->getPayload($uuid);
+        try {
+            $payload = $this->sdk->getPayload($uuid);
+            $logMessage = 'Payload retrieved: UUID=' . $uuid . ', TxID=' . ($payload->response->txid ?? 'none');
+            Log::info($logMessage, ['payload' => (array) $payload]);
+            SlackNotifier::info($logMessage);
+            return $payload;
+        } catch (\Throwable $e) {
+            $errorMessage = 'Error retrieving payload: UUID=' . $uuid . ', Error=' . $e->getMessage();
+            Log::error($errorMessage);
+            SlackNotifier::error($errorMessage);
+            throw $e;
+        }
     }
 }

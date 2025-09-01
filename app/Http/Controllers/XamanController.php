@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 use Xrpl\XummSdkPhp\Exception\Http\NotFoundException;
+use App\Helpers\SlackNotifier;
 
 class XamanController extends Controller
 {
@@ -51,7 +52,9 @@ class XamanController extends Controller
                 $wallet = $payload->response->account;
                 return redirect()->to('/holder/' . $wallet);
             } catch (\Throwable $e) {
-                Log::warning('Old UUID invalid, generating new one: ' . $e->getMessage());
+                $logMessage = 'Old UUID invalid, generating new one: ' . $e->getMessage();
+                Log::warning($logMessage);
+                SlackNotifier::warning($logMessage);
                 Session::forget('xumm_login_uuid');
             }
         }
@@ -80,7 +83,9 @@ class XamanController extends Controller
         // Defensive checks
         $account = $payload->response->account ?? null;
 
-        Log::info('Payload account: ' . ($account ?? 'null'));
+        $logMessage = 'Payload account: ' . ($account ?? 'null');
+        Log::info($logMessage);
+        SlackNotifier::info($logMessage);
 
         if (empty($account)) {
             return response()->json(['success' => false]);
@@ -101,12 +106,19 @@ class XamanController extends Controller
         Session::put('wallet', $wallet);
         Session::put('xumm_token', $token);
 
+        $logMessage = 'Login stored for wallet: ' . $wallet;
+        Log::info($logMessage);
+        SlackNotifier::info($logMessage);
+
         return response()->json(['success' => true]);
     }
 
     public function logout(Request $request)
     {
-        Log::info('User logging out: ' . auth()->id());
+        $logMessage = 'User logging out: ' . auth()->id();
+        Log::info($logMessage);
+        SlackNotifier::info($logMessage);
+
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
@@ -115,46 +127,62 @@ class XamanController extends Controller
 
     public function handleWebhook(Request $request)
     {
-        Log::info('Webhook request received at: ' . now()->toDateTimeString(), [
+        $logMessage = 'Webhook request received at: ' . now()->toDateTimeString();
+        Log::info($logMessage, [
             'headers' => $request->headers->all(),
             'body' => $request->all(),
             'ip' => $request->ip(),
         ]);
+        SlackNotifier::info($logMessage . ' | IP: ' . $request->ip());
 
         $data = $request->all();
         $uuid = $data['meta']['payload_uuidv4'] ?? null;
 
         if (!$uuid) {
-            Log::warning('Missing UUID in webhook', ['data' => $data]);
+            $logMessage = 'Missing UUID in webhook: ' . json_encode($data);
+            Log::warning($logMessage);
+            SlackNotifier::warning($logMessage);
             return response()->json(['success' => false], 400);
         }
 
         try {
             $payload = $this->xummPayment->getPayload($uuid);
-            Log::info('Payload fetched for UUID: ' . $uuid, ['payload' => (array) $payload]);
+            $logMessage = 'Payload fetched for UUID: ' . $uuid;
+            Log::info($logMessage, ['payload' => (array) $payload]);
+            SlackNotifier::info($logMessage);
         } catch (NotFoundException $e) {
-            Log::error('Payload not found for UUID: ' . $uuid, ['error' => $e->getMessage()]);
+            $logMessage = 'Payload not found for UUID: ' . $uuid . ', Error: ' . $e->getMessage();
+            Log::error($logMessage);
+            SlackNotifier::error($logMessage);
             return response()->json(['success' => false, 'message' => 'Payload not found'], 404);
         } catch (\Exception $e) {
-            Log::error('Error fetching payload: ' . $e->getMessage(), ['uuid' => $uuid]);
+            $logMessage = 'Error fetching payload: ' . $e->getMessage() . ', UUID: ' . $uuid;
+            Log::error($logMessage);
+            SlackNotifier::error($logMessage);
             return response()->json(['success' => false, 'message' => 'Error fetching payload'], 500);
         }
 
         $wallet = $payload->response->account ?? null;
         if (!$wallet) {
-            Log::warning('Wallet not found in payload response for UUID: ' . $uuid, ['payload' => (array) $payload]);
+            $logMessage = 'Wallet not found in payload response for UUID: ' . $uuid;
+            Log::warning($logMessage, ['payload' => (array) $payload]);
+            SlackNotifier::warning($logMessage);
             return response()->json(['success' => false], 400);
         }
 
         // Determine transaction type
         $transactionType = $payload->payload->request->TransactionType ?? null;
-        Log::info('Processing transaction type: ' . ($transactionType ?? 'null'), ['uuid' => $uuid]);
+        $logMessage = 'Processing transaction type: ' . ($transactionType ?? 'null') . ', UUID: ' . $uuid;
+        Log::info($logMessage);
+        SlackNotifier::info($logMessage);
 
         if ($transactionType === 'SignIn') {
             // Handle login
             $userToken = $data['userToken']['user_token'] ?? null;
             if (!$userToken) {
-                Log::warning('Missing userToken in login webhook', ['data' => $data]);
+                $logMessage = 'Missing userToken in login webhook: ' . json_encode($data);
+                Log::warning($logMessage);
+                SlackNotifier::warning($logMessage);
                 return response()->json(['success' => false], 400);
             }
 
@@ -169,12 +197,16 @@ class XamanController extends Controller
             // Log in user
             Auth::login($user);
 
-            Log::info('Login successful for wallet: ' . $wallet);
+            $logMessage = 'Login successful for wallet: ' . $wallet;
+            Log::info($logMessage);
+            SlackNotifier::info($logMessage);
         } elseif ($transactionType === 'Payment') {
             // Handle payment
             $txid = $payload->response->txid ?? null;
             if (!$txid) {
-                Log::warning('Missing txid in payment webhook for UUID: ' . $uuid, ['payload' => (array) $payload]);
+                $logMessage = 'Missing txid in payment webhook for UUID: ' . $uuid;
+                Log::warning($logMessage, ['payload' => (array) $payload]);
+                SlackNotifier::warning($logMessage);
                 return response()->json(['success' => false], 400);
             }
 
@@ -184,9 +216,13 @@ class XamanController extends Controller
             // Optionally store transaction details in a database
             // Example: Transaction::create(['uuid' => $uuid, 'txid' => $txid, 'wallet' => $wallet]);
 
-            Log::info('Payment successful for wallet: ' . $wallet . ', txid: ' . $txid);
+            $logMessage = 'Payment successful for wallet: ' . $wallet . ', txid: ' . $txid;
+            Log::info($logMessage);
+            SlackNotifier::info($logMessage);
         } else {
-            Log::warning('Unknown transaction type: ' . ($transactionType ?? 'null'), ['uuid' => $uuid]);
+            $logMessage = 'Unknown transaction type: ' . ($transactionType ?? 'null') . ', UUID: ' . $uuid;
+            Log::warning($logMessage);
+            SlackNotifier::warning($logMessage);
             return response()->json(['success' => false, 'message' => 'Unknown transaction type'], 400);
         }
 
@@ -197,23 +233,35 @@ class XamanController extends Controller
     {
         $wallet = $request->input('wallet');
         if (!$wallet) {
+            $logMessage = 'Missing wallet in login finalize request';
+            Log::warning($logMessage);
+            SlackNotifier::warning($logMessage);
             return response()->json(['success' => false]);
         }
 
         $user = User::where('wallet', $wallet)->first();
         if (!$user) {
+            $logMessage = 'User not found for wallet: ' . $wallet;
+            Log::warning($logMessage);
+            SlackNotifier::warning($logMessage);
             return response()->json(['success' => false]);
         }
 
         Auth::login($user);
         Session::put('wallet', $wallet);
 
+        $logMessage = 'Login finalized for wallet: ' . $wallet;
+        Log::info($logMessage);
+        SlackNotifier::info($logMessage);
+
         return response()->json(['success' => true]);
     }
 
     public function handleCallback(Request $request)
     {
-        Log::info('Callback received');
+        $logMessage = 'Callback received';
+        Log::info($logMessage);
+        SlackNotifier::info($logMessage);
         return redirect()->route('welcome');
     }
 }
