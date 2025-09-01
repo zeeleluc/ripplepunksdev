@@ -13,7 +13,8 @@ use App\Http\Controllers\{
     PunksController,
     LaunchpadController,
     PulseController,
-    CleanupController
+    CleanupController,
+    TestController
 };
 use App\Http\Controllers\Admin\LogEntryController;
 use App\Http\Controllers\Admin\ClaimController as AdminClaimController;
@@ -22,6 +23,7 @@ use App\Http\Controllers\Admin\UserController;
 Route::group(['middleware' => 'web'], function () {
 
     Route::get('/', [WelcomeController::class, 'index'])->name('welcome');
+    Route::get('/test', [TestController::class, 'index'])->name('test');
     Route::get('/welcome', [WelcomeController::class, 'index'])->name('login');
     Route::get('/punks', [PunksController::class, 'index'])->name('punks');
     Route::get('/cleanup', [CleanupController::class, 'index'])->name('cleanup');
