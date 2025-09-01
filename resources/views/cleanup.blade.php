@@ -46,7 +46,9 @@
 
         </div>
 
-        <livewire:payment :amount="0.001" :memo="'Test Payment'" />
+        <div class="flex">
+            <livewire:payment :amount="0.001" :memo="'Test Payment'" />
+        </div>
 
     </div>
 
