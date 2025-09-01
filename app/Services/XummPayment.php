@@ -37,22 +37,20 @@ class XummPayment
             ];
         }
 
-        $payloadOptions = [
-            'submit' => false,
-            'return_url' => [
-                'web' => config('services.xaman.webhook_url'),
-                'app' => null,
-            ],
-        ];
+        $customMeta = $userToken ? ['user_token' => $userToken] : [];
 
-        // If userToken is provided, add it to the payload for direct push
-        if ($userToken) {
-            $payloadOptions['user_token'] = $userToken;
-        }
+        $options = new Options(
+            submit: false,
+            returnUrl: new ReturnUrl(
+                web: config('services.xaman.webhook_url'),
+                app: null
+            )
+        );
 
         $payload = new Payload(
             transactionBody: $transactionBody,
-            options: new Options($payloadOptions)
+            options: $options,
+            customMeta: $customMeta // Pass user_token in custom_meta
         );
 
         return $this->sdk->createPayload($payload);
