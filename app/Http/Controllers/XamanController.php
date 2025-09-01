@@ -25,7 +25,6 @@ class XamanController extends Controller
 
     public function showLoginQr()
     {
-        // If already authenticated, redirect to holder page
         if (Auth::check()) {
             $wallet = Auth::user()->wallet ?? Session::get('wallet');
             if ($wallet) {
@@ -33,22 +32,17 @@ class XamanController extends Controller
             }
         }
 
-        // Check if we already have a valid UUID in the session
         $uuid = Session::get('xumm_login_uuid');
 
         if ($uuid) {
             try {
                 $payload = $this->xaman->getPayload($uuid);
-
-                // If not logged in yet, still show QR
                 if (empty($payload->response->account)) {
                     return view('xaman.login', [
                         'qr' => $payload->refs->qrPng,
                         'url' => $payload->next->always,
                     ]);
                 }
-
-                // If already logged in via payload
                 $wallet = $payload->response->account;
                 return redirect()->to('/holder/' . $wallet);
             } catch (\Throwable $e) {
@@ -59,10 +53,7 @@ class XamanController extends Controller
             }
         }
 
-        // No valid UUID -> new payload
         $payload = $this->xaman->createLoginPayload();
-
-        // Store UUID in session
         Session::put('xumm_login_uuid', $payload->uuid);
 
         return view('xaman.login', [
@@ -79,8 +70,6 @@ class XamanController extends Controller
         }
 
         $payload = $this->xaman->getPayload($uuid);
-
-        // Defensive checks
         $account = $payload->response->account ?? null;
 
         $logMessage = 'Payload account: ' . ($account ?? 'null');
@@ -102,7 +91,6 @@ class XamanController extends Controller
         $wallet = $request->input('wallet');
         $token = $request->input('access_token');
 
-        // Store in session
         Session::put('wallet', $wallet);
         Session::put('xumm_token', $token);
 
@@ -170,14 +158,12 @@ class XamanController extends Controller
             return response()->json(['success' => false], 400);
         }
 
-        // Determine transaction type
         $transactionType = $payload->payload->request->TransactionType ?? null;
         $logMessage = 'Processing transaction type: ' . ($transactionType ?? 'null') . ', UUID: ' . $uuid;
         Log::info($logMessage);
         SlackNotifier::info($logMessage);
 
         if ($transactionType === 'SignIn') {
-            // Handle login
             $userToken = $data['userToken']['user_token'] ?? null;
             if (!$userToken) {
                 $logMessage = 'Missing userToken in login webhook: ' . json_encode($data);
@@ -187,21 +173,16 @@ class XamanController extends Controller
             }
 
             Session::put('wallet', $wallet);
-
-            // Create or update user
             $user = User::updateOrCreate(
                 ['wallet' => $wallet],
                 ['name' => $wallet, 'xumm_token' => $userToken]
             );
-
-            // Log in user
             Auth::login($user);
 
             $logMessage = 'Login successful for wallet: ' . $wallet;
             Log::info($logMessage);
             SlackNotifier::info($logMessage);
         } elseif ($transactionType === 'Payment') {
-            // Handle payment
             $txid = $payload->response->txid ?? null;
             if (!$txid) {
                 $logMessage = 'Missing txid in payment webhook for UUID: ' . $uuid;
@@ -210,12 +191,7 @@ class XamanController extends Controller
                 return response()->json(['success' => false], 400);
             }
 
-            // Clear payment UUID from session
             Session::forget('xumm_payment_uuid');
-
-            // Optionally store transaction details in a database
-            // Example: Transaction::create(['uuid' => $uuid, 'txid' => $txid, 'wallet' => $wallet]);
-
             $logMessage = 'Payment successful for wallet: ' . $wallet . ', txid: ' . $txid;
             Log::info($logMessage);
             SlackNotifier::info($logMessage);

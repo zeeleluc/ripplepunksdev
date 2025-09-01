@@ -54,18 +54,26 @@ class XummPayment
             ],
         ];
 
-        // Include user_token in custom_meta for authenticated users
+        // Validate and include user_token in custom_meta
         if ($userToken) {
-            $payloadData['custom_meta'] = [
-                'user_token' => $userToken,
-            ];
+            // Basic validation: ensure userToken is a non-empty string, UUID-like
+            if (!is_string($userToken) || empty(trim($userToken)) || !preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i', $userToken)) {
+                $logMessage = 'Invalid user_token format: ' . ($userToken ? substr($userToken, 0, 8) . '...' : 'empty');
+                Log::warning($logMessage);
+                SlackNotifier::warning($logMessage);
+            } else {
+                $payloadData['custom_meta'] = [
+                    'user_token' => $userToken,
+                ];
+            }
         }
 
         try {
             $logMessage = 'Creating Xumm payload: ' . json_encode([
                     'amount' => $amount,
                     'destination' => $destination,
-                    'userToken' => $userToken ? 'provided' : 'none',
+                    'userToken' => $userToken ? 'provided (' . substr($userToken, 0, 8) . '...)' : 'none',
+                    'payloadData' => $payloadData,
                 ]);
             Log::info($logMessage);
             SlackNotifier::info($logMessage);
@@ -85,7 +93,7 @@ class XummPayment
 
             $payloadResponse = $response->json();
             $logMessage = 'Xumm payload created: UUID=' . ($payloadResponse['uuid'] ?? 'unknown') . ', Pushed=' . ($payloadResponse['pushed'] ? 'true' : 'false');
-            Log::info($logMessage, ['response' => $payloadResponse]);
+            Log::info($logMessage, ['full_response' => $payloadResponse]);
             SlackNotifier::info($logMessage);
 
             // Return a simplified payload object compatible with existing code
@@ -108,7 +116,7 @@ class XummPayment
             Log::error($errorMessage, [
                 'amount' => $amount,
                 'destination' => $destination,
-                'userToken' => $userToken ? 'provided' : 'none',
+                'userToken' => $userToken ? 'provided (' . substr($userToken, 0, 8) . '...)' : 'none',
             ]);
             SlackNotifier::error($errorMessage);
             throw $e;
