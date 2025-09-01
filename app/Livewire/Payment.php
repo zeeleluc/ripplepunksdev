@@ -118,7 +118,8 @@ class Payment extends Component
                 'destination' => $this->destination,
                 'user' => Auth::check() ? Auth::user()->toArray() : 'Guest'
             ]);
-            $this->addError('payment', 'Failed to initiate payment. Please try again later.');
+//            $this->addError('payment', 'Failed to initiate payment. Please try again later.');
+            $this->addError('payment', 'Payment Error: ' . $e->getMessage() . "\n" . $e->getTraceAsString());
             $this->showModal = false;
         }
     }
