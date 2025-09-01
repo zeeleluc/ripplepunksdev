@@ -37,8 +37,6 @@ class XummPayment
             ];
         }
 
-        $customMeta = $userToken ? ['user_token' => $userToken] : [];
-
         $options = new Options(
             submit: false,
             returnUrl: new ReturnUrl(
@@ -47,10 +45,17 @@ class XummPayment
             )
         );
 
+        // Pass user_token in custom_meta array
+        $customMeta = $userToken ? [
+            'custom_meta' => [
+                'user_token' => $userToken
+            ]
+        ] : [];
+
         $payload = new Payload(
             transactionBody: $transactionBody,
             options: $options,
-            customMeta: $customMeta // Pass user_token in custom_meta
+            customMeta: $customMeta
         );
 
         return $this->sdk->createPayload($payload);
