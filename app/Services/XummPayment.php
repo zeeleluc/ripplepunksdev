@@ -7,7 +7,7 @@ use Xrpl\XummSdkPhp\Payload\Payload;
 use Xrpl\XummSdkPhp\Payload\Options;
 use Xrpl\XummSdkPhp\Payload\ReturnUrl;
 
-class XummService
+class XummPayment
 {
     protected XummSdk $sdk;
 
@@ -19,15 +19,31 @@ class XummService
         );
     }
 
-    public function createLoginPayload()
+    public function createPaymentPayload(float $amount, string $destination, ?string $memo = null)
     {
+        $transactionBody = [
+            'TransactionType' => 'Payment',
+            'Destination' => $destination,
+            'Amount' => (string) ($amount * 1000000), // Convert XRP to drops
+        ];
+
+        if ($memo) {
+            $transactionBody['Memos'] = [
+                [
+                    'Memo' => [
+                        'MemoData' => bin2hex($memo),
+                    ],
+                ],
+            ];
+        }
+
         $payload = new Payload(
-            transactionBody: ['TransactionType' => 'SignIn'],
+            transactionBody: $transactionBody,
             options: new Options(
                 submit: false,
                 returnUrl: new ReturnUrl(
                     app: null,
-                    web: config('services.xaman.webhook_url') . '/xaman/webhook'
+                    web: config('services.xaman.webhook_url')
                 )
             )
         );

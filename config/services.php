@@ -34,8 +34,10 @@ return [
     ],
 
     'xaman' => [
-        'api_key'    => env('XAMAN_API_KEY'),
-        'api_secret' => env('XAMAN_API_SECRET'),
+        'api_key'     => env('XAMAN_API_KEY'),
+        'api_secret'  => env('XAMAN_API_SECRET'),
+        'webhook_url' => env('EXPOSE_URL') . '/xaman/webhook',
+        'destination_wallet' => env('XAMAN_DESTINATION_WALLET'),
     ],
 
     'twitter' => [

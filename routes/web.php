@@ -49,16 +49,17 @@ Route::group(['middleware' => 'web'], function () {
         Route::post('/{id}/approve', [GiveawayController::class, 'approve'])->name('giveaway.approve');
     });
 
-    // Xaman authenticatie routes
+    // Xaman authentication and payment routes
     Route::get('/login', [XamanController::class, 'showLoginQr'])->name('xaman.login');
     Route::prefix('xaman')->group(function () {
         Route::get('/login-check', [XamanController::class, 'loginCheck'])->name('xaman.loginCheck');
+        Route::post('/login-store', [XamanController::class, 'loginStore'])->name('xaman.loginStore');
         Route::get('/callback', [XamanController::class, 'handleCallback'])->name('xaman.callback');
         Route::post('/webhook', [XamanController::class, 'handleWebhook'])->name('xaman.webhook');
         Route::post('/login-finalize', [XamanController::class, 'loginFinalize'])->name('xaman.loginFinalize');
     });
 
-    // Logout route (met auth middleware)
+    // Logout route (with auth middleware)
     Route::post('/logout', [XamanController::class, 'logout'])
         ->middleware('auth')
         ->name('xaman.logout');
