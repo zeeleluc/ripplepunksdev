@@ -3,7 +3,7 @@
 @section('content')
 
     <div class="flex">
-        <livewire:payment :amount="0.001" :memo="'Test Payment'" />
+        <livewire:payment :amount="1" :memo="'Test Payment'" />
     </div>
 
 @endsection
