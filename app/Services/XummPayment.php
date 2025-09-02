@@ -27,6 +27,7 @@ class XummPayment
 
     public function createPaymentPayload(float $amount, string $destination, ?string $memo = null, ?string $userToken = null)
     {
+        SlackNotifier::info($this->webhookUrl);
         $transactionBody = [
             'TransactionType' => 'Payment',
             'Destination' => $destination,
