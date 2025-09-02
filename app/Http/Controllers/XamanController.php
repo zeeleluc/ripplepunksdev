@@ -164,6 +164,14 @@ class XamanController extends Controller
             return response()->json(['success' => false, 'message' => 'Error fetching payload'], 500);
         }
 
+        // Handle non-transaction payloads (e.g., expiration notices)
+        if (!isset($payload->payload->request->TransactionType)) {
+            $logMessage = '[handleWebhook] Non-transaction payload received for UUID: ' . $uuid . ', Data: ' . json_encode($data);
+            Log::info($logMessage);
+            SlackNotifier::info($logMessage);
+            return response()->json(['success' => true, 'message' => 'Non-transaction payload processed']);
+        }
+
         $wallet = $payload->response->account ?? null;
         if (!$wallet) {
             $logMessage = '[handleWebhook] Wallet not found in payload response for UUID: ' . $uuid;
@@ -172,8 +180,8 @@ class XamanController extends Controller
             return response()->json(['success' => false], 400);
         }
 
-        $transactionType = $payload->payload->request->TransactionType ?? null;
-        $logMessage = '[handleWebhook] Processing transaction type: ' . ($transactionType ?? 'null') . ', UUID: ' . $uuid;
+        $transactionType = $payload->payload->request->TransactionType;
+        $logMessage = '[handleWebhook] Processing transaction type: ' . $transactionType . ', UUID: ' . $uuid;
         Log::info($logMessage);
         SlackNotifier::info($logMessage);
 
@@ -210,7 +218,7 @@ class XamanController extends Controller
             Log::info($logMessage);
             SlackNotifier::info($logMessage);
         } else {
-            $logMessage = '[handleWebhook] Unknown transaction type: ' . ($transactionType ?? 'null') . ', UUID: ' . $uuid;
+            $logMessage = '[handleWebhook] Unknown transaction type: ' . $transactionType . ', UUID: ' . $uuid;
             Log::warning($logMessage);
             SlackNotifier::warning($logMessage);
             return response()->json(['success' => false, 'message' => 'Unknown transaction type'], 400);

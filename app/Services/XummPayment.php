@@ -62,25 +62,39 @@ class XummPayment
                 Log::warning($logMessage);
                 SlackNotifier::warning($logMessage);
             } else {
-                $payloadData['custom_meta'] = [
-                    'user_token' => $userToken,
-                ];
-                $usePush = true;
+                // Test user_token validity with Xumm API
+                try {
+                    $response = Http::withHeaders([
+                        'X-API-Key' => $this->apiKey,
+                        'X-API-Secret' => $this->apiSecret,
+                    ])->get('https://xumm.app/api/v1/platform/ott/' . $userToken);
+                    if ($response->successful() && $response->json()['account']) {
+                        $payloadData['custom_meta'] = [
+                            'user_token' => $userToken,
+                        ];
+                        $usePush = true;
+                    } else {
+                        $logMessage = '[createPaymentPayload] Invalid or expired user_token: ' . substr($userToken, 0, 8) . '... Response: ' . $response->body();
+                        Log::warning($logMessage);
+                        SlackNotifier::warning($logMessage);
+                    }
+                } catch (\Throwable $e) {
+                    $logMessage = '[createPaymentPayload] Error validating user_token: ' . $e->getMessage();
+                    Log::error($logMessage);
+                    SlackNotifier::error($logMessage);
+                }
             }
         }
 
         // Check destination account for Deposit Authorization
         try {
-            $accountInfo = Http::withHeaders([
+            $response = Http::withHeaders([
                 'X-API-Key' => $this->apiKey,
                 'X-API-Secret' => $this->apiSecret,
-                'Content-Type' => 'application/json',
-            ])->post('https://xumm.app/api/v1/platform/xrpl/account-info', [
-                'account' => $destination,
-            ]);
+            ])->get('https://xumm.app/api/v1/platform/xrpl/account-info/' . $destination);
 
-            if ($accountInfo->successful()) {
-                $accountData = $accountInfo->json();
+            if ($response->successful()) {
+                $accountData = $response->json();
                 $flags = $accountData['account_data']['Flags'] ?? 0;
                 $depositAuth = ($flags & 0x00010000) !== 0; // lsfDepositAuth flag
                 if ($depositAuth) {
@@ -89,7 +103,7 @@ class XummPayment
                     SlackNotifier::warning($logMessage);
                 }
             } else {
-                $logMessage = '[createPaymentPayload] Failed to check destination account info: ' . $accountInfo->body();
+                $logMessage = '[createPaymentPayload] Failed to check destination account info: ' . $response->body();
                 Log::warning($logMessage);
                 SlackNotifier::warning($logMessage);
             }
@@ -128,12 +142,11 @@ class XummPayment
             Log::info($logMessage, ['full_response' => $payloadResponse]);
             SlackNotifier::info($logMessage);
 
-            // Return a simplified payload object compatible with existing code
             return (object) [
                 'uuid' => $payloadResponse['uuid'],
                 'next' => (object) [
                     'always' => $payloadResponse['next']['always'],
-                    'noPushMessageReceived' => $payloadResponse['next']['no_push_msg_received'] ?? null,
+                    'noPushMessageReceived' => $response->json()['next']['no_push_msg_received'] ?? null,
                 ],
                 'refs' => (object) [
                     'qrPng' => $payloadResponse['refs']['qr_png'],
