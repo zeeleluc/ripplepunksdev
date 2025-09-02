@@ -27,7 +27,6 @@ class XummPayment
 
     public function createPaymentPayload(float $amount, string $destination, ?string $memo = null, ?string $userToken = null)
     {
-        SlackNotifier::info($this->webhookUrl);
         $transactionBody = [
             'TransactionType' => 'Payment',
             'Destination' => $destination,
@@ -50,14 +49,14 @@ class XummPayment
                 'submit' => false,
                 'return_url' => [
                     'web' => $this->webhookUrl,
-                    'app' => null,
+                    'app' => null, // Null is correct for web-based apps
                 ],
             ],
         ];
 
-        // Validate and include user_token in custom_meta
+        // Include user_token in custom_meta for authenticated users
         if ($userToken) {
-            // Basic validation: ensure userToken is a non-empty string, UUID-like
+            // Validate userToken format (UUID-like)
             if (!is_string($userToken) || empty(trim($userToken)) || !preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i', $userToken)) {
                 $logMessage = 'Invalid user_token format: ' . ($userToken ? substr($userToken, 0, 8) . '...' : 'empty');
                 Log::warning($logMessage);
@@ -69,13 +68,43 @@ class XummPayment
             }
         }
 
+        // Check destination account for Deposit Authorization
+        try {
+            $accountInfo = Http::withHeaders([
+                'X-API-Key' => $this->apiKey,
+                'X-API-Secret' => $this->apiSecret,
+                'Content-Type' => 'application/json',
+            ])->post('https://xumm.app/api/v1/platform/xrpl/account-info', [
+                'account' => $destination,
+            ]);
+
+            if ($accountInfo->successful()) {
+                $accountData = $accountInfo->json();
+                $flags = $accountData['account_data']['Flags'] ?? 0;
+                $depositAuth = ($flags & 0x00010000) !== 0; // lsfDepositAuth flag
+                if ($depositAuth) {
+                    $logMessage = 'Destination account has Deposit Authorization enabled: ' . $destination;
+                    Log::warning($logMessage);
+                    SlackNotifier::warning($logMessage);
+                }
+            } else {
+                $logMessage = 'Failed to check destination account info: ' . $accountInfo->body();
+                Log::warning($logMessage);
+                SlackNotifier::warning($logMessage);
+            }
+        } catch (\Throwable $e) {
+            $logMessage = 'Error checking destination account info: ' . $e->getMessage();
+            Log::error($logMessage);
+            SlackNotifier::error($logMessage);
+        }
+
         try {
             $logMessage = 'Creating Xumm payload: ' . json_encode([
                     'amount' => $amount,
                     'destination' => $destination,
                     'userToken' => $userToken ? 'provided (' . substr($userToken, 0, 8) . '...)' : 'none',
                     'payloadData' => $payloadData,
-                ]);
+                ], JSON_PRETTY_PRINT);
             Log::info($logMessage);
             SlackNotifier::info($logMessage);
 
