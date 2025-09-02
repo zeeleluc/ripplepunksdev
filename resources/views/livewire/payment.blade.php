@@ -1,76 +1,27 @@
 <div>
-    <!-- Pay button -->
-    <button wire:click="toggleModal"
-            class="w-full bg-gray-900 hover:bg-gray-800 text-white text-lg font-semibold py-2 sm:py-3 px-4 sm:px-6 mb-2 rounded shadow text-center block">
-        Pay {{ $amount }} XRP
-    </button>
-
-    <!-- Display errors -->
-    @error('destination')
-    <p class="text-red-500 text-sm mt-2">{{ $message }}</p>
-    @enderror
-    @error('payment')
-    <p class="text-red-500 text-sm mt-2">{{ $message }}</p>
-    @enderror
-
-    <!-- Modal -->
-    @if($showModal)
-        <div class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-            <div class="bg-white px-4 py-3 rounded shadow-lg max-w-lg w-full relative text-center">
-                <!-- Close X button -->
-                <button wire:click="toggleModal"
-                        class="absolute top-3 right-5 text-gray-500 hover:text-gray-800 text-xl font-bold">
-                    &times;
-                </button>
-
-                @if ($paymentReceived)
-                    <h3 class="font-semibold mb-4 text-2xl">Payment Received!</h3>
-                    <p class="text-gray-800 text-base sm:text-lg leading-relaxed px-4 sm:px-0">
-                        Thank you for your payment of {{ $amount }} XRP to {{ $destination }}.
-                    </p>
-                @else
-                    <h3 class="font-semibold mb-4 text-2xl">Make a Payment</h3>
-                    @if ($isPushed)
-                        <p class="text-gray-800 text-base sm:text-lg leading-relaxed px-4 sm:px-0">
-                            A payment request for {{ $amount }} XRP has been sent to your Xumm app. Please check your Xumm app to approve the payment.
-                        </p>
-                    @else
-                        <p class="text-gray-800 text-base sm:text-lg leading-relaxed px-4 sm:px-0">
-                            Scan the QR code to pay {{ $amount }} XRP to {{ $destination }}.
-                        </p>
-                        @if ($qr)
-                            <img src="{{ $qr }}" alt="Payment QR Code" class="mx-auto my-4">
-                            <p>Or open in Xumm:
-                                <a href="{{ $url }}" target="_blank" class="text-blue-500 underline hover:text-blue-600">
-                                    Click here
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 sm:w-4 sm:h-4 inline-block ml-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 3h7m0 0v7m0-7L10 14M5 5v14h14v-5" />
-                                    </svg>
-                                </a>
-                            </p>
-                        @endif
-                    @endif
-                @endif
-            </div>
-        </div>
+    @if ($status === 'pending')
+        @if ($pushed)
+            <p>Payment request sent to Xumm app. Waiting for confirmation...</p>
+        @else
+            <p>Scan the QR code to complete the payment:</p>
+            <img src="{{ $qr }}" alt="Xumm QR Code">
+            <p><a href="{{ $url }}">Open in Xumm</a></p>
+        @endif
+    @elseif ($status === 'completed')
+        <p>Payment completed successfully!</p>
+    @elseif ($status === 'expired')
+        <p>Payment request expired. Please try again.</p>
+    @elseif ($status === 'timeout')
+        <p>Payment request timed out. Please try again.</p>
     @endif
 
-    @script
     <script>
-        document.addEventListener('livewire:initialized', () => {
-            @if ($showModal && !$paymentReceived)
-            let interval = setInterval(() => {
-                $wire.checkPaymentStatus();
-            }, 1000); // Poll every 1 second
-            $wire.on('payment-success', () => {
-                clearInterval(interval);
-                $wire.call('$refresh');
-            });
-            $wire.on('refresh-component', () => {
-                $wire.call('$refresh');
-            });
+        document.addEventListener('livewire:load', function () {
+            @if ($status === 'pending')
+            setInterval(() => {
+            @this.checkPaymentStatus();
+            }, 5000); // Poll every 5 seconds
             @endif
         });
     </script>
-    @endscript
 </div>

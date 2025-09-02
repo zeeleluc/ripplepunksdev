@@ -59,7 +59,7 @@ class XummPayment
         $usePush = false;
         if ($userToken) {
             if (!is_string($userToken) || empty(trim($userToken)) || !preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i', $userToken)) {
-                $logMessage = '[createPaymentPayload] Invalid user_token format: ' . ($userToken ? substr($userToken, 0, 8) . '...' : 'empty');
+                $logMessage = '[createPaymentPayload] Invalid user_token format: ' . ($userToken ?: 'empty');
                 Log::warning($logMessage);
                 SlackNotifier::warning($logMessage);
             } else {
@@ -67,12 +67,15 @@ class XummPayment
                     'user_token' => $userToken,
                 ];
                 $usePush = true;
+                $logMessage = '[createPaymentPayload] Using user_token: ' . $userToken;
+                Log::info($logMessage);
+                SlackNotifier::info($logMessage);
             }
         }
 
         // Check destination account for Deposit Authorization using XRPL WebSocket
         try {
-            $client = new WebSocketClient('wss://xrpl.ws');
+            $client = new WebSocketClient('wss://xrpl.ws', ['timeout' => 10]);
             $request = [
                 'id' => uniqid(),
                 'command' => 'account_info',
@@ -82,7 +85,11 @@ class XummPayment
             $client->send(json_encode($request));
             $response = json_decode($client->receive(), true);
 
-            if (isset($response['result']['account_data']['Flags'])) {
+            if (isset($response['result']['status']) && $response['result']['status'] === 'error') {
+                $logMessage = '[createPaymentPayload] Failed to retrieve destination account info: ' . json_encode($response['result']);
+                Log::warning($logMessage);
+                SlackNotifier::warning($logMessage);
+            } elseif (isset($response['result']['account_data']['Flags'])) {
                 $flags = $response['result']['account_data']['Flags'];
                 $depositAuth = ($flags & 0x00010000) !== 0; // lsfDepositAuth flag
                 if ($depositAuth) {
@@ -98,7 +105,7 @@ class XummPayment
                     }
                 }
             } else {
-                $logMessage = '[createPaymentPayload] Failed to retrieve destination account info: ' . json_encode($response);
+                $logMessage = '[createPaymentPayload] Unexpected response format for destination account info: ' . json_encode($response);
                 Log::warning($logMessage);
                 SlackNotifier::warning($logMessage);
             }
@@ -113,7 +120,7 @@ class XummPayment
             $logMessage = '[createPaymentPayload] Creating Xumm payload: ' . json_encode([
                     'amount' => $amount,
                     'destination' => $destination,
-                    'userToken' => $userToken ? 'provided (' . substr($userToken, 0, 8) . '...)' : 'none',
+                    'userToken' => $userToken ? $userToken : 'none',
                     'usePush' => $usePush,
                     'payloadData' => $payloadData,
                 ], JSON_PRETTY_PRINT);
@@ -157,7 +164,7 @@ class XummPayment
             Log::error($errorMessage, [
                 'amount' => $amount,
                 'destination' => $destination,
-                'userToken' => $userToken ? 'provided (' . substr($userToken, 0, 8) . '...)' : 'none',
+                'userToken' => $userToken ? $userToken : 'none',
             ]);
             SlackNotifier::error($errorMessage);
             throw $e;
