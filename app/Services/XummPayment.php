@@ -54,17 +54,18 @@ class XummPayment
             ],
         ];
 
-        // Include user_token in custom_meta for authenticated users
+        // Validate user_token
+        $usePush = false;
         if ($userToken) {
-            // Validate userToken format (UUID-like)
             if (!is_string($userToken) || empty(trim($userToken)) || !preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i', $userToken)) {
-                $logMessage = 'Invalid user_token format: ' . ($userToken ? substr($userToken, 0, 8) . '...' : 'empty');
+                $logMessage = '[createPaymentPayload] Invalid user_token format: ' . ($userToken ? substr($userToken, 0, 8) . '...' : 'empty');
                 Log::warning($logMessage);
                 SlackNotifier::warning($logMessage);
             } else {
                 $payloadData['custom_meta'] = [
                     'user_token' => $userToken,
                 ];
+                $usePush = true;
             }
         }
 
@@ -83,26 +84,27 @@ class XummPayment
                 $flags = $accountData['account_data']['Flags'] ?? 0;
                 $depositAuth = ($flags & 0x00010000) !== 0; // lsfDepositAuth flag
                 if ($depositAuth) {
-                    $logMessage = 'Destination account has Deposit Authorization enabled: ' . $destination;
+                    $logMessage = '[createPaymentPayload] Destination account has Deposit Authorization enabled: ' . $destination;
                     Log::warning($logMessage);
                     SlackNotifier::warning($logMessage);
                 }
             } else {
-                $logMessage = 'Failed to check destination account info: ' . $accountInfo->body();
+                $logMessage = '[createPaymentPayload] Failed to check destination account info: ' . $accountInfo->body();
                 Log::warning($logMessage);
                 SlackNotifier::warning($logMessage);
             }
         } catch (\Throwable $e) {
-            $logMessage = 'Error checking destination account info: ' . $e->getMessage();
+            $logMessage = '[createPaymentPayload] Error checking destination account info: ' . $e->getMessage();
             Log::error($logMessage);
             SlackNotifier::error($logMessage);
         }
 
         try {
-            $logMessage = 'Creating Xumm payload: ' . json_encode([
+            $logMessage = '[createPaymentPayload] Creating Xumm payload: ' . json_encode([
                     'amount' => $amount,
                     'destination' => $destination,
                     'userToken' => $userToken ? 'provided (' . substr($userToken, 0, 8) . '...)' : 'none',
+                    'usePush' => $usePush,
                     'payloadData' => $payloadData,
                 ], JSON_PRETTY_PRINT);
             Log::info($logMessage);
@@ -115,14 +117,14 @@ class XummPayment
             ])->post('https://xumm.app/api/v1/platform/payload', $payloadData);
 
             if ($response->failed()) {
-                $errorMessage = 'Failed to create Xumm payload: ' . $response->body();
+                $errorMessage = '[createPaymentPayload] Failed to create Xumm payload: ' . $response->body();
                 Log::error($errorMessage);
                 SlackNotifier::error($errorMessage);
                 throw new \Exception($errorMessage);
             }
 
             $payloadResponse = $response->json();
-            $logMessage = 'Xumm payload created: UUID=' . ($payloadResponse['uuid'] ?? 'unknown') . ', Pushed=' . ($payloadResponse['pushed'] ? 'true' : 'false');
+            $logMessage = '[createPaymentPayload] Xumm payload created: UUID=' . ($payloadResponse['uuid'] ?? 'unknown') . ', Pushed=' . ($payloadResponse['pushed'] ? 'true' : 'false');
             Log::info($logMessage, ['full_response' => $payloadResponse]);
             SlackNotifier::info($logMessage);
 
@@ -142,7 +144,7 @@ class XummPayment
                 'pushed' => $payloadResponse['pushed'] ?? false,
             ];
         } catch (\Throwable $e) {
-            $errorMessage = 'Error creating Xumm payload: ' . $e->getMessage();
+            $errorMessage = '[createPaymentPayload] Error creating Xumm payload: ' . $e->getMessage();
             Log::error($errorMessage, [
                 'amount' => $amount,
                 'destination' => $destination,
@@ -157,12 +159,12 @@ class XummPayment
     {
         try {
             $payload = $this->sdk->getPayload($uuid);
-            $logMessage = 'Payload retrieved: UUID=' . $uuid . ', TxID=' . ($payload->response->txid ?? 'none');
+            $logMessage = '[getPayload] Payload retrieved: UUID=' . $uuid . ', TxID=' . ($payload->response->txid ?? 'none');
             Log::info($logMessage, ['payload' => (array) $payload]);
             SlackNotifier::info($logMessage);
             return $payload;
         } catch (\Throwable $e) {
-            $errorMessage = 'Error retrieving payload: UUID=' . $uuid . ', Error=' . $e->getMessage();
+            $errorMessage = '[getPayload] Error retrieving payload: UUID=' . $uuid . ', Error=' . $e->getMessage();
             Log::error($errorMessage);
             SlackNotifier::error($errorMessage);
             throw $e;

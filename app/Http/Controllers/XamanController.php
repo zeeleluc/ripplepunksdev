@@ -46,7 +46,7 @@ class XamanController extends Controller
                 $wallet = $payload->response->account;
                 return redirect()->to('/holder/' . $wallet);
             } catch (\Throwable $e) {
-                $logMessage = 'Old UUID invalid, generating new one: ' . $e->getMessage();
+                $logMessage = '[showLoginQr] Old UUID invalid, generating new one: ' . $e->getMessage();
                 Log::warning($logMessage);
                 SlackNotifier::warning($logMessage);
                 Session::forget('xumm_login_uuid');
@@ -55,6 +55,10 @@ class XamanController extends Controller
 
         $payload = $this->xaman->createLoginPayload();
         Session::put('xumm_login_uuid', $payload->uuid);
+
+        $logMessage = '[showLoginQr] New login payload created: UUID=' . $payload->uuid;
+        Log::info($logMessage);
+        SlackNotifier::info($logMessage);
 
         return view('xaman.login', [
             'qr' => $payload->refs->qrPng,
@@ -66,13 +70,16 @@ class XamanController extends Controller
     {
         $uuid = Session::get('xumm_login_uuid');
         if (!$uuid) {
+            $logMessage = '[loginCheck] Missing xumm_login_uuid in session';
+            Log::warning($logMessage);
+            SlackNotifier::warning($logMessage);
             return response()->json(['success' => false]);
         }
 
         $payload = $this->xaman->getPayload($uuid);
         $account = $payload->response->account ?? null;
 
-        $logMessage = 'Payload account: ' . ($account ?? 'null');
+        $logMessage = '[loginCheck] Payload account: ' . ($account ?? 'null');
         Log::info($logMessage);
         SlackNotifier::info($logMessage);
 
@@ -91,10 +98,17 @@ class XamanController extends Controller
         $wallet = $request->input('wallet');
         $token = $request->input('access_token');
 
+        if (!$wallet || !$token) {
+            $logMessage = '[loginStore] Missing wallet or access_token in request';
+            Log::warning($logMessage);
+            SlackNotifier::warning($logMessage);
+            return response()->json(['success' => false]);
+        }
+
         Session::put('wallet', $wallet);
         Session::put('xumm_token', $token);
 
-        $logMessage = 'Login stored for wallet: ' . $wallet;
+        $logMessage = '[loginStore] Login stored for wallet: ' . $wallet;
         Log::info($logMessage);
         SlackNotifier::info($logMessage);
 
@@ -103,7 +117,7 @@ class XamanController extends Controller
 
     public function logout(Request $request)
     {
-        $logMessage = 'User logging out: ' . auth()->id();
+        $logMessage = '[logout] User logging out: ' . (auth()->id() ?? 'none');
         Log::info($logMessage);
         SlackNotifier::info($logMessage);
 
@@ -115,7 +129,7 @@ class XamanController extends Controller
 
     public function handleWebhook(Request $request)
     {
-        $logMessage = 'Webhook request received at: ' . now()->toDateTimeString();
+        $logMessage = '[handleWebhook] Webhook request received at: ' . now()->toDateTimeString();
         Log::info($logMessage, [
             'headers' => $request->headers->all(),
             'body' => $request->all(),
@@ -127,7 +141,7 @@ class XamanController extends Controller
         $uuid = $data['meta']['payload_uuidv4'] ?? null;
 
         if (!$uuid) {
-            $logMessage = 'Missing UUID in webhook: ' . json_encode($data);
+            $logMessage = '[handleWebhook] Missing UUID in webhook: ' . json_encode($data);
             Log::warning($logMessage);
             SlackNotifier::warning($logMessage);
             return response()->json(['success' => false], 400);
@@ -135,16 +149,16 @@ class XamanController extends Controller
 
         try {
             $payload = $this->xummPayment->getPayload($uuid);
-            $logMessage = 'Payload fetched for UUID: ' . $uuid;
+            $logMessage = '[handleWebhook] Payload fetched for UUID: ' . $uuid;
             Log::info($logMessage, ['payload' => (array) $payload]);
             SlackNotifier::info($logMessage);
         } catch (NotFoundException $e) {
-            $logMessage = 'Payload not found for UUID: ' . $uuid . ', Error: ' . $e->getMessage();
+            $logMessage = '[handleWebhook] Payload not found for UUID: ' . $uuid . ', Error: ' . $e->getMessage();
             Log::error($logMessage);
             SlackNotifier::error($logMessage);
             return response()->json(['success' => false, 'message' => 'Payload not found'], 404);
         } catch (\Exception $e) {
-            $logMessage = 'Error fetching payload: ' . $e->getMessage() . ', UUID: ' . $uuid;
+            $logMessage = '[handleWebhook] Error fetching payload: ' . $e->getMessage() . ', UUID: ' . $uuid;
             Log::error($logMessage);
             SlackNotifier::error($logMessage);
             return response()->json(['success' => false, 'message' => 'Error fetching payload'], 500);
@@ -152,21 +166,21 @@ class XamanController extends Controller
 
         $wallet = $payload->response->account ?? null;
         if (!$wallet) {
-            $logMessage = 'Wallet not found in payload response for UUID: ' . $uuid;
+            $logMessage = '[handleWebhook] Wallet not found in payload response for UUID: ' . $uuid;
             Log::warning($logMessage, ['payload' => (array) $payload]);
             SlackNotifier::warning($logMessage);
             return response()->json(['success' => false], 400);
         }
 
         $transactionType = $payload->payload->request->TransactionType ?? null;
-        $logMessage = 'Processing transaction type: ' . ($transactionType ?? 'null') . ', UUID: ' . $uuid;
+        $logMessage = '[handleWebhook] Processing transaction type: ' . ($transactionType ?? 'null') . ', UUID: ' . $uuid;
         Log::info($logMessage);
         SlackNotifier::info($logMessage);
 
         if ($transactionType === 'SignIn') {
             $userToken = $data['userToken']['user_token'] ?? null;
             if (!$userToken) {
-                $logMessage = 'Missing userToken in login webhook: ' . json_encode($data);
+                $logMessage = '[handleWebhook] Missing userToken in login webhook: ' . json_encode($data);
                 Log::warning($logMessage);
                 SlackNotifier::warning($logMessage);
                 return response()->json(['success' => false], 400);
@@ -179,24 +193,24 @@ class XamanController extends Controller
             );
             Auth::login($user);
 
-            $logMessage = 'Login successful for wallet: ' . $wallet;
+            $logMessage = '[handleWebhook] Login successful for wallet: ' . $wallet;
             Log::info($logMessage);
             SlackNotifier::info($logMessage);
         } elseif ($transactionType === 'Payment') {
             $txid = $payload->response->txid ?? null;
             if (!$txid) {
-                $logMessage = 'Missing txid in payment webhook for UUID: ' . $uuid;
+                $logMessage = '[handleWebhook] Missing txid in payment webhook for UUID: ' . $uuid;
                 Log::warning($logMessage, ['payload' => (array) $payload]);
                 SlackNotifier::warning($logMessage);
                 return response()->json(['success' => false], 400);
             }
 
             Session::forget('xumm_payment_uuid');
-            $logMessage = 'Payment successful for wallet: ' . $wallet . ', txid: ' . $txid;
+            $logMessage = '[handleWebhook] Payment successful for wallet: ' . $wallet . ', txid: ' . $txid;
             Log::info($logMessage);
             SlackNotifier::info($logMessage);
         } else {
-            $logMessage = 'Unknown transaction type: ' . ($transactionType ?? 'null') . ', UUID: ' . $uuid;
+            $logMessage = '[handleWebhook] Unknown transaction type: ' . ($transactionType ?? 'null') . ', UUID: ' . $uuid;
             Log::warning($logMessage);
             SlackNotifier::warning($logMessage);
             return response()->json(['success' => false, 'message' => 'Unknown transaction type'], 400);
@@ -209,7 +223,7 @@ class XamanController extends Controller
     {
         $wallet = $request->input('wallet');
         if (!$wallet) {
-            $logMessage = 'Missing wallet in login finalize request';
+            $logMessage = '[loginFinalize] Missing wallet in login finalize request';
             Log::warning($logMessage);
             SlackNotifier::warning($logMessage);
             return response()->json(['success' => false]);
@@ -217,7 +231,7 @@ class XamanController extends Controller
 
         $user = User::where('wallet', $wallet)->first();
         if (!$user) {
-            $logMessage = 'User not found for wallet: ' . $wallet;
+            $logMessage = '[loginFinalize] User not found for wallet: ' . $wallet;
             Log::warning($logMessage);
             SlackNotifier::warning($logMessage);
             return response()->json(['success' => false]);
@@ -226,7 +240,7 @@ class XamanController extends Controller
         Auth::login($user);
         Session::put('wallet', $wallet);
 
-        $logMessage = 'Login finalized for wallet: ' . $wallet;
+        $logMessage = '[loginFinalize] Login finalized for wallet: ' . $wallet;
         Log::info($logMessage);
         SlackNotifier::info($logMessage);
 
@@ -235,7 +249,7 @@ class XamanController extends Controller
 
     public function handleCallback(Request $request)
     {
-        $logMessage = 'Callback received';
+        $logMessage = '[handleCallback] Callback received';
         Log::info($logMessage);
         SlackNotifier::info($logMessage);
         return redirect()->route('welcome');
