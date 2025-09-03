@@ -172,13 +172,13 @@ class XamanController extends Controller
             return response()->json(['success' => false], 400);
         }
 
-        // Log the payload request data for debugging
-        $requestPayloadData = json_encode($payload->payload->request, JSON_PRETTY_PRINT);
-        Log::error("[handleWebhook] Payload request data for UUID: {$uuid}: {$requestPayloadData}");
-        SlackNotifier::error("[handleWebhook] Payload request data for UUID: {$uuid}: ```{$requestPayloadData}```");
+        // Log the raw request object for debugging
+        $requestPayloadData = json_encode((array) $payload->payload->request, JSON_PRETTY_PRINT);
+        Log::info("[handleWebhook] Raw payload request data for UUID: {$uuid}: {$requestPayloadData}");
+        SlackNotifier::info("[handleWebhook] Raw payload request data for UUID: {$uuid}: ```{$requestPayloadData}```");
 
-        // Check for transaction type, including SignIn
-        $transactionType = $payload->payload->request->TransactionType ?? null;
+        // Check for transaction type, using txType as fallback
+        $transactionType = $payload->payload->request->TransactionType ?? $payload->payload->txType ?? null;
         $logMessage = '[handleWebhook] Processing transaction type: ' . ($transactionType ?? 'none') . ', UUID: ' . $uuid;
         Log::info($logMessage);
         SlackNotifier::info($logMessage);
