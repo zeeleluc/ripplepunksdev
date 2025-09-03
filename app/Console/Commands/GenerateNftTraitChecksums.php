@@ -40,7 +40,7 @@ class GenerateNftTraitChecksums extends Command
         Nft::chunk(100, function ($nfts) {
             foreach ($nfts as $nft) {
                 $activeTraits = $this->extractActiveTraits($nft);
-                $nft->trait_checksum = $this->generateChecksum($activeTraits);
+                $nft->trait_checksum = $this->generateChecksum($activeTraits, $nft->nft_id);
                 $nft->save();
             }
         });
@@ -55,27 +55,41 @@ class GenerateNftTraitChecksums extends Command
      */
     protected function extractActiveTraits(Nft $nft): array
     {
-        $active = [];
+        $attributes = $nft->metadata['attributes'];
+        $result = [];
 
-        foreach ($this->traitColumns as $column) {
-            $value = $nft->$column;
+// Add color & type directly
+        foreach ($attributes as $attr) {
+            if ($attr['trait_type'] === 'Color') {
+                $result['color'] = $attr['value'];
+            }
 
-            if (is_bool($value) || is_int($value)) {
-                if ($value == 1) {
-                    $active[$column] = '1';
-                }
-            } elseif ($value !== null && $value !== '') {
-                $active[$column] = (string) $value;
+            if ($attr['trait_type'] === 'Type') {
+                $result['type'] = $attr['value'];
             }
         }
 
-        return $active;
+// Add skin from outside metadata
+        $result['skin'] = $nft->skin;
+
+// Add accessories as individual keys with value = 1
+        foreach ($attributes as $attr) {
+            if ($attr['trait_type'] === 'Accessory') {
+                // skip generic "3 Attributes" kind of counters
+                if (stripos($attr['value'], 'Attributes') === false) {
+                    $result[$attr['value']] = 1;
+                }
+            }
+        }
+
+        return $result;
+
     }
 
     /**
      * Build a deterministic checksum from active traits
      */
-    protected function generateChecksum(array $activeTraits): string
+    protected function generateChecksum(array $activeTraits, $nftId): string
     {
         // Sort by key for consistent order
         ksort($activeTraits);
