@@ -185,6 +185,8 @@ class XamanController extends Controller
         Log::info($logMessage);
         SlackNotifier::info($logMessage);
 
+        SlackNotifier::warning('[handleWebhook] TransactionType: ' . $transactionType);
+
         if ($transactionType === 'SignIn') {
             $userToken = $data['userToken']['user_token'] ?? null;
             if (!$userToken) {
