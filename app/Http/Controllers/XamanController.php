@@ -172,6 +172,11 @@ class XamanController extends Controller
             return response()->json(['success' => false], 400);
         }
 
+        // Log the payload request data for debugging
+        $requestPayloadData = json_encode($payload->payload->request, JSON_PRETTY_PRINT);
+        Log::error("[handleWebhook] Payload request data for UUID: {$uuid}: {$requestPayloadData}");
+        SlackNotifier::error("[handleWebhook] Payload request data for UUID: {$uuid}: ```{$requestPayloadData}```");
+
         // Check for transaction type, including SignIn
         $transactionType = $payload->payload->request->TransactionType ?? null;
         $logMessage = '[handleWebhook] Processing transaction type: ' . ($transactionType ?? 'none') . ', UUID: ' . $uuid;
@@ -212,9 +217,9 @@ class XamanController extends Controller
             SlackNotifier::info($logMessage);
         } elseif (!$transactionType) {
             // Handle non-transaction payloads (e.g., expiration notices)
-            $logMessage = '[handleWebhook] Non-transaction payload received for UUID: ' . $uuid . ', Data: ' . json_encode($data);
+            $logMessage = '[handleWebhook] Non-transaction payload received for UUID: ' . $uuid . ', Data: ' . json_encode($data, JSON_PRETTY_PRINT);
             Log::info($logMessage);
-            SlackNotifier::info($logMessage);
+            SlackNotifier::info($logMessage . "\nFull Payload: ```" . json_encode($payload, JSON_PRETTY_PRINT) . "```");
             return response()->json(['success' => true, 'message' => 'Non-transaction payload processed']);
         } else {
             $logMessage = '[handleWebhook] Unknown transaction type: ' . $transactionType . ', UUID: ' . $uuid;
