@@ -228,7 +228,7 @@ class XamanController extends Controller
             return response()->json(['success' => false, 'message' => 'Unknown transaction type'], 400);
         }
 
-        return response()->json(['success' => true]);
+        return response()->json(['success' => true, 'transactionType' => $transactionType]);
     }
 
     public function loginFinalize(Request $request)
