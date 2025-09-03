@@ -15,6 +15,7 @@
 
 <div class="overflow-x-auto">
     @if ($nftsGrouped->isNotEmpty())
+        {{ $nftsGrouped->count() }}
         <table class="min-w-full border border-gray-200 divide-y divide-gray-200">
             <tbody class="bg-white divide-y divide-gray-200">
             @foreach($nftsGrouped as $group)
