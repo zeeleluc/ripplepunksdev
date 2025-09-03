@@ -72,3 +72,9 @@ Route::group(['middleware' => 'web'], function () {
         Route::get('/admin/users', [UserController::class, 'index'])->name('admin.users');
     });
 });
+
+
+
+use App\Http\Controllers\ChecksumController;
+
+Route::get('/checksum/{checksum}', [ChecksumController::class, 'check']);
