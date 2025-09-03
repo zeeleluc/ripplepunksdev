@@ -164,14 +164,6 @@ class XamanController extends Controller
             return response()->json(['success' => false, 'message' => 'Error fetching payload'], 500);
         }
 
-        // Handle non-transaction payloads (e.g., expiration notices)
-        if (!isset($payload->payload->request->TransactionType)) {
-            $logMessage = '[handleWebhook] Non-transaction payload received for UUID: ' . $uuid . ', Data: ' . json_encode($data);
-            Log::info($logMessage);
-            SlackNotifier::info($logMessage);
-            return response()->json(['success' => true, 'message' => 'Non-transaction payload processed']);
-        }
-
         $wallet = $payload->response->account ?? null;
         if (!$wallet) {
             $logMessage = '[handleWebhook] Wallet not found in payload response for UUID: ' . $uuid;
@@ -180,12 +172,11 @@ class XamanController extends Controller
             return response()->json(['success' => false], 400);
         }
 
-        $transactionType = $payload->payload->request->TransactionType;
-        $logMessage = '[handleWebhook] Processing transaction type: ' . $transactionType . ', UUID: ' . $uuid;
+        // Check for transaction type, including SignIn
+        $transactionType = $payload->payload->request->TransactionType ?? null;
+        $logMessage = '[handleWebhook] Processing transaction type: ' . ($transactionType ?? 'none') . ', UUID: ' . $uuid;
         Log::info($logMessage);
         SlackNotifier::info($logMessage);
-
-        SlackNotifier::warning('[handleWebhook] TransactionType: ' . $transactionType);
 
         if ($transactionType === 'SignIn') {
             $userToken = $data['userToken']['user_token'] ?? null;
@@ -219,6 +210,12 @@ class XamanController extends Controller
             $logMessage = '[handleWebhook] Payment successful for wallet: ' . $wallet . ', txid: ' . $txid;
             Log::info($logMessage);
             SlackNotifier::info($logMessage);
+        } elseif (!$transactionType) {
+            // Handle non-transaction payloads (e.g., expiration notices)
+            $logMessage = '[handleWebhook] Non-transaction payload received for UUID: ' . $uuid . ', Data: ' . json_encode($data);
+            Log::info($logMessage);
+            SlackNotifier::info($logMessage);
+            return response()->json(['success' => true, 'message' => 'Non-transaction payload processed']);
         } else {
             $logMessage = '[handleWebhook] Unknown transaction type: ' . $transactionType . ', UUID: ' . $uuid;
             Log::warning($logMessage);
