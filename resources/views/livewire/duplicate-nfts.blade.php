@@ -35,7 +35,8 @@
                         {{-- NFT 1 ID --}}
                         <td class="px-4 py-2 text-sm text-gray-700">
                             @if(!empty($first->nftoken_id))
-                                <a target="_blank" class="text-primary-600 underline"
+                                <a target="_blank"
+                                   class="underline {{ ($first->nft_id >= 11320) ? 'font-bold text-red-600' : 'text-primary-600' }}"
                                    href="https://xrp.cafe/nft/{{ $first->nftoken_id }}">
                                     #{{ $first->nft_id ?? '-' }}
                                 </a>
@@ -52,7 +53,8 @@
                         {{-- NFT 2 ID --}}
                         <td class="px-4 py-2 text-sm text-gray-700">
                             @if($second && !empty($second->nftoken_id))
-                                <a target="_blank" class="text-primary-600 underline"
+                                <a target="_blank"
+                                   class="underline {{ ($second->nft_id >= 11320) ? 'font-bold text-red-600' : 'text-primary-600' }}"
                                    href="https://xrp.cafe/nft/{{ $second->nftoken_id }}">
                                     #{{ $second->nft_id ?? '-' }}
                                 </a>
@@ -60,7 +62,7 @@
                                 -
                             @endif
                         </td>
-
+                        
                         {{-- NFT 2 Owner --}}
                         <td class="px-4 py-2 text-sm {{ $second ? getWalletHighlightClass($second->owner ?? null, $hackWallet, $highlightWallets) : '' }}">
                             {{ $second->owner ?? '-' }}
