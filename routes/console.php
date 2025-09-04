@@ -46,7 +46,7 @@ if (app()->environment('prod')) {
 
     Schedule::call(function () {
         (new \App\Services\XPost())->tweetTopWallets();
-    })->timezone('America/New_York')->dailyAt('20:40');
+    })->timezone('America/New_York')->dailyAt('20:45');
 
 
 
