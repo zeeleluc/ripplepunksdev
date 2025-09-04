@@ -106,7 +106,7 @@ class NftSale extends Model
 
     public static function topWalletsLast24h(): array
     {
-        $since = now()->subDay();
+        $since = now()->utc()->subDay();
 
         $trades = self::where('accepted_at', '>=', $since)->get();
 
