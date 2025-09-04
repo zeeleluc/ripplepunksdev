@@ -62,7 +62,7 @@
                                 -
                             @endif
                         </td>
-                        
+
                         {{-- NFT 2 Owner --}}
                         <td class="px-4 py-2 text-sm {{ $second ? getWalletHighlightClass($second->owner ?? null, $hackWallet, $highlightWallets) : '' }}">
                             {{ $second->owner ?? '-' }}

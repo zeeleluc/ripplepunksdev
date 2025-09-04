@@ -237,6 +237,31 @@ class XPost
             ->post();
     }
 
+    public function tweetTopWallets(): void
+    {
+        $topWallets = \App\Models\NftSale::topWalletsLast24h();
+
+        $mostTrades = $topWallets['most_trades_wallet'];
+        $mostXrp    = $topWallets['most_xrp_wallet'];
+
+        $tweetText = "⚡ XRPL NFT 24h Pulse ⚡\n\n";
+        $tweetText .= "🏆 Wallet with most trades:\n";
+        $tweetText .= "{$mostTrades['wallet']} → {$mostTrades['trades']} trades\n\n";
+        $tweetText .= "💰 Wallet moving most XRP:\n";
+        $tweetText .= "{$mostXrp['wallet']} → " .
+            number_format($mostXrp['xrp'], 2) . " XRP " .
+            "(\$" . number_format($mostXrp['usd'], 2) . ")\n\n";
+
+
+        $tweetText .= "🔗 https://ripplepunks.dev/pulse";
+        $tweetText .= "\n";
+        $tweetText .= "\n";
+        $tweetText .= "⏰ Last 24hrs";
+
+        $this->setText($tweetText)
+            ->post();
+    }
+
     /**
      * Tweet Marketplace Pie Chart
      */
@@ -307,7 +332,7 @@ class XPost
         $tweetText .= "🔗 https://ripplepunks.dev/pulse";
         $tweetText .= "\n";
         $tweetText .= "\n";
-        $tweetText .= "⏰ 24hrs";
+        $tweetText .= "⏰ Last 24hrs";
 
 
         // 3️⃣ Post tweet

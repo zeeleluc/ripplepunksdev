@@ -103,4 +103,57 @@ class NftSale extends Model
 
         return null;
     }
+
+    public static function topWalletsLast24h(): array
+    {
+        $since = now()->subDay();
+
+        $trades = self::where('accepted_at', '>=', $since)->get();
+
+        $walletStats = [];
+
+        foreach ($trades as $trade) {
+            foreach (['seller', 'buyer'] as $role) {
+                $wallet = $trade->$role;
+                if (!$wallet) continue;
+
+                if (!isset($walletStats[$wallet])) {
+                    $walletStats[$wallet] = [
+                        'trades' => 0,
+                        'xrp' => 0,
+                        'usd' => 0,
+                    ];
+                }
+
+                $walletStats[$wallet]['trades'] += 1;
+                $walletStats[$wallet]['xrp'] += $trade->amount / 1_000_000;
+
+                $amounts = is_string($trade->amount_in_convert_currencies)
+                    ? json_decode($trade->amount_in_convert_currencies, true)
+                    : $trade->amount_in_convert_currencies;
+
+                $walletStats[$wallet]['usd'] += $amounts['usd'] ?? 0;
+            }
+        }
+
+        // Wallet with most trades
+        $mostTradesWallet = collect($walletStats)->sortByDesc('trades')->first();
+        $mostTradesWalletName = array_search($mostTradesWallet, $walletStats);
+
+        // Wallet that moved most XRP
+        $mostXrpWallet = collect($walletStats)->sortByDesc('xrp')->first();
+        $mostXrpWalletName = array_search($mostXrpWallet, $walletStats);
+
+        return [
+            'most_trades_wallet' => [
+                'wallet' => $mostTradesWalletName,
+                'trades' => $mostTradesWallet['trades'] ?? 0,
+            ],
+            'most_xrp_wallet' => [
+                'wallet' => $mostXrpWalletName,
+                'xrp' => $mostXrpWallet['xrp'] ?? 0,
+                'usd' => $mostXrpWallet['usd'] ?? 0,
+            ],
+        ];
+    }
 }

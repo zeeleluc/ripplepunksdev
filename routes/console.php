@@ -44,6 +44,10 @@ if (app()->environment('prod')) {
         (new \App\Services\XPost())->tweetRandomImage();
     })->timezone('America/New_York')->dailyAt('19:15');
 
+    Schedule::call(function () {
+        (new \App\Services\XPost())->tweetTopWallets();
+    })->timezone('America/New_York')->dailyAt('20:40');
+
 
 
 
