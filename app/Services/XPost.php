@@ -244,7 +244,7 @@ class XPost
         $mostTrades = $topWallets['most_trades_wallet'];
         $mostXrp    = $topWallets['most_xrp_wallet'];
 
-        $tweetText = "⚡ XRPL NFT 24h Pulse ⚡\n\n";
+        $tweetText = "⚡ XRPL NFT Wallets 24h Pulse ⚡\n\n";
         $tweetText .= "🏆 Wallet with most trades:\n";
         $tweetText .= "{$mostTrades['wallet']} → {$mostTrades['trades']} trades\n\n";
         $tweetText .= "💰 Wallet moving most XRP:\n";
