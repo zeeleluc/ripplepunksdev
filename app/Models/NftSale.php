@@ -108,7 +108,7 @@ class NftSale extends Model
     {
         $since = now()->utc()->subDay();
 
-        $trades = self::where('accepted_at', '>=', $since)->get();
+        $trades = self::where('accepted_at', '>=', $since)->where('amount', '>', 1)->get();
 
         $walletStats = [];
 
