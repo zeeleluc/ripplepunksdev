@@ -27,7 +27,7 @@ class XummService
                 submit: false,
                 returnUrl: new ReturnUrl(
                     app: null,
-                    web: config('services.xaman.webhook_url') . '/xaman/webhook'
+                    web: config('services.xaman.webhook_url')
                 )
             )
         );

@@ -7,6 +7,7 @@ use App\Services\XummService;
 use App\Services\XummPayment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 use Xrpl\XummSdkPhp\Exception\Http\NotFoundException;
@@ -172,12 +173,10 @@ class XamanController extends Controller
             return response()->json(['success' => false], 400);
         }
 
-        // Log the raw request object for debugging
         $requestPayloadData = json_encode((array) $payload->payload->request, JSON_PRETTY_PRINT);
         Log::info("[handleWebhook] Raw payload request data for UUID: {$uuid}: {$requestPayloadData}");
         SlackNotifier::info("[handleWebhook] Raw payload request data for UUID: {$uuid}: ```{$requestPayloadData}```");
 
-        // Check for transaction type, using txType as fallback
         $transactionType = $payload->payload->request->TransactionType ?? $payload->payload->txType ?? null;
         $logMessage = '[handleWebhook] Processing transaction type: ' . ($transactionType ?? 'none') . ', UUID: ' . $uuid;
         Log::info($logMessage);
@@ -205,11 +204,35 @@ class XamanController extends Controller
             SlackNotifier::info($logMessage);
         } elseif ($transactionType === 'Payment') {
             $txid = $payload->response->txid ?? null;
-            if (!$txid) {
-                $logMessage = '[handleWebhook] Missing txid in payment webhook for UUID: ' . $uuid;
+            $signedTxBlob = $payload->response->hex ?? null;
+            if (!$txid || !$signedTxBlob) {
+                $logMessage = '[handleWebhook] Missing txid or signed blob in payment webhook for UUID: ' . $uuid;
                 Log::warning($logMessage, ['payload' => (array) $payload]);
                 SlackNotifier::warning($logMessage);
                 return response()->json(['success' => false], 400);
+            }
+
+            $submissionResult = $this->xummPayment->submitTransaction($signedTxBlob);
+            if (!$submissionResult['success']) {
+                $logMessage = '[handleWebhook] Transaction submission failed for UUID: ' . $uuid . ', Error: ' . $submissionResult['message'];
+                Log::error($logMessage);
+                SlackNotifier::error($logMessage);
+                return response()->json(['success' => false, 'message' => 'Transaction submission failed'], 500);
+            }
+
+            $status = $this->xummPayment->checkTransactionStatus($txid);
+            if ($status['success'] && $status['validated']) {
+                Cache::put("payment:$uuid", [
+                    'txid' => $txid,
+                    'validated' => true
+                ], now()->addMinutes(10));
+                $logMessage = '[handleWebhook] Transaction confirmed on ledger: TxID=' . $txid;
+                Log::info($logMessage);
+                SlackNotifier::info($logMessage);
+            } else {
+                $logMessage = '[handleWebhook] Transaction not confirmed on ledger: TxID=' . $txid . ', Status=' . $status['message'];
+                Log::warning($logMessage);
+                SlackNotifier::warning($logMessage);
             }
 
             Session::forget('xumm_payment_uuid');
@@ -217,7 +240,6 @@ class XamanController extends Controller
             Log::info($logMessage);
             SlackNotifier::info($logMessage);
         } elseif (!$transactionType) {
-            // Handle non-transaction payloads (e.g., expiration notices)
             $logMessage = '[handleWebhook] Non-transaction payload received for UUID: ' . $uuid . ', Data: ' . json_encode($data, JSON_PRETTY_PRINT);
             Log::info($logMessage);
             SlackNotifier::info($logMessage . "\nFull Payload: ```" . json_encode($payload, JSON_PRETTY_PRINT) . "```");
@@ -242,10 +264,9 @@ class XamanController extends Controller
             return response()->json(['success' => false]);
         }
 
-        // Create or update user
         $user = User::updateOrCreate(
             ['wallet' => $wallet],
-            ['name' => $wallet] // you can add xumm_token here if available
+            ['name' => $wallet]
         );
 
         Auth::login($user);
