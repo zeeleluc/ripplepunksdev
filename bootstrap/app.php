@@ -11,6 +11,7 @@ use Illuminate\Foundation\Http\Middleware\ValidatePostSize;
 use Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull;
 use Illuminate\Foundation\Http\Middleware\TrimStrings;
 use Illuminate\Foundation\Http\Middleware\CheckForMaintenanceMode;
+use Symfony\Component\HttpFoundation\Response;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -36,6 +37,26 @@ return Application::configure(basePath: dirname(__DIR__))
             'isAdmin' => \App\Http\Middleware\IsAdmin::class,
         ]);
     })
-    ->withExceptions(function (Exceptions $exceptions): void {
-        //
+    ->withExceptions(function (Exceptions $exceptions) {
+        // Hook into exception reporting
+        $exceptions->report(function (Throwable $e) {
+            $status = $e instanceof \Symfony\Component\HttpKernel\Exception\HttpExceptionInterface
+                ? $e->getStatusCode()
+                : Response::HTTP_INTERNAL_SERVER_ERROR;
+
+            if ($status >= 500) {
+                $message = sprintf(
+                    "*%s*: %s\n*File*: %s:%d\n*Trace*:\n```%s```",
+                    class_basename($e),
+                    $e->getMessage(),
+                    $e->getFile(),
+                    $e->getLine(),
+                    collect(explode("\n", $e->getTraceAsString()))
+                        ->take(5)
+                        ->implode("\n") // show first 5 lines of stack trace
+                );
+
+                \App\Helpers\SlackNotifier::error($message);
+            }
+        });
     })->create();
