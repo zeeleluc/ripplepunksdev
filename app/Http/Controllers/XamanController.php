@@ -81,7 +81,7 @@ class XamanController extends Controller
 
 //        $logMessage = '[loginCheck] Payload account: ' . ($account ?? 'null');
 //        Log::info($logMessage);
-        SlackNotifier::info($logMessage);
+//        SlackNotifier::info($logMessage);
 
         if (empty($account)) {
             return response()->json(['success' => false]);
