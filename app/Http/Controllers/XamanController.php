@@ -195,7 +195,7 @@ class XamanController extends Controller
             Session::put('wallet', $wallet);
             $user = User::updateOrCreate(
                 ['wallet' => $wallet],
-                ['name' => $wallet, 'xumm_token' => $userToken]
+                ['name' => $wallet, 'xumm_token' => $userToken, 'updated_at' => now()]
             );
             Auth::login($user);
 
