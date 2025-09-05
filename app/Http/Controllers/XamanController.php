@@ -79,9 +79,9 @@ class XamanController extends Controller
         $payload = $this->xaman->getPayload($uuid);
         $account = $payload->response->account ?? null;
 
-//        $logMessage = '[loginCheck] Payload account: ' . ($account ?? 'null');
-//        Log::info($logMessage);
-//        SlackNotifier::info($logMessage);
+        $logMessage = '[loginCheck] Payload account: ' . ($account ?? 'null');
+        Log::info($logMessage);
+        SlackNotifier::info($logMessage);
 
         if (empty($account)) {
             return response()->json(['success' => false]);
@@ -195,8 +195,9 @@ class XamanController extends Controller
             Session::put('wallet', $wallet);
             $user = User::updateOrCreate(
                 ['wallet' => $wallet],
-                ['name' => $wallet, 'xumm_token' => $userToken, 'updated_at' => now()]
+                ['name' => $wallet, 'xumm_token' => $userToken]
             );
+            $user->touch();
             Auth::login($user);
 
             $logMessage = '[handleWebhook] Login successful for wallet: ' . $wallet;
@@ -241,13 +242,11 @@ class XamanController extends Controller
             return response()->json(['success' => false]);
         }
 
-        $user = User::where('wallet', $wallet)->first();
-        if (!$user) {
-            $logMessage = '[loginFinalize] User not found for wallet: ' . $wallet;
-            Log::warning($logMessage);
-            SlackNotifier::warning($logMessage);
-            return response()->json(['success' => false]);
-        }
+        // Create or update user
+        $user = User::updateOrCreate(
+            ['wallet' => $wallet],
+            ['name' => $wallet] // you can add xumm_token here if available
+        );
 
         Auth::login($user);
         Session::put('wallet', $wallet);
