@@ -69,9 +69,15 @@ class XPost
     {
         foreach ($this->images as $image) {
             if ($image && file_exists($image)) {
-                @unlink($image);
+                // Only unlink if "tmp" is in the path
+                if (str_contains($image, DIRECTORY_SEPARATOR . 'tmp' . DIRECTORY_SEPARATOR) ||
+                    str_contains($image, '/tmp/') ||
+                    str_contains($image, '\\tmp\\')) {
+                    @unlink($image);
+                }
             }
         }
+
         $this->images = [];
         return $this;
     }
@@ -204,9 +210,16 @@ class XPost
             ->post();
     }
 
+    public function tweetWebsiteAdImage(): void
+    {
+        $this->setText("The Larger Your Horde, the Greater Your Edge\n\n🔗 https://ripplepunks.dev")
+            ->addImage(public_path('images/website-ad.png'))
+            ->post();
+    }
+
     public function tweetRandomFourImages(): void
     {
-        $this->setText("Choose 1\n\n🔗 https://bidds.com/collection/ripplepunks/")
+        $this->setText("Choose 1\n\n🔗 https://bidds.com/collection/ripplepunks")
             ->addImage($this->getRandomOGRipplePunkImage())
             ->addImage($this->getRandomOGRipplePunkImage())
             ->addImage($this->getRandomOGRipplePunkImage())

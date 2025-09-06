@@ -52,6 +52,10 @@ if (app()->environment('prod')) {
 
 
     // Weekly
+    Schedule::call(function () { // Friday
+        (new \App\Services\XPost())->tweetWebsiteAdImage();
+    })->timezone('America/New_York')->weeklyOn(5, '10:22');
+
     Schedule::call(function () { // Saturday
         (new \App\Services\XPost())->tweetLeftRight();
     })->timezone('America/New_York')->weeklyOn(6, '09:30');
