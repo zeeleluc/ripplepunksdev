@@ -13,6 +13,10 @@
 
     <div class="container mx-auto px-2 sm:px-6 max-w-7xl">
 
+        <h2 class="font-arcade text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold text-primary-50 mt-4 mb-0 text-center leading-tight sm:leading-snug md:leading-normal">
+            Powered by Punks, Built for All
+        </h2>
+
         {{-- NFT Preview & Dev Log --}}
         <div class="flex flex-col md:flex-row md:gap-6 mt-6 sm:mt-10">
 
@@ -64,6 +68,85 @@
                 <a class="text-primary-600 underline" href="{{ route('logs') }}">Read more dev logs..</a>
             </div>
         </div>
+
+        <div class="flex flex-col md:flex-row md:gap-6 mt-6">
+            <div class="w-full border bg-white p-3 sm:p-6 shadow">
+                <h2 class="font-arcade text-xl sm:text-2xl md:text-3xl lg:text-4xl font-extrabold text-primary-50 mb-2 text-center leading-tight sm:leading-snug md:leading-normal">
+                    The Larger Your Horde, the Greater Your Edge
+                </h2>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full table-fixed text-center border text-xs sm:text-sm">
+                        <thead>
+                        <tr class="bg-gray-200">
+                            <!-- Features column: fills remaining space -->
+                            <th class="px-2 sm:px-4 py-2 text-left w-auto">Features</th>
+
+                            <!-- Fixed-width columns: exactly 105px -->
+                            <th class="px-2 sm:px-4 py-2 w-[105px] min-w-[105px] max-w-[105px]">Explorer<br><span class="text-gray-500 text-xs">0 RPs</span></th>
+                            <th class="px-2 sm:px-4 py-2 w-[105px] min-w-[105px] max-w-[105px]">Punk<br><span class="text-gray-500 text-xs">1 RP</span></th>
+                            <th class="px-2 sm:px-4 py-2 w-[105px] min-w-[105px] max-w-[105px]">Street<br>Raider<br><span class="text-gray-500 text-xs">10 RPs</span></th>
+                            <th class="px-2 sm:px-4 py-2 w-[105px] min-w-[105px] max-w-[105px]">Vault<br>Dweller<br><span class="text-gray-500 text-xs">25 RPs</span></th>
+                            <th class="px-2 sm:px-4 py-2 w-[105px] min-w-[105px] max-w-[105px]">Punk<br>King<br><span class="text-gray-500 text-xs">50 RPs</span></th>
+                            <th class="px-2 sm:px-4 py-2 w-[105px] min-w-[105px] max-w-[105px]">Ripple<br>Overlord<br><span class="text-gray-500 text-xs">100 RPs</span></th>
+                            <th class="px-2 sm:px-4 py-2 w-[105px] min-w-[105px] max-w-[105px]">Digital<br>Don<br><span class="text-gray-500 text-xs">200 RPs</span></th>
+                            <th class="px-2 sm:px-4 py-2 w-[105px] min-w-[105px] max-w-[105px]">Meta<br>Mogul<br><span class="text-gray-500 text-xs">350 RPs</span></th>
+                            <th class="px-2 sm:px-4 py-2 w-[105px] min-w-[105px] max-w-[105px]">Ledger<br>Legend<br><span class="text-gray-500 text-xs">500 RPs</span></th>
+                        </tr>
+
+                        </thead>
+                        <tbody class="divide-y">
+                        <tr class="bg-gray-50">
+                            <td class="px-2 sm:px-4 py-2 text-left font-medium">
+                                <a class="text-primary-600 hover:text-primary-800" href="/pulse">
+                                    Pulse+
+                                </a>
+                            </td>
+                            <td class="px-2 sm:px-4 py-2">monthly $5</td>
+                            <td class="px-2 sm:px-4 py-2">Free</td>
+                            <td class="px-2 sm:px-4 py-2">Free</td>
+                            <td class="px-2 sm:px-4 py-2">Free</td>
+                            <td class="px-2 sm:px-4 py-2">Free</td>
+                            <td class="px-2 sm:px-4 py-2">Free</td>
+                            <td class="px-2 sm:px-4 py-2">Free</td>
+                            <td class="px-2 sm:px-4 py-2">Free</td>
+                            <td class="px-2 sm:px-4 py-2">Free</td>
+                        </tr>
+                        <tr>
+                            <td class="px-2 sm:px-4 py-2 text-left font-medium">Launchpad</td>
+                            <td class="px-2 sm:px-4 py-2">$0.05 per mint & $9 setup fee</td>
+                            <td class="px-2 sm:px-4 py-2">$0.03 per mint & $6 setup fee</td>
+                            <td class="px-2 sm:px-4 py-2">$0.02 per mint & $4 setup fee</td>
+                            <td class="px-2 sm:px-4 py-2">only $0.01 per mint</td>
+                            <td class="px-2 sm:px-4 py-2">only $0.01 per mint</td>
+                            <td class="px-2 sm:px-4 py-2">Free</td>
+                            <td class="px-2 sm:px-4 py-2">Free</td>
+                            <td class="px-2 sm:px-4 py-2">Free</td>
+                            <td class="px-2 sm:px-4 py-2">Free</td>
+                        </tr>
+                        <tr>
+                            <td class="px-2 sm:px-4 py-2 text-left font-medium">Storage IPFS</td>
+                            <td class="px-2 sm:px-4 py-2">$5.00 / GB</td>
+                            <td class="px-2 sm:px-4 py-2">$4.00 / GB</td>
+                            <td class="px-2 sm:px-4 py-2">$3.00 / GB</td>
+                            <td class="px-2 sm:px-4 py-2">$2.00 / GB</td>
+                            <td class="px-2 sm:px-4 py-2">$1.00 / GB</td>
+                            <td class="px-2 sm:px-4 py-2">Free</td>
+                            <td class="px-2 sm:px-4 py-2">Free</td>
+                            <td class="px-2 sm:px-4 py-2">Free</td>
+                            <td class="px-2 sm:px-4 py-2">Free</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="mt-4 text-sm text-gray-400 text-center">
+                    A portion of all profits from these services is sent directly to the community wallet to fund rewards.
+                    Rewards are distributed as claims based on various factors, including holdings of OGs, Rewinds, combined Rewinds, Quartets, length of holding, and listings of OG RipplePunks or other means.
+                    Prices for these services are subject to change at our discretion.
+                </p>
+            </div>
+        </div>
+
+
 
         {{-- Progress Bar --}}
         <div class="bg-white border rounded shadow p-3 sm:p-4 mb-5 mt-5">
