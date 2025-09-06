@@ -192,6 +192,48 @@ class XPost
             ->post();
     }
 
+    public function tweetRepostPinned()
+    {
+        $phrases = [
+            "It would mean a lot if you could retweet our pinned post!",
+            "Please repost our pinned post—it helps so much!",
+            "Help us spread the word by sharing our pinned post 🙌",
+            "A quick retweet of our pinned post would be amazing!",
+            "Want to support us? Retweet our pinned post 💙",
+            "Give our pinned post a boost—share it forward!",
+            "Your repost of our pinned post would make a difference!",
+            "Show some love: retweet our pinned post ✨",
+            "Support us by sharing our pinned post with your followers!",
+            "One retweet of our pinned post = huge support 🚀",
+            "Reposting our pinned post helps us reach more people!",
+            "Hit retweet on our pinned post to show your support!",
+            "Share our pinned post and be part of our journey!",
+            "Boost our pinned post with a quick repost 🙏",
+            "Every retweet counts—please share our pinned post!",
+            "Lend us your reach: repost our pinned post 📢",
+            "Click retweet on our pinned post and spread the word!",
+            "We’d love it if you could share our pinned post!",
+            "Give our pinned post some extra love with a retweet 💙️",
+            "Help amplify our message—share the pinned post!",
+            "Your simple retweet of our pinned post means a lot!",
+            "Teamwork makes the dream work—please repost our pinned!",
+            "Want to help? Share our pinned post with your audience!",
+            "Retweet our pinned post and join the movement 🌍",
+            "Your support is priceless—share our pinned post 🙌",
+            "Let’s get this out there: repost our pinned post!",
+            "A retweet of our pinned post goes a long way 💫",
+            "Spread the word: share our pinned post today!",
+            "Be awesome—retweet our pinned post now!",
+            "Help us shine brighter by reposting our pinned post ✨",
+        ];
+
+        shuffle($phrases);
+        shuffle($phrases);
+        shuffle($phrases);
+
+        $this->setText($phrases[0])->post();
+    }
+
     /** ---------------------
      * Tweet left/right post
      * --------------------- */

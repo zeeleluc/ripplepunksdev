@@ -21,20 +21,16 @@ if (app()->environment('prod')) {
 
     // Daily
     Schedule::call(function () {
+        (new \App\Services\XPost())->tweetRandomFourImages();
+    })->timezone('America/New_York')->dailyAt('03:03');
+
+    Schedule::call(function () {
         (new \App\Services\XPost())->tweetGm();
     })->timezone('America/New_York')->dailyAt('06:00');
 
     Schedule::call(function () {
-        (new \App\Services\XPost())->tweetXrpPrice();
-    })->timezone('America/New_York')->dailyAt('23:23');
-
-    Schedule::call(function () {
-        (new \App\Services\XPost())->tweetXRPTrendImage();
-    })->timezone('America/New_York')->dailyAt('00:18');
-
-    Schedule::call(function () {
-        (new \App\Services\XPost())->tweetRandomFourImages();
-    })->timezone('America/New_York')->dailyAt('03:03');
+        (new \App\Services\XPost())->tweetRepostPinned();
+    })->timezone('America/New_York')->dailyAt('10:30');
 
     Schedule::call(function () {
         (new \App\Services\XPost())->tweetMarketplacePieChart();
@@ -48,7 +44,13 @@ if (app()->environment('prod')) {
         (new \App\Services\XPost())->tweetTopWallets();
     })->timezone('America/New_York')->dailyAt('20:58');
 
+    Schedule::call(function () {
+        (new \App\Services\XPost())->tweetXrpPrice();
+    })->timezone('America/New_York')->dailyAt('23:23');
 
+    Schedule::call(function () {
+        (new \App\Services\XPost())->tweetXRPTrendImage();
+    })->timezone('America/New_York')->dailyAt('00:18');
 
 
     // Weekly
