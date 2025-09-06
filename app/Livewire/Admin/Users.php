@@ -12,7 +12,7 @@ class Users extends Component
 
     public function render()
     {
-        $users = User::latest()->paginate(100);
+        $users = User::latest('updated_at')->paginate(100);
 
         return view('livewire.admin.users', [
             'users' => $users

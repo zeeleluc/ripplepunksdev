@@ -9,6 +9,7 @@
                 <th class="p-2 border text-left">Name</th>
                 <th class="p-2 border text-left">Wallet</th>
                 <th class="p-2 border text-left">Registered At</th>
+                <th class="p-2 border text-left">Last Seen</th>
             </tr>
             </thead>
             <tbody>
@@ -17,7 +18,8 @@
                     <td class="border p-2 text-center">{{ $user->id }}</td>
                     <td class="border p-2">{{ $user->name }}</td>
                     <td class="border p-2">{{ $user->wallet ?? '-' }}</td>
-                    <td class="border p-2">{{ $user->created_at->format('Y-m-d H:i') }}</td>
+                    <td class="border p-2">{{ $user->created_at->diffForHumans() }}</td>
+                    <td class="border p-2">{{ $user->updated_at->diffForHumans() }}</td>
                 </tr>
             @endforeach
             </tbody>
