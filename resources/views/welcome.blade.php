@@ -13,7 +13,7 @@
 
     <div class="container mx-auto px-2 sm:px-6 max-w-7xl">
 
-        <h2 class="font-arcade text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold text-primary-50 mt-4 mb-0 text-center leading-tight sm:leading-snug md:leading-normal">
+        <h2 class="font-arcade text-xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold text-primary-50 mt-4 mb-0 text-center leading-tight sm:leading-snug md:leading-normal">
             Powered by Punks, Built for All
         </h2>
 
@@ -138,11 +138,14 @@
                         </tbody>
                     </table>
                 </div>
-                <p class="mt-4 text-sm text-gray-400 text-center">
+                <p class="mt-4 text-sm text-gray-400 text-left">
                     A portion of all profits from these services is sent directly to the community wallet to fund rewards.
                     Rewards are distributed as claims based on various factors, including holdings of OGs, Rewinds, combined Rewinds, Quartets, length of holding, and listings of OG RipplePunks or other means.
                     Prices for these services are subject to change at our discretion.
                 </p>
+                <div class="mt-2 sm:mt-4 flex justify-start">
+                    <livewire:interaction-buttons identifier="the-features-table" />
+                </div>
             </div>
         </div>
 
@@ -159,6 +162,9 @@
             <div class="flex justify-between mt-1 sm:mt-2 text-xs sm:text-sm font-semibold">
                 <span>The Original Punks</span>
                 <span>The Other Punks</span>
+            </div>
+            <div class="mt-2 sm:mt-4 flex justify-start">
+                <livewire:interaction-buttons identifier="the-progress-bar" />
             </div>
         </div>
 
@@ -236,6 +242,9 @@
                         @endforeach
                         </tbody>
                     </table>
+                </div>
+                <div class="mt-2 sm:mt-4 flex justify-start">
+                    <livewire:interaction-buttons identifier="the-nft-counts" />
                 </div>
             </div>
         </div>
