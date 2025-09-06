@@ -30,7 +30,7 @@ if (app()->environment('prod')) {
 
     Schedule::call(function () {
         (new \App\Services\XPost())->tweetRepostPinned();
-    })->timezone('America/New_York')->dailyAt('10:30');
+    })->timezone('America/New_York')->dailyAt('10:11');
 
     Schedule::call(function () {
         (new \App\Services\XPost())->tweetMarketplacePieChart();
