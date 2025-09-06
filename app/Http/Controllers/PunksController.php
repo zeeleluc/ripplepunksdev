@@ -8,4 +8,11 @@ class PunksController extends Controller
     {
         return view('punks');
     }
+
+    public function show(int $id)
+    {
+        return view('punks.show', [
+            'id' => $id,
+        ]);
+    }
 }
