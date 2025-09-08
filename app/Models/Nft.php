@@ -56,13 +56,10 @@ class Nft extends Model
         return $query->count();
     }
 
-    /**
-     * 🔎 Get all duplicate NFTs (same trait combination).
-     */
-    public static function getDuplicateGroups()
+    public static function getAttributeColumns(): array
     {
-        $columns = [
-            'color','skin','type','total_accessories','earring','normal_beard_black',
+        return  [
+            'earring','normal_beard_black',
             'wild_hair','muttonchops','cigarette','small_shades','eye_patch',
             'ripple_short','choker','regular_shades','wild_white_hair','black_lipstick',
             'clown_eyes_green','clown_hair_green','handlebars','crazy_hair','cap_forward',
@@ -80,6 +77,14 @@ class Nft extends Model
             'do_rag','orange_side','mustache','buck_teeth','dark_hair','beanie','top_hat',
             'rosy_cheeks','vape','pilot_helmet','blue_bandana','3d_glasses',
         ];
+    }
+
+    /**
+     * 🔎 Get all duplicate NFTs (same trait combination).
+     */
+    public static function getDuplicateGroups()
+    {
+        $columns = array_merge(['color','skin','type','total_accessories'], self::getAttributeColumns());
 
         // First: find trait-combos that appear > 1
         $dupes = static::select($columns)

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Nft;
+
 class PunksController extends Controller
 {
     public function index()
@@ -13,6 +15,7 @@ class PunksController extends Controller
     {
         return view('punks.show', [
             'id' => $id,
+            'nft' => Nft::where('nft_id', $id)->first(),
         ]);
     }
 }

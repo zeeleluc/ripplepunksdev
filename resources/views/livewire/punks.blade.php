@@ -62,12 +62,12 @@
                         $metadata = $nft->metadata ?? [];
                         $imageUrl = $this->getImageUrl($nft);
                     @endphp
-                    <div class="border rounded p-2 sm:p-4 bg-white shadow w-full max-w-[180px] sm:max-w-full flex flex-col items-center">
+                    <a href="{{ route('punks.show', ['id' => $nft->nft_id]) }}" class="border rounded p-2 sm:p-4 bg-white shadow w-full max-w-[180px] sm:max-w-full flex flex-col items-center">
                         <img src="{{ $imageUrl }}" alt="{{ $metadata['name'] ?? 'NFT Image' }}" class="w-full h-36 sm:h-48 object-cover rounded mb-1 sm:mb-2" />
                         <h3 class="text-center font-semibold text-gray-700 text-sm sm:text-base">
                             {{ $metadata['name'] ?? 'Unnamed NFT' }}
                         </h3>
-                    </div>
+                    </a>
                 @endforeach
             </div>
             @include('components.custom-pagination', ['paginator' => $nfts])

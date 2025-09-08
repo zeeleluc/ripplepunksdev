@@ -29,7 +29,7 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('/punk/{id}', [PunksController::class, 'show'])
         ->whereNumber('id')
         ->where('id', '^(?:[0-9]|[1-9][0-9]{0,3}|1[0-9]{4}|1999[0-9])$')
-        ->name('punk.show');
+        ->name('punks.show');
     Route::get('/cleanup', [CleanupController::class, 'index'])->name('cleanup');
     Route::get('/pulse', [PulseController::class, 'index'])->name('pulse');
     Route::get('/launchpad', [LaunchpadController::class, 'index'])->name('launchpad.index');
