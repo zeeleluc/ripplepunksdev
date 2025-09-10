@@ -82,3 +82,4 @@ Route::group(['middleware' => 'web'], function () {
 use App\Http\Controllers\ChecksumController;
 
 Route::get('/checksum/{checksum}', [ChecksumController::class, 'check']);
+Route::post('/check-punk', [ChecksumController::class, 'checkPunk']);

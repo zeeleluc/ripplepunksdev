@@ -20,4 +20,26 @@ class ChecksumController extends Controller
             'success' => $exists,
         ]);
     }
+
+    public function checkPunk(Request $request)
+    {
+        // Merge core + attribute columns
+        $columns = array_merge(
+            ['color', 'skin', 'type', 'total_accessories'],
+            Nft::getAttributeColumns()
+        );
+
+        $query = Nft::query();
+
+        foreach ($request->all() as $column => $value) {
+            // Only allow whitelisted columns
+            if (in_array($column, $columns)) {
+                $query->where($column, $value);
+            }
+        }
+
+        return response()->json([
+            'success' => $query->exists(),
+        ]);
+    }
 }
