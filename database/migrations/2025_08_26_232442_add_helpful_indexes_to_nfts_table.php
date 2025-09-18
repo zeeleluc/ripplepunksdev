@@ -10,9 +10,9 @@ return new class extends Migration
     {
         Schema::table('nfts', function (Blueprint $table) {
             // Composite index for common filters
-            $table->index(['color', 'type', 'total_accessories'], 'idx_nfts_filter');
-            // Index for sorting by nft_id
-            $table->index('nft_id', 'idx_nfts_nft_id');
+//            $table->index(['color', 'type', 'total_accessories'], 'idx_nfts_filter');
+//            // Index for sorting by nft_id
+//            $table->index('nft_id', 'idx_nfts_nft_id');
         });
     }
 
