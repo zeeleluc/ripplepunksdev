@@ -12,6 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('nfts', function (Blueprint $table) {
+            $table->string('type')->after('color')->nullable();
             $table->string('skin')->after('type')->nullable();
         });
     }
