@@ -9,7 +9,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('nfts', function (Blueprint $table) {
-            $table->index('trait_checksum', 'idx_trait_checksum');
+            //$table->index('trait_checksum', 'idx_trait_checksum');
         });
     }
 

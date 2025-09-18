@@ -9,7 +9,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('nfts', function (Blueprint $table) {
-            $table->string('trait_checksum', 32)->nullable()->after('total_accessories');
+            //$table->string('trait_checksum', 32)->nullable()->after('total_accessories');
         });
     }
 
