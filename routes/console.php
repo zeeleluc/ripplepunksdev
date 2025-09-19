@@ -13,6 +13,7 @@ if (app()->environment('prod')) {
     Schedule::command('holders:sync')->everyTenMinutes();
     Schedule::command('xrp:fetch-price')->everyMinute();
     Schedule::command('xrpl:fetch-sales')->everyMinute();
+    Schedule::command('nfts:check-missing')->hourly();
 
     Schedule::call(function () {
         Artisan::call('nfts:fill-skin');
