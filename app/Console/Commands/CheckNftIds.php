@@ -46,10 +46,7 @@ class CheckNftIds extends Command
             }
         }
 
-        if (empty($missingIds)) {
-            $this->info('No missing NFT IDs found.');
-            SlackNotifier::info('No missing NFT IDs found.');
-        } else {
+        if ($missingIds) {
             $missingList = implode(', ', $missingIds);
             $this->warn("Missing NFT IDs: {$missingList}");
             SlackNotifier::warning("Missing NFT IDs: {$missingList}");
